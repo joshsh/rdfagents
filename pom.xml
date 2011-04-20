@@ -11,9 +11,9 @@
     <name>RDFAgents</name>
 
     <modules>
-	<module>core</module>
-	<module>jade</module>
- </modules>
+        <module>core</module>
+        <module>jade</module>
+    </modules>
 
     <build>
         <directory>${basedir}/target</directory>

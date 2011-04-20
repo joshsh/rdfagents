@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+    <meta name="RCS-Id" content="$Id: Overview.html,v 1.14 2008/01/16 15:38:27 eric Exp $"/>
+    <title>RDFAgents: real-time Semantic Web data flow (draft)</title>
+    <style type="text/css">
+        /*<![CDATA[*/
+        pre.data {
+        border: thin solid #C0C0FF;
+        background-color: #F4F4FF;
+        margin: 1em 4em 1em 0em ;
+        padding: 5px;
+        }
+
+        .wgNote { border: thin solid #88AA88;
+        background-color: #E8F0E8;
+        padding: 0.5em ;
+        margin: 1em 4em 1em 2em ; }
+
+        hr {
+        color: #FF0000;
+        background-color: #FF0000;
+        }
+
+        //]]>
+    </style>
+    <!--<link rel="stylesheet" type="text/css" href="local.css"/>-->
+    <link rel="stylesheet" type="text/css" href="fortytwo-draft.css"/>
+</head>
+
+<body>
+
+<div class="head">
+    <p>
+        <a href="http://fipa.org">
+            <img alt="FIPA" src="fipa-logo.png" style="border:0" width="51" height="53"/>
+        </a>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <a href="http://www.w3.org/2001/sw/">
+            <!--<img alt="Semantic Web" src="http://www.w3.org/Icons/SW/sw-horz" style="border:0" width="156" height="48"/>-->
+            <img alt="Semantic Web" src="semanticweb-logo.png" style="border:0" width="156" height="53"/>
+        </a>
+    </p>
+
+    <h1 id="main">RDFAgents</h1>
+
+    <h2><a name="w3c-doctype" id="w3c-doctype">Draft 3 March 2011</a></h2>
+    <dl>
+        <dt>This version:</dt>
+        <dd>
+            <a href="http://fortytwo.net/2011/rdfagents/spec-20110303">http://fortytwo.net/2011/rdfagents/spec-20110303</a>
+        </dd>
+        <dt>Latest version:</dt>
+        <dd><a href="http://fortytwo.net/2011/rdfagents/spec">http://fortytwo.net/2011/rdfagents/spec</a></dd>
+        <dt>Previous version:</dt>
+        <dd>
+            <a href="http://fortytwo.net/2011/rdfagents/spec-20110303">http://fortytwo.net/2011/rdfagents/spec-20110303</a>
+        </dd>
+        <dt>Editor:</dt>
+        <dd rel="author foaf:maker dc:creator" rev="made foaf:made">
+            <address about="http://fortytwo.net/foaf#josh" typeof="foaf:Person" style="font-style:normal">
+                <a property="foaf:name" rel="foaf:page" href="http://fortytwo.net">Joshua Shinavier</a>
+            </address>
+            <!--&lt;<a href="mailto:josh@fortytwo.net">josh@fortytwo.net</a>&gt;-->
+        </dd>
+    </dl>
+
+    <p class="copyright"><span class="dc:rights">
+        Copyright &copy; 2011 Joshua Shinavier.</span>
+        <a href="http://creativecommons.org/licenses/by-sa/3.0/us/" rel="license dc:license"
+           title="Creative Commons License">Some rights reserved</a>.
+    </p>
+</div>
+
+<hr/>
+<!-- ................................................................. -->
+
+<div>
+    <h2 class="notoc"><a id="abstract" name="abstract">Abstract</a></h2>
+
+    <p>
+        RDFAgents is a data model and protocol for real-time, peer-to-peer knowledge sharing on the Semantic Web.
+        etc. etc.
+        This specification defines etc. etc.
+    </p>
+
+</div>
+<div>
+    <h2 id="status">Status of this Document</h2>
+
+    <p>This draft is part of a research project currently in progress.
+        It is neither a FIPA standard nor a W3C recommendation.
+        Comments are welcome and may be sent to <a href="mailto:josh&#x40;fortytwo.net">josh&#x40;fortytwo.net</a>.
+    </p>
+</div>
+
+<hr/>
+<!-- ................................................................. -->
+
+<div class="toc">
+    <h2><a id="contents" name="contents">Table of Contents</a></h2>
+
+    <ul class="toc">
+
+        <li class="tocline1">1 <a href="#introduction">Introduction</a> (Informative)</li>
+        <li class="tocline2">1.1 <a href="#doc-outline">Document Outline</a>
+            <ul class="toc">
+                <li class="tocline2">1.2 <a href="#doc-conventions">Document Conventions</a>
+                    <ul class="toc">
+                        <li class="tocline2">1.2.1 <a href="#doc-namespaces">Namespaces</a></li>
+                        <li class="tocline2">1.2.2 <a href="#doc-data-desc">Data Descriptions</a></li>
+                        <li class="tocline2">1.2.3 <a href="#doc-result-desc">Result Descriptions</a></li>
+                        <li class="tocline2">1.2.4 <a href="#docTerminology">Terminology</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+
+        <li class="tocline1">P <a href="#protocols">Protocols</a>
+            <ul class="toc">
+                <li class="tocline2">P.1 <a href="#query">Query</a></li>
+                <li class="tocline2">P.2 <a href="#push">Push</a></li>
+                <li class="tocline2">P.3 <a href="#pubsub">Publish-Subscribe</a></li>
+            </ul>
+        </li>
+
+        <li class="tocline1">2 <a href="#information-discovery">Information Discovery</a> (Informative)
+            <ul class="toc">
+                <li class="tocline2">2.1 <a href="#WritingSimpleQueries">...</a></li>
+                <li class="tocline2">2.2 <a href="#matchingRDFLiterals">...</a>
+                    <ul class="toc">
+                        <li class="tocline2">2.2.1 <a href="#matchLangTags">...</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+
+        <li class="tocline1">3 <a href="#inter-agent-communication">Inter-agent communication</a> (Informative)
+        </li>
+
+    </ul>
+</div>
+
+<h3><a id="appendices" name="appendices">Appendices</a></h3>
+<ul class="toc">
+    <li class="tocline2">A <a href="#grammar">...</a>
+        <ul class="toc">
+            <li class="tocline2">A.1 <a href="#queryString">...</a></li>
+            <li class="tocline2">A.2 <a href="#codepointEscape">...</a></li>
+        </ul>
+    </li>
+    <li class="tocline2">B <a href="#references">References</a></li>
+    <li class="tocline2">C <a href="#notes">Notes</a> (Informative)</li>
+    <li class="tocline2">D <a href="#acknowledgements">Acknowledgements</a> (Informative)</li>
+    <li class="tocline2">E <a href="#changes">Changes</a> (Informative)</li>
+</ul>
+
+<hr/>
+<!-- ................................................................. -->
+
+<h2>1 <a id="introduction" name="introduction">Introduction</a></h2>
+
+<p>
+    ...
+
+    RDFAgents adheres closely to Linked Data best practices
+    while replacing the request-response, client-server model of HTTP with the asynchronous and peer-to-peer model of
+    FIPA agents.
+    In analogy to the four <a href="http://www.w3.org/DesignIssues/LinkedData.html">Linked Data principles</a>,
+    the basic principles of RDFAgents are as follows:
+</p>
+<ol>
+    <li>Use Semantic Web <i>URIs</i> as names for things</li>
+    <li>Use <i>FIPA identifiers</i> as names for <i>agents</i></li>
+    <li>When someone <i>asks</i> an agent about a URI, provide useful information using the standards (RDF, SPARQL)</li>
+    <li>Include <i>links</i> to other URIs and <i>quotations</i> from other agents, so that they can discover related
+        information.
+</ol>
+For example, if a user asks the agent named info@example.org about the thing named http://example.org/cities/Beijing,
+that agent should respond with an RDF description of Beijing.
+The description should include links to related things such as China, Beijing universities and historical landmarks, and
+so on.
+Furthermore, if the description includes information from multiple sources, such as a news service news@foo.com or a
+weather service weather@bar.net,
+this should be indicated through the use of Named Graphs and graph quotation.
+The user then has the option of contacting those sources directly in order to get more detailed or more up-to-date news
+or
+weather information about Beijing.
+
+<h3>1.1 <a id="doc-outline" name="doc-outline">Document Outline</a></h3>
+
+<p>Unless otherwise noted in the section heading, all sections and appendices in this document are normative.</p>
+
+<p>
+    This section of the document, <a href="#introduction">section 1</a>, introduces the RDFAgents specification.
+    It presents the organization of this specification document and the conventions used throughout the specification.
+</p>
+
+<p><a href="#basic-patterns">Section 2</a> of the specification etc. etc.</p>
+
+<h3>1.2 <a id="doc-conventions" name="doc-conventions">Document Conventions</a></h3>
+<h4>1.2.1 <a id="doc-namespaces" name="doc-namespaces">Namespaces</a></h4>
+
+<p>In this document, examples assume the following namespace prefix bindings unless
+    otherwise stated:</p>
+
+<div style="text-align: center;">
+    <table style="border-collapse: collapse; border-color: #000000" border="1" cellpadding="5">
+        <tr>
+            <th>Prefix</th>
+            <th>IRI</th>
+        </tr>
+        <tr>
+            <td><code>rdf:</code></td>
+            <td><code>http://www.w3.org/1999/02/22-rdf-syntax-ns#</code></td>
+        </tr>
+        <tr>
+            <td><code>rdfs:</code></td>
+            <td><code>http://www.w3.org/2000/01/rdf-schema#</code></td>
+        </tr>
+        <tr>
+            <td><code>xsd:</code></td>
+            <td><code>http://www.w3.org/2001/XMLSchema#</code></td>
+        </tr>
+        <tr>
+            <td><code>fn:</code></td>
+            <td><code>http://www.w3.org/2005/xpath-functions#</code></td>
+        </tr>
+    </table>
+</div>
+<h4>1.2.2 <a id="doc-data-desc" name="doc-data-desc">Data Descriptions</a></h4>
+
+<p>This document uses the
+    <a class="inform" href="http://www4.wiwiss.fu-berlin.de/bizer/TriG/">TriG</a>
+    RDF serialization format to show each triple explicitly. TriG, like Turtle, allows IRIs to be abbreviated with
+    prefixes:</p>
+<pre class="data">
+@prefix dc:   &lt;http://purl.org/dc/elements/1.1/&gt; .
+@prefix :     &lt;http://example.org/book/&gt; .
+:book1  dc:title  &quot;SPARQL Tutorial&quot; .
+</pre>
+<p>
+    TriG also supports graph syntax...
+</p>
+
+<hr/>
+<!-- ................................................................. -->
+
+<h2>P <a id="protocols" name="protocols">Protocols</a></h2>
+
+<p>
+    ...
+</p>
+
+<h3>P.1 <a id="query" name="query">Query</a></h3>
+
+<p>
+    The Query protocol allows an agent to request a basic unit of information from another agent.
+    Based on ... the FIPA standard <a href="http://www.fipa.org/specs/fipa00027/SC00027H.html">Query Interaction
+    Protocol</a>
+</p>
+
+<h3>P.2 <a id="push" name="push">Push</a></h3>
+
+<p>
+    The Push protocol allows an agent to proactively inform another agent of new data.
+</p>
+
+<h3>P.3 <a id="pubsub" name="pubsub">Publish-Subscribe</a></h3>
+
+<p>
+    ...
+</p>
+
+<hr/>
+<!-- ................................................................. -->
+
+<h2>A. <a id="foobar" name="foobar">Foobar</a></h2>
+
+<hr/>
+<!-- ................................................................. -->
+
+<h2>B. <a id="references" name="references">References</a></h2>
+
+<h3 id="normative-refs">Normative References</h3>
+<dl class="bib">
+    <dt><a name="XPATH20" id="XPATH20">[XPATH20]</a></dt>
+    <dd><cite>
+        <a href="http://www.w3.org/TR/2007/REC-xpath20-20070123/">XML Path
+            Language (XPath) 2.0</a></cite>, A. Berglund, S. Boag, D. Chamberlin, M. F. Fernández, M. Kay, J. Robie, J.
+        Siméon,
+        Editors, W3C Recommendation, 23 January 2007,
+        http://www.w3.org/TR/2007/REC-xpath20-20070123/ .
+        <a href=
+                   "http://www.w3.org/TR/xpath20/" title=
+                "Latest version of XML Path Language (XPath) 2.0">Latest
+            version</a> available at http://www.w3.org/TR/xpath20/ .
+    </dd>
+</dl>
+<h3 id="informative-refs">Informative References</h3>
+<dl class="bib">
+    <dt><a name="CBD" id="CBD">[CBD]</a></dt>
+    <dd><cite><a href="http://www.w3.org/Submission/CBD/">CBD - Concise
+        Bounded Description</a></cite>, Patrick Stickler, Nokia, W3C Member
+        Submission, 3 June 2005.
+    </dd>
+</dl>
+
+<hr/>
+<!-- ................................................................. -->
+
+<h2>C. <a id="notes" name="notes">Notes</a></h2>
+<ul>
+    <li><a href="#note1_ref">[1]</a> ...</li>
+</ul>
+
+<hr/>
+<!-- ................................................................. -->
+
+<h2>D. <a id="acknowledgements" name="acknowledgements">Acknowledgements</a></h2>
+
+<p>
+    This work has been supported by the <a href="http://tw.rpi.edu/">Tetherless World Constellation</a>
+    as well as the Chinese Academy of Sciences <a href="http://english.ia.cas.cn/au/bi/">Institute of Automation</a>.
+</p>
+
+<p>
+    Contributors of feedback, code, etc.
+</p>
+
+<p>
+    The format of this document draws upon
+    <a href="http://www.w3.org/">W3C</a> and
+    <a href="http://buzzword.org.uk/">Buzzword.org.uk</a> specifications.
+</p>
+
+<hr/>
+<!-- ................................................................. -->
+
+<h2>E. <a id="changes" name="changes">Changes</a></h2>
+<dl>
+    <dt>3 March 2011</dt>
+    <dd>Initial version</dd>
+</dl>
+
+<div class="footer">
+    <hr/>
+    <table>
+        <tr>
+            <td>
+                <a style="background:transparent" href="http://validator.w3.org/check?uri=referer">
+                    <img src="http://www.w3.org/Icons/valid-xhtml-rdfa" alt="Valid XHTML"
+                         style="border-width:0"/>
+                </a>
+            </td>
+            <td>
+                <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/us/">
+                    <img alt="Creative Commons License" style="border-width:0"
+                         src="http://i.creativecommons.org/l/by-sa/3.0/us/88x31.png"/></a>
+            </td>
+        </tr>
+    </table>
+</div>
+
+</body>
+
+</html>
