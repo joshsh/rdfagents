@@ -7,28 +7,30 @@
    http://www.w3.org/Consortium/Legal/copyright-software */
 
 body {
-  padding: 2em 1em 2em 70px;
-  margin: 0;
-  font-family: sans-serif;
-  color: black;
-  background: white;
-  background-position: top left;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
+    padding: 2em 1em 2em 70px;
+    margin: 0;
+    font-family: sans-serif;
+    color: black;
+    background: white;
+    background-position: top left;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-image: url(fortytwo-draft.png);
 }
+
 :link { color: #00C; background: transparent }
 :visited { color: #609; background: transparent }
 a:active { color: #C00; background: transparent }
 
 a:link img, a:visited img { border-style: none } /* no border on img links */
 
-a img { color: white; }        /* trick to hide the border in Netscape 4 */
-@media all {                   /* hide the next rule from Netscape 4 */
-  a img { color: inherit; }    /* undo the color change above */
+a img { color: white; }          /* trick to hide the border in Netscape 4 */
+@media all {                     /* hide the next rule from Netscape 4 */
+    a img { color: inherit; }    /* undo the color change above */
 }
 
-th, td { /* ns 4 */
-  font-family: sans-serif;
+    th, td { /* ns 4 */
+    font-family: sans-serif;
 }
 
 h1, h2, h3, h4, h5, h6 { text-align: left }
@@ -51,35 +53,69 @@ p.copyright { font-size: small }
 p.copyright small { font-size: small }
 
 @media screen {  /* hide from IE3 */
-a[href]:hover { background: #ffa }
+    a[href]:hover { background: #ffa }
 }
 
-pre { margin-left: 2em }
+pre {
+    margin-left: 2em;
+}
+
 /*
 p {
   margin-top: 0.6em;
   margin-bottom: 0.6em;
 }
 */
-dt, dd { margin-top: 0; margin-bottom: 0 } /* opera 3.50 */
-dt { font-weight: bold }
 
-pre, code { font-family: monospace } /* navigator 4 requires this */
+dt, dd {
+    margin-top: 0; margin-bottom: 0;
+} /* opera 3.50 */
+
+dt {
+    font-weight: bold
+}
+
+pre, code {
+    font-family: monospace;
+} /* navigator 4 requires this */
 
 ul.toc, ol.toc {
-  list-style: disc;		/* Mac NS has problem with 'none' */
-  list-style: none;
+    list-style: disc;		/* Mac NS has problem with 'none' */
+    list-style: none;
 }
 
 @media aural {  
-  h1, h2, h3 { stress: 20; richness: 90 }
-  .hide { speak: none }
-  p.copyright { volume: x-soft; speech-rate: x-fast }
-  dt { pause-before: 20% }
-  pre { speak-punctuation: code } 
+    h1, h2, h3 { stress: 20; richness: 90 }
+    .hide { speak: none }
+    p.copyright { volume: x-soft; speech-rate: x-fast }
+    dt { pause-before: 20% }
+    pre { speak-punctuation: code }
 }
 
-body {
-  background-image: url(fortytwo-draft.png);
+.quote {
+    margin-left: 50px;
+    font-style: italic;
 }
 
+pre.data {
+    border: thin solid #C0C0FF;
+    background-color: #F4F4FF;
+    margin: 1em 4em 1em 0em ;
+    padding: 5px;
+}
+
+.wgNote {
+    border: thin solid #88AA88;
+    background-color: #E8F0E8;
+    padding: 0.5em ;
+    margin: 1em 4em 1em 2em ;
+ }
+
+hr {
+    color: #FF0000;
+    background-color: #FF0000;
+}
+
+.figure {
+    text-align: center;
+}

@@ -6,28 +6,6 @@
 <head>
     <meta name="RCS-Id" content="$Id: Overview.html,v 1.14 2008/01/16 15:38:27 eric Exp $"/>
     <title>RDFAgents: real-time Semantic Web data flow (draft)</title>
-    <style type="text/css">
-        /*<![CDATA[*/
-        pre.data {
-        border: thin solid #C0C0FF;
-        background-color: #F4F4FF;
-        margin: 1em 4em 1em 0em ;
-        padding: 5px;
-        }
-
-        .wgNote { border: thin solid #88AA88;
-        background-color: #E8F0E8;
-        padding: 0.5em ;
-        margin: 1em 4em 1em 2em ; }
-
-        hr {
-        color: #FF0000;
-        background-color: #FF0000;
-        }
-
-        //]]>
-    </style>
-    <!--<link rel="stylesheet" type="text/css" href="local.css"/>-->
     <link rel="stylesheet" type="text/css" href="fortytwo-draft.css"/>
 </head>
 
@@ -87,6 +65,19 @@
         This specification defines etc. etc.
     </p>
 
+    <p>
+        ...contributes:
+    </p>
+    <ul>
+        <li>a statement-centric data model based on RDF and Named Graphs</li>
+        <li>a FIPA domain ontology for inter-agent information exchange</li>
+        <li>FIPA performatives and protocols for information sharing supporting privacy, provenance, trust, and
+            information accountability in the context of social machines
+        </li>
+        <li>integration of FIPA agent identity and Semantic Web identity</li>
+        <li>conventions for peer-to-peer information discovery</li>
+    </ul>
+
 </div>
 <div>
     <h2 id="status">Status of this Document</h2>
@@ -119,28 +110,81 @@
             </ul>
         </li>
 
-        <li class="tocline1">P <a href="#protocols">Protocols</a>
-            <ul class="toc">
-                <li class="tocline2">P.1 <a href="#query">Query</a></li>
-                <li class="tocline2">P.2 <a href="#push">Push</a></li>
-                <li class="tocline2">P.3 <a href="#pubsub">Publish-Subscribe</a></li>
-            </ul>
-        </li>
+        <li class="tocline1">DM <a href="#datamodel">Data model</a></li>
 
-        <li class="tocline1">2 <a href="#information-discovery">Information Discovery</a> (Informative)
+        <li class="tocline1">AR <a href="#architecture">Architecture</a>
             <ul class="toc">
-                <li class="tocline2">2.1 <a href="#WritingSimpleQueries">...</a></li>
-                <li class="tocline2">2.2 <a href="#matchingRDFLiterals">...</a>
+                <li class="tocline2">AR.1 <a href="#message-content">Message content</a>
                     <ul class="toc">
-                        <li class="tocline2">2.2.1 <a href="#matchLangTags">...</a></li>
+                        <li class="tocline3">AR.1.1 <a href="#rdf-content-languages">RDF content languages</a></li>
                     </ul>
                 </li>
             </ul>
         </li>
 
-        <li class="tocline1">3 <a href="#inter-agent-communication">Inter-agent communication</a> (Informative)
+        <li class="tocline1">AI <a href="#agent-identity">Agent identity</a></li>
+
+        <li class="tocline1">AP <a href="#attribution-and-provenance">Attribution and provenance</a>
+            <ul class="toc">
+                <li class="tocline2">AP.1 <a href="#named-graphs">Named Graphs</a></li>
+                <li class="tocline2">AP.2 <a href="#provenance-vocabulary">The Semantic Web Publishing vocabulary</a>
+                </li>
+                <li class="tocline2">AP.3 <a href="#quotation">Quotation and syndication</a></li>
+                <li class="tocline2">AP.4 <a href="#lifting-rules">Lifting rules</a> (Informative)</li>
+            </ul>
         </li>
 
+        <li class="tocline1">P <a href="#protocols">Protocols</a>
+            <ul class="toc">
+                <li class="tocline2">P.1 <a href="#query">Query</a>
+                    <ul class="toc">
+                        <li class="tocline3">P.1.1 <a href="#describe-query">The <code>describe</code> query form</a>
+                        </li>
+                        <li class="tocline3">P.1.2 <a href="#query-results">Interpretation of query results</a></li>
+                        <li class="tocline3">P.1.3 <a href="#query-exceptions">Exceptions</a></li>
+                    </ul>
+                </li>
+                <li class="tocline2">P.2 <a href="#pubsub">Publish-Subscribe</a>
+                    <ul class="toc">
+                        <li class="tocline3">P.2.1 <a href="#pubsub-updates">Interpretation of updates</a></li>
+                        <li class="tocline3">P.2.2 <a href="#pubsub-exceptions">Exceptions</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+
+        <li class="tocline1">FC <a href="#fipa-compliance">FIPA compliance</a>
+            <ul class="toc">
+                <li class="tocline2">FC.1 <a href="#fipa-agent-identity">Agent identity</a>
+                    <ul class="toc">
+                        <li class="tocline3">FC.1.1 <a href="#fipa-agent-name">Agent name</a></li>
+                        <li class="tocline3">FC.1.2 <a href="#fipa-transport-addresses">Transport addresses</a></li>
+                        <li class="tocline3">FC.1.3 <a href="#fipa-name-resolution">Name resolution</a></li>
+                    </ul>
+                </li>
+                <li class="tocline2">FC.2 <a href="#fipa-agent-management">Agent management</a></li>
+                <li class="tocline2">FC.3 <a href="#fipa-service-discovery">Service discovery</a></li>
+                <li class="tocline2">FC.4 <a href="#fipa-message-exchange">Inter-agent message exchange</a></li>
+            </ul>
+        </li>
+
+        <li class="tocline1">ID <a href="#information-discovery">Information Discovery</a> (Informative)
+            <ul class="toc">
+                <li class="tocline2">ID.1 <a href="#agent-discovery">Agent discovery</a></li>
+                <li class="tocline2">ID.2 <a href="#resource-discovery">Resource discovery</a></li>
+            </ul>
+        </li>
+
+        <li class="tocline1">IO <a href="#integration">Integration</a> (Informative)
+            <ul class="toc">
+                <li class="tocline2">IO.1 <a href="#linked-data">RDFAgents and Linked Data</a></li>
+                <li class="tocline2">IO.2 <a href="#data-streams">RDFAgents and RDF streams</a></li>
+                <li class="tocline2">IO.3 <a href="#other-agents">Other agent-based systems</a></li>
+            </ul>
+        </li>
+
+        <li class="tocline1">IMP <a href="#implementation">Reference implementation</a> (Informative)
+        </li>
     </ul>
 </div>
 
@@ -164,31 +208,36 @@
 <h2>1 <a id="introduction" name="introduction">Introduction</a></h2>
 
 <p>
-    ...
+    ... both Linked Data and RDF streams ...
+</p>
 
+<p>
     RDFAgents adheres closely to Linked Data best practices
-    while replacing the request-response, client-server model of HTTP with the asynchronous and peer-to-peer model of
-    FIPA agents.
+    while replacing the request-response, client-server model of HTTP
+    with the asynchronous and peer-to-peer model of FIPA agents.
+
     In analogy to the four <a href="http://www.w3.org/DesignIssues/LinkedData.html">Linked Data principles</a>,
     the basic principles of RDFAgents are as follows:
 </p>
 <ol>
     <li>Use Semantic Web <i>URIs</i> as names for things</li>
-    <li>Use <i>FIPA identifiers</i> as names for <i>agents</i></li>
+    <li>Use FIPA <i>agent identifiers</i> as names for <i>agents</i></li>
     <li>When someone <i>asks</i> an agent about a URI, provide useful information using the standards (RDF, SPARQL)</li>
     <li>Include <i>links</i> to other URIs and <i>quotations</i> from other agents, so that they can discover related
         information.
 </ol>
-For example, if a user asks the agent named info@example.org about the thing named http://example.org/cities/Beijing,
-that agent should respond with an RDF description of Beijing.
+For example, if an information consumer asks the agent named <code>info@example.org</code>
+about the thing named <code>http://dbpedia.org/resource/Beijing</code>,
+that agent should respond with an RDF description of the city of Beijing.
+
 The description should include links to related things such as China, Beijing universities and historical landmarks, and
 so on.
-Furthermore, if the description includes information from multiple sources, such as a news service news@foo.com or a
-weather service weather@bar.net,
+
+Furthermore, if the description includes information from multiple sources,
+such as a news service <code>news@foo.com</code> or a weather service <code>weather@bar.net</code>,
 this should be indicated through the use of Named Graphs and graph quotation.
-The user then has the option of contacting those sources directly in order to get more detailed or more up-to-date news
-or
-weather information about Beijing.
+This gives the user the option of contacting those sources directly
+in order to get more detailed or more up-to-date news or weather information about Beijing.
 
 <h3>1.1 <a id="doc-outline" name="doc-outline">Document Outline</a></h3>
 
@@ -207,8 +256,8 @@ weather information about Beijing.
 <p>In this document, examples assume the following namespace prefix bindings unless
     otherwise stated:</p>
 
-<div style="text-align: center;">
-    <table style="border-collapse: collapse; border-color: #000000" border="1" cellpadding="5">
+<div>
+    <table>
         <tr>
             <th>Prefix</th>
             <th>IRI</th>
@@ -226,11 +275,16 @@ weather information about Beijing.
             <td><code>http://www.w3.org/2001/XMLSchema#</code></td>
         </tr>
         <tr>
-            <td><code>fn:</code></td>
-            <td><code>http://www.w3.org/2005/xpath-functions#</code></td>
+            <td><code>foaf:</code></td>
+            <td><code>http://xmlns.com/foaf/0.1/</code></td>
+        </tr>
+        <tr>
+            <td><code>swp:</code></td>
+            <td><code>http://www.w3.org/2004/03/trix/swp-2/</code></td>
         </tr>
     </table>
 </div>
+
 <h4>1.2.2 <a id="doc-data-desc" name="doc-data-desc">Data Descriptions</a></h4>
 
 <p>This document uses the
@@ -249,6 +303,175 @@ weather information about Beijing.
 <hr/>
 <!-- ................................................................. -->
 
+<h2>DM <a id="datamodel" name="datamodel">Data model</a></h2>
+
+<p>
+    Information sharing in RDFAgents is based on the exchange of RDF [<a href="#RDFCONCEPTS">RDF CONCEPTS</a>]
+    data qualified with contextual metadata.
+
+
+    collections of named graphs, or <i>RDF Datasets</i>,
+    which are defined as in SPARQL [<a href="#SPARQL">SPARQL</a>].
+
+    A named graph
+</p>
+
+<hr/>
+<!-- ................................................................. -->
+
+<h2>P <a id="architecture" name="architecture">Architecture</a></h2>
+
+<p>
+    ...
+
+    An RDFAgents <i>platform</i> is a
+
+    An <i>agent</i> is
+
+
+    Agents communicate by exchanging <i>messages</i> which represent speech acts,
+    and which are encoded in an <i>agent communication language</i>.
+
+    RDFAgents uses the least expressive subset, <code>fipa-sl0</code>,
+    of FIPA's standard Semantic Language [<a href="#FIPASC00008I">FIPA SC00008I</a>]
+    for agent communication.
+</p>
+
+<p>
+    Note: message encoding is to be specified in the FIPA <i>message envelope</i> which encloses each ACL message.
+</p>
+
+<h3>AR.1 <a id="message-content" name="message-content">Message content</a></h3>
+
+<p>
+    The propositional content of a message is expressed in a <i>content language</i>,
+    for which RDFAgents uses both <code>fipa-sl0</code> and a number of RDF document formats,
+    depending on the context.
+
+    For example, an RDFAgents agent uses <code>fipa-sl0</code> to subscribe to a stream of updates about a Semantic Web
+    resource,
+    while the content of the updates it receives is expressed in TriG or N-Quads syntax.
+</p>
+
+<p>
+    RDFAgents' <code>fipa-sl0</code> content is expressed in a domain ontology with the name <code>rdfagents</code> (see
+    ___),
+    which introduces vocabulary elements for queries and failure conditions.
+
+    Throughout this specification, when a message is said to use the <code>rdfagents</code> domain ontology,
+    it is understood to be expressed in the <code>fipa-sl0</code> content language, and vice versa.
+
+    This is indicated in each message through the use of the FIPA <code>language</code> and <code>ontology</code>
+    parameters
+    (see [<a href="#FIPASC00061G">FIPA SC00061G</a>]).
+</p>
+
+<h4>AR.1.1 <a id="rdf-content-languages" name="rdf-content-languages">RDF content languages</a></h4>
+
+<p>
+    RDFAgents defines the following RDF-based content languages:
+</p>
+
+<ul>
+    <li><code>rdf-ntriples</code>: the language of expressions in N-Triples [<a href="#NTriples">N-Triples</a>],
+        a line-based, plain-text format for RDF graphs.
+        In RDFAgents, every N-Triples triple represents a statement in the ground graph.
+    </li>
+    <li><code>rdf-turtle</code>: the language of expressions in the Turtle [<a href="#Turtle">Turtle</a>]
+        plain-text format.
+        All statements belong to the ground graph.
+    </li>
+    <li><code>rdf-xml</code>: the language of expressions in RDF/XML [<a href="#RDFXML">RDF/XML</a>],
+        the most widely supported RDF format.
+        All statements belong to the ground graph.
+    </li>
+    <li><code>rdf-nquads</code>: the language of expressions in the N-Quads [<a href="#NQuads">N-Quads</a>] format,
+        which extends N-Triples with context.
+        In RDFAgents, the context component of an N-Quads tuple MUST be a graph name.
+        If a tuple has no context component, it represents a statement in the ground graph;
+        otherwise, it represents a statement in the graph thus named.
+    </li>
+    <li><code>rdf-trig</code>: the language of expressions in the TriG [<a href="#TriG">TriG</a>] format,
+        which expressly supports Named Graphs and RDF Datasets.
+        The <i>unnamed graph</i> (if any) in a TriG document is identified with the ground graph in RDFAgents.
+    </li>
+    <li><code>rdf-trix</code>: the language of expressions in the TriX [<a href="#TriX">TriX</a>] XML-based format
+        with support for graph names.
+        Named and unnamed graphs are interpreted as in <code>rdf-trig</code>.
+    </li>
+</ul>
+
+<p>
+    An RDFAgents platform MUST support at least one of the above languages,
+    where supporting a language means that the platform can both parse and write the full range of valid
+    expressions in the language to and from the corresponding RDF Datasets.
+
+    However, an RDFAgents platform need not support all of the above languages.
+
+    For the sake of interoperability,
+    it is recommended that the <code>rdf-xml</code> and <code>rdf-nquads</code> languages be supported.
+</p>
+
+<p>
+    Agents MAY use additional RDF-based content languages which are understood, a priori, by both
+    participants in a conversation.
+
+    For example, an agent which receives a request for query results in the language <code>rdf-json</code>
+    may choose to respond with a content expression in the
+    <a href="http://docs.api.talis.com/platform-api/output-types/rdf-json">Talis RDF/JSON format</a>.
+
+    It is the responsibility of the requester to validate the response against the expected format.
+</p>
+
+<p>
+    RDF content is implicitly grounded in the universal representational space of the Semantic Web.
+</p>
+
+<hr/>
+<!-- ................................................................. -->
+
+<h2>AP <a id="attribution-and-provenance" name="attribution-and-provenance">Attribution and provenance</a></h2>
+
+<p>
+    ...
+</p>
+
+<h3>AP.2 <a id="provenance-vocabulary" name="provenance-vocabulary">The Semantic Web Publishing vocabulary</a></h3>
+
+<p>
+    <i>authority</i>, <i>warrant</i>
+
+    ...basic roles: information providers, syndicators, and consumers...
+
+    <code>swp:assertedBy</code>
+</p>
+
+<h3>AP.3 <a id="quotation" name="quotation">Quotation and syndication</a></h3>
+
+<p>
+    Graph quotation serves a dual purpose in RDFAgents: it gives due credit to information providers,
+    while also giving information consumers a means of contacting providers in order to verify syndicated information
+    or to find additional information.
+
+
+</p>
+
+<p>
+    RDFAgents recognizes only one basic relationship between an agent and a graph: that of <i>assertion</i>.
+
+    The propositional attitude of assertion is inherited from FIPA's <code>inform</code>
+    and related communicative acts [<a href="#FIPASC00037J">FIPA SC00037J</a>] and is identified with the act of
+    publishing an RDF graph on the Semantic Web.
+
+    An agent which asserts a named graph thereby asserts the truth of each RDF statement in the graph
+    as a proposition about the world.
+
+    To assert a graph, an agent uses the graph as
+</p>
+
+<hr/>
+<!-- ................................................................. -->
+
 <h2>P <a id="protocols" name="protocols">Protocols</a></h2>
 
 <p>
@@ -258,22 +481,439 @@ weather information about Beijing.
 <h3>P.1 <a id="query" name="query">Query</a></h3>
 
 <p>
-    The Query protocol allows an agent to request a basic unit of information from another agent.
-    Based on ... the FIPA standard <a href="http://www.fipa.org/specs/fipa00027/SC00027H.html">Query Interaction
-    Protocol</a>
+    The Query protocol allows an agent to request a single unit of information of another agent.
+
+    It is based on the FIPA standard Query Interaction Protocol [<a href="#FIPASC00027H">FIPA SC00027H</a>]
+    identified by <i>fipa-query</i>.
 </p>
 
-<h3>P.2 <a id="push" name="push">Push</a></h3>
+<p class="figure">
+    <img src="query-protocol.png" width="387" height="423" alt="RDFAgents query protocol"/>
+    <br/>
+    Figure 1: Query protocol
+</p>
 
 <p>
-    The Push protocol allows an agent to proactively inform another agent of new data.
+    The Query protocol involves two otherwise equal participants which assume the roles of a <i>client</i>
+    requesting information from a <i>server</i>.
+
+    A Query interaction begins with the client posing a query to the server as the content of a FIPA
+    <code>query-ref</code> message,
+    where the query is expressed in <code>fipa-sl0</code> using an RDFAgents query form.
+
+    Upon receipt of the query, the server either agrees or refuses to evaluate it.
+
+    If the server refuses, it sends a <code>refuse</code> message to the client
+    whose content is an explanation in the <code>fipa-sl0</code> content language conforming to the RDFAgents domain
+    ontology, completing the interaction.
+
+    If the server agrees, it may choose to send an <code>agree</code> notification to the client.
+
+    Otherwise, it proceeds directly to the evaluation of the query.
+
+    Depending on the outcome of query evaluation,
+    the server completes the interaction either with an <code>inform-result</code> message with an informational
+    payload in one of the RDF content languages,
+    or a <code>failure</code> message
 </p>
 
-<h3>P.3 <a id="pubsub" name="pubsub">Publish-Subscribe</a></h3>
+<h4>P.1.1 <a id="describe-query" name="describe-query">The <code>describe</code> query form</a></h4>
+
+<p>
+    This version of RDFAgents supports exactly one type of query, called <code>describe</code>,
+    which accepts a single resource identified by a URI and returns an RDF dataset of information about that resource.
+
+    This is similar to SPARQL's <a href="http://www.w3.org/TR/rdf-sparql-query/#describe">DESCRIBE</a> query form
+    in that the way in which the server selects an appropriate chunk of information "describing" the given resource is
+    unspecified.
+</p>
+
+<p>
+    The client MAY request the query result to be expressed in a particular RDF format
+    by using the <code>:language</code> parameter.
+
+    If so, the server MUST either return results in the specified format,
+    or raise an exception if the specified format is not supported.
+
+    Otherwise, the query result MUST use any one of the RDF content languages explicitly listed
+    <a href="#rdf-content-languages">above</a>,
+    where the payload of the message is expressed in the corresponding RDF format.
+</p>
+
+<p>
+    Example query:
+</p>
+
+<pre class="data">
+(query-ref
+    :sender (agent-identifier
+        :name http://fortytwo.net/agents/smith
+	:addresses (sequence xmpp:smith@fortytwo.net))
+    :receiver (set (agent-identifier
+	:name http://example.org/agents/rdfnews
+	:addresses (sequence xmpp:rdfnews@example.org)))
+    :protocol fipa-query
+    :conversation-id C976B710A5
+    :language fipa-sl0
+    :ontology rdfagents
+    :content "(describe (resource \"http://dbpedia.org/resource/Beijing\") :language rdf-trig)")
+</pre>
+
+<p>
+    Example query result:
+</p>
+
+<pre class="data">
+(inform-result
+    :sender (agent-identifier
+        :name http://example.org/agents/rdfnews
+	:addresses (sequence xmpp:rdfnews@example.org))
+    :receiver (set (agent-identifier
+        :name http://fortytwo.net/agents/smith
+	:addresses (sequence xmpp:smith@fortytwo.net)))
+    :protocol fipa-query
+    :conversation-id C976B710A5
+    :language rdf-trig
+    :content &quot;
+@prefix dbpprop: &lt;http://dbpedia.org/property/&gt; .
+@prefix dbpedia-owl: &lt;http://dbpedia.org/ontology/&gt; .
+@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+
+&lt;http://dbpedia.org/resource/Beijing&gt;
+    dbpprop:name \&quot;Beijing\&quot;@en ;
+    dbpedia-owl:country &lt;http://dbpedia.org/resource/China&gt; ;
+    owl:sameAs
+        &lt;http://data.nytimes.com/49823253852479839961&gt;,
+	&lt;http://dbpedia.org/resource/Beijing&gt;,
+	&lt;http://rdf.freebase.com/ns/m/01914&gt;,
+	&lt;http://rdf.freebase.com/ns/m/047txg&gt;,
+	&lt;http://sws.geonames.org/1816670/&gt; ;
+[...]&quot;)
+</pre>
+
+<h4>P.1.2 <a id="query-results" name="query-results">Interpretation of query results</a></h4>
+
+<p>
+    In RDFAgents, the <code>inform-result</code> message for the query result has the same propositional status
+    as an <code>inform</code> message (see [<a href="#FIPASC00037J">FIPA SC00037J</a>]):
+    it is an assertion by the server that the ground statements in the RDF payload of the message are true.
+
+    Furthermore, it is an assertion not only to the client which issued the query,
+    but to all potential information consumers,
+    making it similar to the act of publishing a document on the Semantic Web.
+</p>
+
+<p>
+    After receiving the query result from the server,
+    the client MAY convey its informational content to any other agent, at any time,
+    using the mechanism of graph quotation described above.
+</p>
+
+<h4>P.1.3 <a id="query-exceptions" name="query-exceptions">Exceptions</a></h4>
 
 <p>
     ...
 </p>
+
+<h3>P.2 <a id="pubsub" name="pubsub">Publish-Subscribe</a></h3>
+
+<p>
+    The Publish-Subscribe protocol enables event-driven streams from information providers to information consumers
+    according to topics of interest.
+
+    It is based on the FIPA standard Subscribe Interaction Protocol [<a href="#FIPASC00035H">FIPA SC00035H</a>]
+    identified by <code>fipa-subscribe</code>.
+</p>
+
+<p class="figure">
+    <img src="pubsub-protocol.png" width="387" height="368" alt="RDFAgents publish-subscribe protocol"/>
+    <br/>
+    Figure 2: Publish-Subscribe protocol
+</p>
+
+<p>
+
+    ... subscriber optionally expresses a preference for a particular content language (RDF format).
+    producer will refuse the subscription request if that format is not supported
+
+    ...ordered delivery...
+</p>
+
+<p>
+    Push protocol --
+
+    for data streams initiated by the data producer
+
+    pushes without a prior contract between sender and receiver might be good for one-shot updates,
+    for advertising oneself to new agents... but there's too much potential for spam-like activity,
+    no good way for receivers to discontinue unwanted messages. For now, let everything be driven by the consumer.
+
+    *** For data streams, this is actually pub-sub, except that the subscribe action is preceded by an invitation
+    (proposal) from the data provider to the data consumer. The consumer can either accept the proposal and subscribe,
+    or reject it. ***
+</p>
+
+<h4>P.2.1 <a id="pubsub-updates" name="pubsub-updates">Interpretation of updates</a></h4>
+
+<p>
+    As in the Query protocol, the <code>inform-result</code> messages containing updates
+    have the same propositional status as an <code>inform</code> message:
+    they are an assertion by the publisher, to all potential information consumers,
+    that the ground statements in the RDF payload of the message are true.
+
+    This provides a means of publishing data streams on the Semantic Web which is analogous to the publishing of
+    RDF documents.
+</p>
+
+<p>
+    After receiving the update from the publisher,
+    the subscriber MAY convey its informational content to any other agent, at any time,
+    using the mechanism of graph quotation described above.
+</p>
+
+<h4>P.2.2 <a id="pubsub-exceptions" name="pubsub-exceptions">Exceptions</a></h4>
+
+<p>
+    ...
+</p>
+
+<hr/>
+<!-- ................................................................. -->
+
+<h2>FC <a id="fipa-compliance" name="fipa-compliance">FIPA compliance</a></h2>
+
+<p>
+    The FIPA Abstract Architecture [<a href="#FIPASC00001L">FIPA SC00001L</a>]
+    defines architectural elements of agent platforms and their relationships,
+    and provides guidelines for the instantiation and interoperability of agent systems.
+</p>
+
+<p class="quote">
+    In order for a concrete architectural specification to be FIPA compliant, it must have certain properties.
+    First, the concrete architecture must include mechanisms for agent registration and agent discovery and inter-agent
+    message transfer.
+    These services must be explicitly described in terms of the corresponding elements of the FIPA Abstract
+    Architecture.
+</p>
+
+<p>
+    Any concrete implementation of RDFAgents, or <i>RDFAgents platform</i>,
+    MUST realize the mandatory elements of the FIPA Abstract Architecture.
+
+    The following subsections will describe additional constraints imposed by RDFAgents with respect to FIPA compliance,
+    and discuss optional elements of FIPA which are not required by RDFAgents.
+
+    All elements of FIPA not discussed in the following are to be considered independent of RDFAgents,
+    and may be realized in implementation-specific ways.
+</p>
+
+<h3>FC.1 <a id="fipa-agent-identity" name="fipa-agent-identity">Agent identity</a></h3>
+
+<p>
+    FIPA defines an agent identifier (AID) as an extensible collection of parameter-value pairs comprising a
+    <i>name</i> or globally unique identifier for the agent,
+    zero or more <i>transport addresses</i> at which the agent can receive messages, and
+    zero or more <i>resolvers</i> or name resolution service addresses.
+</p>
+
+<h4>FC.1.1 <a id="fipa-agent-name" name="fipa-agent-name">Agent name</a></h4>
+
+<p>
+    At creation or registration time, a FIPA agent MUST be given an <i>agent name</i>
+    which has a durable relationship with the agent it identifies and
+    which is chosen in such a way as to ensure global uniqueness.
+
+    An agent name SHOULD have no semantics:
+</p>
+
+<p class="quote">
+    It should not encode any actual properties of the agent itself,
+    nor should it disclose related information such as agent transport-description or location.
+    It should also not be used as a form of authentication of the agent.
+</p>
+
+<p>
+    To facilitate the RDF description of agents,
+    the name of an RDFAgents agent MUST be a Semantic Web URI which SHOULD be drawn from a URI space controlled by its
+    owner.
+
+    As such, it SHOULD be an HTTP URI associated with an RDF
+    description of the agent which can be obtained by dereferencing the URI, in the manner of Linked Data.
+</p>
+
+<p>
+    The resource denoted by the agent name is implicitly an instance of
+    <a href="http://xmlns.com/foaf/spec/#term_Agent"><code>foaf:Agent</code></a>
+    within RDFAgents and SHOULD be explicitly declared as such in RDF descriptions mentioning the agent.
+</p>
+
+<p>
+    The Semantic Web URI of a <a href="http://xmlns.com/foaf/spec/#term_Person"><code>foaf:Person</code></a>
+    MAY be used as an agent name
+    only if the RDFAgents agent and the person thus identified are identical for the purpose of information exchange.
+
+    This may be the case, for example, when an agent acting as a personal assistant is given the task of sending and
+    receiving
+    messages on behalf of its owner.
+
+    Note, however, that any discoverable contact information of the person which is not valid contact information of the
+    agent may lead to unwanted and ineffectual messages from other agents.
+
+    Additionally, it should be kept in mind that the contact information of an RDFAgents agent is shared freely,
+    much as URIs are shared in Linked Data,
+    while the sharing of personal contact information is subject to concerns of privacy and spam control.
+</p>
+
+<h4>FC.1.2 <a id="fipa-transport-addresses" name="fipa-transport-addresses">Transport addresses</a></h4>
+
+<p>
+    A transport address is a physical address at which an agent can be contacted.
+
+    It is usually specific to a particular protocol (for example, HTTP or XMPP).
+
+    A given agent may support multiple methods of communication and therefore may have multiple transport addresses.
+
+    The EBNF syntax of a FIPA transport address is the same as that of a URL given in [<a href="#RFC2396">RFC 2396</a>].
+
+    The transport addresses of an RDFAgents agent SHOULD be absolute URLs whose scheme part corresponds
+    to a well-known messaging protocol (e.g. <code>http</code> or <code>xmpp</code>) and whose scheme-specific part
+    serves to identify the recipient in an unambiguous, global fashion.
+</p>
+
+<p>
+    Every agent in an RDFAgents platform requires one or more transport addresses.
+
+    If there are multiple agents in the platform, they MAY share the same transport address(es).
+
+    The agent platform itself does not require a transport address and does not need to send or receive messages.
+</p>
+
+<p>
+    An agent's transport addresses SHOULD correspond with the contact information provided in authoritative RDF
+    descriptions of the agent.
+</p>
+
+<h4>FC.1.3 <a id="fipa-name-resolution" name="fipa-name-resolution">Name resolution</a></h4>
+
+<p>
+    RDFAgents does not require the use of FIPA's <i>resolvers</i> parameter of the agent ID (although it does not
+    probihit its use).
+
+    No specialized lookup services are provided for agent names.
+
+    Instead, transport addresses are inferred from the RDF descriptions of agents.
+
+    An RDFAgents platform MUST be capable of reading RDF descriptions and applying at least the following rule for the
+    mapping of contact information to transport addresses.
+</p>
+
+<p>
+    Every RDFAgents platform MUST include a list of transport-level services with which it is capable of interoperating.
+
+    This list MAY contain as few as a single service, identified by the URL of its home page.
+
+    Each service MUST be bound to a transport protocol such that,
+    when the platform is provided with the service-specific identifier of a recipient,
+    it can send a message to that recipient using the associated protocol.
+</p>
+
+<p>
+    While there are many possible conventions for expressing agent contact information in RDF,
+    only one is required to be supported by an RDFAgents platform,
+    namely, the use of the vocabulary elements
+    <a href="http://xmlns.com/foaf/spec/#term_account"><code>foaf:account</code></a>
+    to associate an agent with a account, and
+    <a href="http://xmlns.com/foaf/spec/#term_accountServiceHomepage"><code>foaf:accountServiceHomepage</code></a> and
+    <a href="http://xmlns.com/foaf/spec/#term_accountName"><code>foaf:accountName</code></a>
+    to associate the account with a service and a service-specific identifier, respectively.
+</p>
+
+<p>
+    For example, the following RDF description provides sufficient information for the sending of a message over
+    XMPP to the agent identified by <code>rdfnews@example.org</code> on Jabber:
+</p>
+
+<pre class="data">
+{
+    &lt;newsAgent&gt; a foaf:Agent ;
+        foaf:name &quot;RDF News Agent&quot; ;
+        foaf:account [
+            a foaf:OnlineAccount ;
+            foaf:accountServiceHomepage &lt;http://www.jabber.org/&gt; ;
+            foaf:accountName &quot;rdfnews@example.org&quot; ] .
+}</pre>
+
+<p>
+    In order to make use of this information, an RDFAgents platform must interoperate with the service
+    identified by <code>http://www.jabber.org/</code>,
+    which involves knowing that it is an XMPP-based service, supporting the XMPP protocol, and having a Jabber account.
+</p>
+<!--Furthermore, the combination of a name and a transport address is expected to be sufficient for the delivery of a message
+through the Internet without the assistance of specialized intermediary services.-->
+
+
+<h3>FC.2 <a id="fipa-agent-management" name="fipa-agent-management">Agent management</a></h3>
+
+<p>
+    FIPA Agent Management [<a href="#FIPASC00023K">FIPA SC00023K</a>] provides the normative
+    framework
+    within which FIPA agents exist and operate.
+
+    It establishes the logical reference model for the creation, registration, location, communication, migration and
+    retirement of agents.
+
+    A mandatory component of this model is the <i>agent management system</i>, or AMS,
+    which exerts supervisory control over access to and use of the platform.
+
+    It provides agent identifiers to agents and maintains a directory of identifiers,
+    providing a white pages service for all agents.
+</p>
+
+<p>
+    However, the AMS is merely an internal component of a conforming RDFAgents implementation;
+    this specification is concerned only with peer-to-peer communication between platforms
+    (as opposed to intra-platform communication),
+    and there is no operation within RDFAgents which requires the sending of a message to the AMS of a remote platform.
+</p>
+<!-- a typical usage scenario involves only one agent per platform -->
+
+<h3>FC.2.1 <a id="fipa-service-discovery" name="fipa-service-discovery">Service discovery</a></h3>
+
+<p>
+    RDFAgents neither requires nor prohibits the use of FIPA's optional <i>directory facilitator</i>,
+    which maintains an index of agents in a platform and provides a yellow pages service for agents.
+
+    The role of the directory facilitator is considered to be fulfilled in RDFAgents by the &quot;word of mouth&quot;
+    mechanism of service discovery via RDF descriptions.
+</p>
+
+<h3>FC.4 <a id="fipa-message-exchange" name="fipa-message-exchange">Inter-agent message exchange</a></h3>
+
+<p>
+    All FIPA agents must have access to at least one <i>message transport service</i>,
+    or concrete implementation of a protocol for sending and receiving messages.
+
+    In RDFAgents, each agent MUST provide at least one valid transport address,
+    for a supported transport service, in each message it sends.
+
+    Additionally, the agent SHOULD provide corresponding contact information in each RDF description of itself.
+</p>
+
+<hr/>
+<!-- ................................................................. -->
+
+<h2>IO <a id="integration" name="integration">Integration</a></h2>
+
+<h3>IO.1 <a id="linked-data" name="linked-data">RDFAgents and Linked Data</a></h3>
+
+<h3>IO.2 <a id="data-streams" name="data-streams">RDFAgents and RDF streams</a></h3>
+
+<p>
+    ... C-SPARQL ...
+    ... SPARQLPush ...
+</p>
+
+<h3>IO.3 <a id="other-agents" name="other-agents">Other agent-based systems</a></h3>
 
 <hr/>
 <!-- ................................................................. -->
@@ -287,18 +927,125 @@ weather information about Beijing.
 
 <h3 id="normative-refs">Normative References</h3>
 <dl class="bib">
-    <dt><a name="XPATH20" id="XPATH20">[XPATH20]</a></dt>
+
+    <dt><a name="RFC2396" id="RFC2396">[RFC 2396]</a></dt>
     <dd><cite>
-        <a href="http://www.w3.org/TR/2007/REC-xpath20-20070123/">XML Path
-            Language (XPath) 2.0</a></cite>, A. Berglund, S. Boag, D. Chamberlin, M. F. Fernández, M. Kay, J. Robie, J.
-        Siméon,
-        Editors, W3C Recommendation, 23 January 2007,
-        http://www.w3.org/TR/2007/REC-xpath20-20070123/ .
-        <a href=
-                   "http://www.w3.org/TR/xpath20/" title=
-                "Latest version of XML Path Language (XPath) 2.0">Latest
-            version</a> available at http://www.w3.org/TR/xpath20/ .
-    </dd>
+        <a href="http://www.ietf.org/rfc/rfc2396.txt">Uniform Resource Identifiers (URI): Generic Syntax</a>,
+        T. Berners-Lee, R. Fielding, L. Masinter,
+        August 1998.
+    </cite></dd>
+
+    <dt><a name="FIPASC00001L" id="FIPASC00001L">[FIPA SC00001L]</a></dt>
+    <dd><cite>
+        <a href="http://www.fipa.org/specs/fipa00001/SC00001L.html">FIPA Abstract Architecture Specification</a>,
+        Foundation for Intelligent Physical Agents standard, December 3, 2002.
+    </cite></dd>
+
+    <dt><a name="FIPASC00027H" id="FIPASC00027H">[FIPA SC00027H]</a></dt>
+    <dd><cite>
+        <a href="http://www.fipa.org/specs/fipa00027/SC00027H.html">FIPA Query Interaction Protocol Specification</a>,
+        Foundation for Intelligent Physical Agents standard, December 3, 2002.
+    </cite></dd>
+
+    <dt><a name="FIPASC00035H" id="FIPASC00035H">[FIPA SC00035H]</a></dt>
+    <dd><cite>
+        <a href="http://www.fipa.org/specs/fipa00035/SC00035H.html">FIPA Subscribe Interaction Protocol
+            Specification</a>,
+        Foundation for Intelligent Physical Agents standard, December 3, 2002.
+    </cite></dd>
+
+    <dt><a name="FIPASC00008I" id="FIPASC00008I">[FIPA SC00008I]</a></dt>
+    <dd><cite>
+        <a href="http://www.fipa.org/specs/fipa00008/SC00008I.html">FIPA SL Content Language Specification</a>,
+        Foundation for Intelligent Physical Agents standard, December 3, 2002.
+    </cite></dd>
+
+    <dt><a name="FIPASC00061G" id="FIPASC00061G">[FIPA SC00061G]</a></dt>
+    <dd><cite>
+        <a href="http://www.fipa.org/specs/fipa00061/SC00061G.html">FIPA ACL Message Structure Specification</a>,
+        Foundation for Intelligent Physical Agents standard, December 3, 2002.
+    </cite></dd>
+
+    <dt><a name="FIPASC00023K" id="FIPASC00023K">[FIPA SC00023K]</a></dt>
+    <dd><cite>
+        <a href="http://www.fipa.org/specs/fipa00023/SC00023K.html">FIPA Agent Management Specification</a>,
+        Foundation for Intelligent Physical Agents standard, March 18, 2004.
+    </cite></dd>
+
+    <dt><a name="FIPASC00037J" id="FIPASC00037J">[FIPA SC00037J]</a></dt>
+    <dd><cite>
+        <a href="http://www.fipa.org/specs/fipa00037/SC00037J.html">FIPA Communicative Act Library Specification</a>,
+        Foundation for Intelligent Physical Agents standard, December 3, 2002.
+    </cite></dd>
+
+    <dt><a name="RDFCONCEPTS" id="RDFCONCEPTS">[RDF CONCEPTS]</a></dt>
+    <dd><cite>
+        <a href="http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/">Resource Description Framework (RDF): Concepts and Abstract Syntax</a>,
+        G. Klyne, J. J. Carroll, editors,
+        W3C Recommendation,
+        <a href="http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/">latest version</a>
+        10 February 2004.
+    </cite></dd>
+
+    <dt><a name="SPARQL" id="SPARQL">[SPARQL]</a></dt>
+    <dd><cite>
+        <a href="http://www.w3.org/TR/rdf-sparql-query/">SPARQL Query Language for RDF</a>,
+        E. Prud'hommeaux and A. Seaborne, editors,
+        W3C Recommendation,
+        <a href="http://www.w3.org/TR/2008/REC-rdf-sparql-query-20080115/">latest version</a>
+        January 15, 2008.
+    </cite></dd>
+
+    <dt><a name="NQuads" id="NQuads">[N-Quads]</a></dt>
+    <dd><cite>
+        <a href="http://sw.deri.org/2008/07/n-quads/">N-Quads: Extending N-Triples with Context</a>,
+        R. Cyganiak, A. Harth, and A. Hogan,
+        public draft,
+        <a href="http://sw.deri.org/2008/07/n-quads/">latest version</a>
+        November 12, 2009.
+    </cite></dd>
+
+    <dt><a name="NTriples" id="NTriples">[N-Triples]</a></dt>
+    <dd><cite>
+        <a href="http://www.w3.org/2001/sw/RDFCore/ntriples/">N-Triples</a>,
+        W3C RDF Core WG internal working draft,
+        <a href="http://www.w3.org/TR/rdf-testcases/#ntriples">latest version</a>
+        February 10, 2004.
+    </cite></dd>
+
+    <dt><a name="TriG" id="TriG">[TriG]</a></dt>
+    <dd><cite>
+        <a href="http://www4.wiwiss.fu-berlin.de/bizer/TriG/">The TriG Syntax</a>,
+        C. Bizer and R. Cyganiak,
+        <a href="http://www4.wiwiss.fu-berlin.de/bizer/TriG/Spec/TriG-20070730/">latest version</a>
+        July 30, 2007.
+    </cite></dd>
+
+    <dt><a name="TriX" id="TriX">[TriX]</a></dt>
+    <dd><cite>
+        <a href="http://www.hpl.hp.com/techreports/2003/HPL-2003-268.html">RDF Triples in XML</a>,
+        J. Carroll and P. Stickler,
+        technical report,
+        2003.
+    </cite></dd>
+
+    <dt><a name="Turtle" id="Turtle">[Turtle]</a></dt>
+    <dd><cite>
+        <a href="http://www.w3.org/TeamSubmission/turtle/">Turtle - Terse RDF Triple Language</a>,
+        D. Beckett and T. Berners-Lee,
+        W3C Team Submission,
+        <a href="http://www.w3.org/TeamSubmission/2011/SUBM-turtle-20110328/">latest version</a>
+        March 28, 2011.
+    </cite></dd>
+
+    <dt><a name="RDFXML" id="RDFXML">[RDF/XML]</a></dt>
+    <dd><cite>
+        <a href="http://www.w3.org/TR/REC-rdf-syntax/">RDF/XML Syntax Specification (Revised)</a>,
+        D. Beckett, editor,
+        W3C Recommendation,
+        <a href="http://www.w3.org/TR/2004/REC-rdf-syntax-grammar-20040210/">latest version</a>
+        February 10, 2004.
+    </cite></dd>
 </dl>
 <h3 id="informative-refs">Informative References</h3>
 <dl class="bib">
