@@ -110,19 +110,25 @@
             </ul>
         </li>
 
-        <li class="tocline1">DM <a href="#datamodel">Data model</a></li>
+        <li class="tocline1">DM <a href="#datamodel">Data model</a>
+            <ul class="toc">
+                <li class="tocline2">DM.1 <a href="#default-graph">The default graph</a></li>
+                <li class="tocline2">DM.2 <a href="#agents">Agents</a></li>
+                <li class="tocline2">DM.3 <a href="#messages">Informative messages</a></li>
+            </ul>
+        </li>
 
         <li class="tocline1">AR <a href="#architecture">Architecture</a>
             <ul class="toc">
-                <li class="tocline2">AR.1 <a href="#message-content">Message content</a>
+                <li class="tocline2">AR.1 <a href="#performatives">Performatives</a></li>
+                <li class="tocline2">AR.2 <a href="#message-content">Message content</a>
                     <ul class="toc">
-                        <li class="tocline3">AR.1.1 <a href="#rdf-content-languages">RDF content languages</a></li>
+                        <li class="tocline3">AR.2.1 <a href="#domain-ontology">RDFAgents domain ontology</a></li>
+                        <li class="tocline3">AR.2.2 <a href="#rdf-content-languages">RDF content languages</a></li>
                     </ul>
                 </li>
             </ul>
         </li>
-
-        <li class="tocline1">AI <a href="#agent-identity">Agent identity</a></li>
 
         <li class="tocline1">AP <a href="#attribution-and-provenance">Attribution and provenance</a>
             <ul class="toc">
@@ -225,6 +231,7 @@
     <li>When someone <i>asks</i> an agent about a URI, provide useful information using the standards (RDF, SPARQL)</li>
     <li>Include <i>links</i> to other URIs and <i>quotations</i> from other agents, so that they can discover related
         information.
+    </li>
 </ol>
 For example, if an information consumer asks the agent named <code>info@example.org</code>
 about the thing named <code>http://dbpedia.org/resource/Beijing</code>,
@@ -260,27 +267,35 @@ in order to get more detailed or more up-to-date news or weather information abo
     <table>
         <tr>
             <th>Prefix</th>
-            <th>IRI</th>
+            <th>URI</th>
         </tr>
         <tr>
-            <td><code>rdf:</code></td>
-            <td><code>http://www.w3.org/1999/02/22-rdf-syntax-ns#</code></td>
+            <td><code>dc:</code></td>
+            <td><code>http://purl.org/dc/terms/</code></td>
         </tr>
         <tr>
-            <td><code>rdfs:</code></td>
-            <td><code>http://www.w3.org/2000/01/rdf-schema#</code></td>
-        </tr>
-        <tr>
-            <td><code>xsd:</code></td>
-            <td><code>http://www.w3.org/2001/XMLSchema#</code></td>
+            <td><code>ex:</code></td>
+            <td><code>http://example.org/</code></td>
         </tr>
         <tr>
             <td><code>foaf:</code></td>
             <td><code>http://xmlns.com/foaf/0.1/</code></td>
         </tr>
         <tr>
+            <td><code>rdfg:</code></td>
+            <td><code>http://www.w3.org/2004/03/trix/rdfg-1/</code></td>
+        </tr>
+        <tr>
+            <td><code>sioc:</code></td>
+            <td><code>http://rdfs.org/sioc/ns#</code></td>
+        </tr>
+        <tr>
             <td><code>swp:</code></td>
             <td><code>http://www.w3.org/2004/03/trix/swp-2/</code></td>
+        </tr>
+        <tr>
+            <td><code>xsd:</code></td>
+            <td><code>http://www.w3.org/2001/XMLSchema#</code></td>
         </tr>
     </table>
 </div>
@@ -306,15 +321,144 @@ in order to get more detailed or more up-to-date news or weather information abo
 <h2>DM <a id="datamodel" name="datamodel">Data model</a></h2>
 
 <p>
-    Information sharing in RDFAgents is based on the exchange of RDF [<a href="#RDFCONCEPTS">RDF CONCEPTS</a>]
-    data qualified with contextual metadata.
+    Information sharing in RDFAgents is based on the exchange of RDF
+    data and contextual metadata.
 
+    For details on the RDF data model, see [<a href="#RDFCONCEPTS">RDF CONCEPTS</a>].
 
-    collections of named graphs, or <i>RDF Datasets</i>,
-    which are defined as in SPARQL [<a href="#SPARQL">SPARQL</a>].
+    More specifically, RDFAgents agents exchange collections of named graphs,
+    or <i>datasets</i> which are similar to RDF Datasets as defined in SPARQL [<a href="#SPARQL">SPARQL</a>]:
+    a dataset contains of zero or more graphs named by either an URI or a blank node,
+    where each named graph contains zero or more RDF statements.
 
-    A named graph
+    Every dataset also contains a special graph with no name, described below.
 </p>
+
+<h3>DM.1 <a id="default-graph" name="default-graph">The default graph</a></h3>
+
+<p>
+    For each message sent or received by an agent,
+    there is a distinguished, <i>default graph</i> of statements which take on the
+    propositional sense of the message.
+
+    Statements included in the default graph of an informative message
+    (see <a href="#messages">below</a>)
+    are thereby asserted to be true by the sender of the message,
+    while the propositional attitude of the sender towards any graph apart from the default graph
+    is a matter of vocabulary, community convention, and interpretation by the receiver,
+    and is not specified by RDFAgents.
+</p>
+
+<p>
+    The default graph of a message cannot be referred to,
+    and no two messages share the same default graph.
+
+    As a result, the information directly asserted in a message cannot be qualified with additional metadata,
+    and is to be taken as a claim of absolute truth.
+
+    Provenance metadata may be attached to the information asserted in a previous message by providing an
+    equivalent copy of its default graph and making statements about the copy (see ___).
+</p>
+
+<h3>DM.2 <a id="agents" name="agents">Agents</a></h3>
+
+<p>
+    An <i>agent</i> in RDFAgents is not only an actor capable of exchanging messages with other agents,
+    in the sense of FIPA,
+    but also a first-class entity in the Semantic Web descriptions, or RDF datasets, attached to messages.
+
+    Agents are capable of referring to themselves and to each other,
+    and an agent's FIPA identity (which is used for the addressing and routing of messages)
+    is bound to a Semantic Web identity as follows.
+</p>
+
+<p>
+    An RDFAgents agent must identify itself with a single, globally unique Semantic Web URI,
+    and supply this as its FIPA name in each message it sends
+    (see <a href="#fipa-agent-identity">below</a> for details on FIPA identifiers).
+
+    The agent may also use this URI in self-referential descriptions.
+
+    When an agent receives an informative message from another agent,
+    it binds the FIPA name of the sender of the message to the corresponding URI.
+</p>
+
+<h3>DM.3 <a id="messages" name="messages">Informative messages</a></h3>
+
+<p>
+    Although there are several types of messages exchanged by agents (see <a href="#performatives">below</a>),
+    only <i>informative messages</i>
+    (i.e. messages with RDF content and which use the FIPA <code>inform-ref</code> performative)
+    are of interest from the point of view of Semantic Web information exchange.
+</p>
+
+<p>
+    As explained in the preceding sections,
+    each message sent or received by an agent carries an RDF dataset,
+    or collection of named graphs,
+    in which there are two distinguished resources:
+</p>
+
+<ul>
+    <li>the sender of the message</li>
+    <li>the default graph</li>
+</ul>
+
+<p>
+    The above will be referred to as the <i>sender's dataset</i> of a message.
+
+    Upon accepting an informational message,
+    the receiving agent must apply the following transformation to the sender's dataset:
+</p>
+<ol>
+    <li>name the otherwise unnamed default graph with a blank node not occurring in the sender's dataset</li>
+    <li>associate the graph thus named with the identity of the sender by means of an <code>swp:assertedBy</code>
+        statement
+    </li>
+    <li>optionally, attach additional metadata to the graph, such as a timestamp or a certificate,
+        and/or to the sender, such as contact information
+    </li>
+</ol>
+<p>
+    The result of this transformation, called the <i>receiver's dataset</i>,
+    is independent of the communicative act itself,
+    yet captures the informational content and assertional intent of the message.
+
+    In a real-world application, the receiver's dataset can be added to a local RDF store for query answering,
+    or sent verbatim to other agents.
+</p>
+
+<p>
+    Example of a sender's dataset from the agent
+    <code>http://example.org/rdfnews</code>:
+</p>
+<pre class="data">
+{
+    ex:article137 a sioc:Post ;
+        dc:title "1st Beijing International Film Festival kicked off on Saturday" ;
+        dc:created "2011-04-25T10:43:35.000Z"^^xsd:dateTime ;
+        sioc:topic &lt;http://dbpedia.org/resource/Beijing&gt; .
+}
+</pre>
+<p>
+    A corresponding receiver's dataset:
+</p>
+<pre class="data">
+ex:f93bbef965 {
+    ex:article137 a sioc:Post ;
+        dc:title "1st Beijing International Film Festival kicked off on Saturday" ;
+        dc:created "2011-04-25T10:43:35.000Z"^^xsd:dateTime ;
+        sioc:topic &lt;http://dbpedia.org/resource/Beijing&gt; .
+}
+
+{
+    ex:f93bbef965 a rdfg:Graph ;
+        swp:assertedBy ex:rdfnews .
+
+    ex:rdfnews a foaf:Agent ;
+        foaf:name "RDF News Agent" .
+}
+</pre>
 
 <hr/>
 <!-- ................................................................. -->
@@ -341,32 +485,65 @@ in order to get more detailed or more up-to-date news or weather information abo
     Note: message encoding is to be specified in the FIPA <i>message envelope</i> which encloses each ACL message.
 </p>
 
-<h3>AR.1 <a id="message-content" name="message-content">Message content</a></h3>
+<h3>AR.1 <a id="performatives" name="performatives">Performatives</a></h3>
 
 <p>
-    The propositional content of a message is expressed in a <i>content language</i>,
-    for which RDFAgents uses both <code>fipa-sl0</code> and a number of RDF document formats,
-    depending on the context.
+    Furthermore, to each FIPA message there is a distinct <i>performative</i>,
+    which identifies the type of communicative act constituted by the message
+    (see [<a href="#FIPASC00037J">FIPA SC00037J</a>]).
 
-    For example, an RDFAgents agent uses <code>fipa-sl0</code> to subscribe to a stream of updates about a Semantic Web
-    resource,
-    while the content of the updates it receives is expressed in TriG or N-Quads syntax.
+    The performatives used within RDFAgents include:
+</p>
+<ul>
+    <li><code>query-ref</code>: poses a query</li>
+    <li><code>subscribe</code>: subscribes to a stream of updates</li>
+    <li><code>inform-result</code>: informs an agent of an update or the result of a query</li>
+    <li><code>agree</code>: accepts a query or a subscription request</li>
+    <li><code>refuse</code>: refuses a query or a subscription request</li>
+    <li><code>not-understood</code>: indicates a communication error</li>
+    <li><code>failure</code>: indicates an error in query answering or stream processing</li>
+</ul>
+<p>
+    Of these,
 </p>
 
+<h3>AR.2 <a id="message-content" name="message-content">Message content</a></h3>
+
 <p>
-    RDFAgents' <code>fipa-sl0</code> content is expressed in a domain ontology with the name <code>rdfagents</code> (see
-    ___),
-    which introduces vocabulary elements for queries and failure conditions.
+    The propositional content of a message is expressed in a FIPA <i>content language</i>,
+    for which RDFAgents uses either <code>fipa-sl0</code>
+    or one of a number of special-purpose languages based on RDF document formats,
+    depending on role of the message within a particular protocol.
+
+    For example, an RDFAgents agent uses <code>fipa-sl0</code>
+    to subscribe to a stream of updates about a Semantic Web resource,
+    while the content of the updates it receives is expressed using TriG or N-Quads syntax.
+
+    In general, RDF content is used only for informative messages,
+    which represent claims about the world, similar to Semantic Web documents.
+
+    Messages for all other purposes
+    (for example, posing a query, requesting or confirming a subscription)
+    use <code>fipa-sl0</code>.<sup><a href="#note1_note">[1]</a></sup><a name="note1_ref">&nbsp;</a>
+</p>
+
+<h4>AR.2.1 <a id="domain-ontology" name="domain-ontology">RDFAgents domain ontology</a></h4>
+
+<p>
+    RDFAgents' <code>fipa-sl0</code> content is structured according to a domain ontology with the name
+    <code>rdfagents</code>
+    (see ___),
+    which introduces vocabulary elements for queries, subscriptions and failure conditions.
 
     Throughout this specification, when a message is said to use the <code>rdfagents</code> domain ontology,
-    it is understood to be expressed in the <code>fipa-sl0</code> content language, and vice versa.
+    its content is understood to be expressed in the <code>fipa-sl0</code> content language, and vice versa.
 
     This is indicated in each message through the use of the FIPA <code>language</code> and <code>ontology</code>
     parameters
     (see [<a href="#FIPASC00061G">FIPA SC00061G</a>]).
 </p>
 
-<h4>AR.1.1 <a id="rdf-content-languages" name="rdf-content-languages">RDF content languages</a></h4>
+<h4>AR.2.2 <a id="rdf-content-languages" name="rdf-content-languages">RDF content languages</a></h4>
 
 <p>
     RDFAgents defines the following RDF-based content languages:
@@ -375,25 +552,29 @@ in order to get more detailed or more up-to-date news or weather information abo
 <ul>
     <li><code>rdf-ntriples</code>: the language of expressions in N-Triples [<a href="#NTriples">N-Triples</a>],
         a line-based, plain-text format for RDF graphs.
-        In RDFAgents, every N-Triples triple represents a statement in the ground graph.
+        In RDFAgents, every N-Triples triple represents a statement in the default graph.
     </li>
     <li><code>rdf-turtle</code>: the language of expressions in the Turtle [<a href="#Turtle">Turtle</a>]
         plain-text format.
-        All statements belong to the ground graph.
+        All statements belong to the default graph.
+    </li>
+    <li><code>rdf-n3</code>: the language of expressions in the N3-rdf subset
+        of Notation3 [<a href="#Notation3">Notation3</a>],
+        itself a superset of N-Triples and Turtle.
     </li>
     <li><code>rdf-xml</code>: the language of expressions in RDF/XML [<a href="#RDFXML">RDF/XML</a>],
         the most widely supported RDF format.
-        All statements belong to the ground graph.
+        All statements belong to the default graph.
     </li>
     <li><code>rdf-nquads</code>: the language of expressions in the N-Quads [<a href="#NQuads">N-Quads</a>] format,
         which extends N-Triples with context.
-        In RDFAgents, the context component of an N-Quads tuple MUST be a graph name.
-        If a tuple has no context component, it represents a statement in the ground graph;
+        In RDFAgents, the context component of an N-Quads tuple must be a graph name.
+        If a tuple has no context component, it represents a statement in the default graph;
         otherwise, it represents a statement in the graph thus named.
     </li>
     <li><code>rdf-trig</code>: the language of expressions in the TriG [<a href="#TriG">TriG</a>] format,
         which expressly supports Named Graphs and RDF Datasets.
-        The <i>unnamed graph</i> (if any) in a TriG document is identified with the ground graph in RDFAgents.
+        The <i>unnamed graph</i> (if any) in a TriG document is identified with the default graph in RDFAgents.
     </li>
     <li><code>rdf-trix</code>: the language of expressions in the TriX [<a href="#TriX">TriX</a>] XML-based format
         with support for graph names.
@@ -402,9 +583,9 @@ in order to get more detailed or more up-to-date news or weather information abo
 </ul>
 
 <p>
-    An RDFAgents platform MUST support at least one of the above languages,
+    An RDFAgents platform must support at least one of the above languages,
     where supporting a language means that the platform can both parse and write the full range of valid
-    expressions in the language to and from the corresponding RDF Datasets.
+    expressions in the language to and from the corresponding RDF datasets.
 
     However, an RDFAgents platform need not support all of the above languages.
 
@@ -413,14 +594,14 @@ in order to get more detailed or more up-to-date news or weather information abo
 </p>
 
 <p>
-    Agents MAY use additional RDF-based content languages which are understood, a priori, by both
+    Agents may use additional RDF-based content languages which are understood, a priori, by both
     participants in a conversation.
 
-    For example, an agent which receives a request for query results in the language <code>rdf-json</code>
+    For example, an agent which receives a request for query results in "<code>rdf-json</code>"
     may choose to respond with a content expression in the
     <a href="http://docs.api.talis.com/platform-api/output-types/rdf-json">Talis RDF/JSON format</a>.
 
-    It is the responsibility of the requester to validate the response against the expected format.
+    It is up to the requester to validate the response against the expected format.
 </p>
 
 <p>
@@ -460,7 +641,7 @@ in order to get more detailed or more up-to-date news or weather information abo
     RDFAgents recognizes only one basic relationship between an agent and a graph: that of <i>assertion</i>.
 
     The propositional attitude of assertion is inherited from FIPA's <code>inform</code>
-    and related communicative acts [<a href="#FIPASC00037J">FIPA SC00037J</a>] and is identified with the act of
+    and related communicative acts (see [<a href="#FIPASC00037J">FIPA SC00037J</a>]) and is identified with the act of
     publishing an RDF graph on the Semantic Web.
 
     An agent which asserts a named graph thereby asserts the truth of each RDF statement in the graph
@@ -481,16 +662,16 @@ in order to get more detailed or more up-to-date news or weather information abo
 <h3>P.1 <a id="query" name="query">Query</a></h3>
 
 <p>
-    The Query protocol allows an agent to request a single unit of information of another agent.
+    The Query protocol allows an agent to request a single chunk of information of another agent.
 
     It is based on the FIPA standard Query Interaction Protocol [<a href="#FIPASC00027H">FIPA SC00027H</a>]
-    identified by <i>fipa-query</i>.
+    identified by <code>fipa-query</code>.
 </p>
 
 <p class="figure">
     <img src="query-protocol.png" width="387" height="423" alt="RDFAgents query protocol"/>
     <br/>
-    Figure 1: Query protocol
+    Figure 1: the Query protocol
 </p>
 
 <p>
@@ -529,13 +710,13 @@ in order to get more detailed or more up-to-date news or weather information abo
 </p>
 
 <p>
-    The client MAY request the query result to be expressed in a particular RDF format
+    The client may request the query result to be expressed in a particular RDF format
     by using the <code>:language</code> parameter.
 
-    If so, the server MUST either return results in the specified format,
+    If so, the server must either return results in the specified format,
     or raise an exception if the specified format is not supported.
 
-    Otherwise, the query result MUST use any one of the RDF content languages explicitly listed
+    Otherwise, the query result must use any one of the RDF content languages explicitly listed
     <a href="#rdf-content-languages">above</a>,
     where the payload of the message is expressed in the corresponding RDF format.
 </p>
@@ -550,13 +731,13 @@ in order to get more detailed or more up-to-date news or weather information abo
         :name http://fortytwo.net/agents/smith
 	:addresses (sequence xmpp:smith@fortytwo.net))
     :receiver (set (agent-identifier
-	:name http://example.org/agents/rdfnews
+	:name http://example.org/rdfnews
 	:addresses (sequence xmpp:rdfnews@example.org)))
     :protocol fipa-query
     :conversation-id C976B710A5
     :language fipa-sl0
     :ontology rdfagents
-    :content "(describe (resource \"http://dbpedia.org/resource/Beijing\") :language rdf-trig)")
+    :content "(describe (resource http://dbpedia.org/resource/Beijing) :language rdf-trig)")
 </pre>
 
 <p>
@@ -566,7 +747,7 @@ in order to get more detailed or more up-to-date news or weather information abo
 <pre class="data">
 (inform-result
     :sender (agent-identifier
-        :name http://example.org/agents/rdfnews
+        :name http://example.org/rdfnews
 	:addresses (sequence xmpp:rdfnews@example.org))
     :receiver (set (agent-identifier
         :name http://fortytwo.net/agents/smith
@@ -575,20 +756,17 @@ in order to get more detailed or more up-to-date news or weather information abo
     :conversation-id C976B710A5
     :language rdf-trig
     :content &quot;
-@prefix dbpprop: &lt;http://dbpedia.org/property/&gt; .
-@prefix dbpedia-owl: &lt;http://dbpedia.org/ontology/&gt; .
-@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix ex: &lt;http://example.org/&gt; .
+@prefix dc: &lt;http://purl.org/dc/terms/&gt; .
+@prefix sioc: &lt;http://rdfs.org/sioc/ns#&gt; .
+@prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt; .
 
-&lt;http://dbpedia.org/resource/Beijing&gt;
-    dbpprop:name \&quot;Beijing\&quot;@en ;
-    dbpedia-owl:country &lt;http://dbpedia.org/resource/China&gt; ;
-    owl:sameAs
-        &lt;http://data.nytimes.com/49823253852479839961&gt;,
-	&lt;http://dbpedia.org/resource/Beijing&gt;,
-	&lt;http://rdf.freebase.com/ns/m/01914&gt;,
-	&lt;http://rdf.freebase.com/ns/m/047txg&gt;,
-	&lt;http://sws.geonames.org/1816670/&gt; ;
-[...]&quot;)
+{
+    ex:article137 a sioc:Post ;
+        dc:title \"1st Beijing International Film Festival kicked off on Saturday\" ;
+        dc:created \"2011-04-25T10:43:35.000Z\"^^xsd:dateTime ;
+        sioc:topic &lt;http://dbpedia.org/resource/Beijing&gt; .
+}&quot;)
 </pre>
 
 <h4>P.1.2 <a id="query-results" name="query-results">Interpretation of query results</a></h4>
@@ -596,16 +774,16 @@ in order to get more detailed or more up-to-date news or weather information abo
 <p>
     In RDFAgents, the <code>inform-result</code> message for the query result has the same propositional status
     as an <code>inform</code> message (see [<a href="#FIPASC00037J">FIPA SC00037J</a>]):
-    it is an assertion by the server that the ground statements in the RDF payload of the message are true.
+    it is an assertion by the server that all statements in the default graph the RDF payload of the message are true.
 
     Furthermore, it is an assertion not only to the client which issued the query,
     but to all potential information consumers,
-    making it similar to the act of publishing a document on the Semantic Web.
+    making the act of sending such a message analogous to the act of publishing a document on the Semantic Web.
 </p>
 
 <p>
     After receiving the query result from the server,
-    the client MAY convey its informational content to any other agent, at any time,
+    the client may convey its informational content to any other agent, at any time,
     using the mechanism of graph quotation described above.
 </p>
 
@@ -628,7 +806,7 @@ in order to get more detailed or more up-to-date news or weather information abo
 <p class="figure">
     <img src="pubsub-protocol.png" width="387" height="368" alt="RDFAgents publish-subscribe protocol"/>
     <br/>
-    Figure 2: Publish-Subscribe protocol
+    Figure 2: the Publish-Subscribe protocol
 </p>
 
 <p>
@@ -638,6 +816,40 @@ in order to get more detailed or more up-to-date news or weather information abo
 
     ...ordered delivery...
 </p>
+
+<p>
+    Example subscription request:
+</p>
+
+<pre class="data">
+(subscribe
+    :sender (agent-identifier
+        :name http://fortytwo.net/agents/smith
+        :addresses (sequence xmpp:smith@fortytwo.net))
+    :receiver (set (agent-identifier
+        :name http://example.org/rdfnews
+        :addresses (sequence xmpp:rdfnews@example.org)))
+    :protocol fipa-subscribe
+    :conversation-id  089F5B468E
+    :language fipa-sl0
+    :ontology rdfagents
+    :content "(describe (resource http://dbpedia.org/resource/Beijing) :language rdf-trig)")
+</pre>
+<p>
+    Subscription confirmation:
+</p>
+
+<pre class="data">
+(agree
+    :sender (agent-identifier
+        :name http://example.org/rdfnews
+        :addresses (sequence xmpp:rdfnews@example.org))
+    :receiver (set (agent-identifier
+        :name http://fortytwo.net/agents/smith
+        :addresses (sequence xmpp:smith@fortytwo.net)))
+    :protocol fipa-subscribe
+    :conversation-id 089F5B468E)
+</pre>
 
 <p>
     Push protocol --
@@ -659,7 +871,7 @@ in order to get more detailed or more up-to-date news or weather information abo
     As in the Query protocol, the <code>inform-result</code> messages containing updates
     have the same propositional status as an <code>inform</code> message:
     they are an assertion by the publisher, to all potential information consumers,
-    that the ground statements in the RDF payload of the message are true.
+    that all statements in the default graph of the RDF payload of the message are true.
 
     This provides a means of publishing data streams on the Semantic Web which is analogous to the publishing of
     RDF documents.
@@ -667,7 +879,7 @@ in order to get more detailed or more up-to-date news or weather information abo
 
 <p>
     After receiving the update from the publisher,
-    the subscriber MAY convey its informational content to any other agent, at any time,
+    the subscriber may convey its informational content to any other agent, at any time,
     using the mechanism of graph quotation described above.
 </p>
 
@@ -698,13 +910,18 @@ in order to get more detailed or more up-to-date news or weather information abo
 
 <p>
     Any concrete implementation of RDFAgents, or <i>RDFAgents platform</i>,
-    MUST realize the mandatory elements of the FIPA Abstract Architecture.
+    must realize the mandatory elements of the FIPA Abstract Architecture.
 
     The following subsections will describe additional constraints imposed by RDFAgents with respect to FIPA compliance,
     and discuss optional elements of FIPA which are not required by RDFAgents.
 
     All elements of FIPA not discussed in the following are to be considered independent of RDFAgents,
     and may be realized in implementation-specific ways.
+</p>
+
+<p>
+    ...RDFAgents does not deal with intention, only with the communication of propositions which are absolutely true or
+    false...
 </p>
 
 <h3>FC.1 <a id="fipa-agent-identity" name="fipa-agent-identity">Agent identity</a></h3>
@@ -719,11 +936,11 @@ in order to get more detailed or more up-to-date news or weather information abo
 <h4>FC.1.1 <a id="fipa-agent-name" name="fipa-agent-name">Agent name</a></h4>
 
 <p>
-    At creation or registration time, a FIPA agent MUST be given an <i>agent name</i>
+    At creation or registration time, a FIPA agent must be given an <i>agent name</i>
     which has a durable relationship with the agent it identifies and
     which is chosen in such a way as to ensure global uniqueness.
 
-    An agent name SHOULD have no semantics:
+    An agent name should have no semantics:
 </p>
 
 <p class="quote">
@@ -734,22 +951,22 @@ in order to get more detailed or more up-to-date news or weather information abo
 
 <p>
     To facilitate the RDF description of agents,
-    the name of an RDFAgents agent MUST be a Semantic Web URI which SHOULD be drawn from a URI space controlled by its
+    the name of an RDFAgents agent must be a Semantic Web URI which should be drawn from a URI space controlled by its
     owner.
 
-    As such, it SHOULD be an HTTP URI associated with an RDF
+    As such, it should be an HTTP URI associated with an RDF
     description of the agent which can be obtained by dereferencing the URI, in the manner of Linked Data.
 </p>
 
 <p>
     The resource denoted by the agent name is implicitly an instance of
     <a href="http://xmlns.com/foaf/spec/#term_Agent"><code>foaf:Agent</code></a>
-    within RDFAgents and SHOULD be explicitly declared as such in RDF descriptions mentioning the agent.
+    within RDFAgents and should be explicitly declared as such in RDF descriptions mentioning the agent.
 </p>
 
 <p>
     The Semantic Web URI of a <a href="http://xmlns.com/foaf/spec/#term_Person"><code>foaf:Person</code></a>
-    MAY be used as an agent name
+    may be used as an agent name
     only if the RDFAgents agent and the person thus identified are identical for the purpose of information exchange.
 
     This may be the case, for example, when an agent acting as a personal assistant is given the task of sending and
@@ -775,7 +992,7 @@ in order to get more detailed or more up-to-date news or weather information abo
 
     The EBNF syntax of a FIPA transport address is the same as that of a URL given in [<a href="#RFC2396">RFC 2396</a>].
 
-    The transport addresses of an RDFAgents agent SHOULD be absolute URLs whose scheme part corresponds
+    The transport addresses of an RDFAgents agent should be absolute URLs whose scheme part corresponds
     to a well-known messaging protocol (e.g. <code>http</code> or <code>xmpp</code>) and whose scheme-specific part
     serves to identify the recipient in an unambiguous, global fashion.
 </p>
@@ -783,13 +1000,13 @@ in order to get more detailed or more up-to-date news or weather information abo
 <p>
     Every agent in an RDFAgents platform requires one or more transport addresses.
 
-    If there are multiple agents in the platform, they MAY share the same transport address(es).
+    If there are multiple agents in the platform, they may share the same transport address(es).
 
     The agent platform itself does not require a transport address and does not need to send or receive messages.
 </p>
 
 <p>
-    An agent's transport addresses SHOULD correspond with the contact information provided in authoritative RDF
+    An agent's transport addresses should correspond with the contact information provided in authoritative RDF
     descriptions of the agent.
 </p>
 
@@ -803,16 +1020,16 @@ in order to get more detailed or more up-to-date news or weather information abo
 
     Instead, transport addresses are inferred from the RDF descriptions of agents.
 
-    An RDFAgents platform MUST be capable of reading RDF descriptions and applying at least the following rule for the
+    An RDFAgents platform must be capable of reading RDF descriptions and applying at least the following rule for the
     mapping of contact information to transport addresses.
 </p>
 
 <p>
-    Every RDFAgents platform MUST include a list of transport-level services with which it is capable of interoperating.
+    Every RDFAgents platform must include a list of transport-level services with which it is capable of interoperating.
 
-    This list MAY contain as few as a single service, identified by the URL of its home page.
+    This list may contain as few as a single service, identified by the URL of its home page.
 
-    Each service MUST be bound to a transport protocol such that,
+    Each service must be bound to a transport protocol such that,
     when the platform is provided with the service-specific identifier of a recipient,
     it can send a message to that recipient using the associated protocol.
 </p>
@@ -835,7 +1052,7 @@ in order to get more detailed or more up-to-date news or weather information abo
 
 <pre class="data">
 {
-    &lt;newsAgent&gt; a foaf:Agent ;
+    ex:rdfnews a foaf:Agent ;
         foaf:name &quot;RDF News Agent&quot; ;
         foaf:account [
             a foaf:OnlineAccount ;
@@ -893,10 +1110,10 @@ through the Internet without the assistance of specialized intermediary services
     All FIPA agents must have access to at least one <i>message transport service</i>,
     or concrete implementation of a protocol for sending and receiving messages.
 
-    In RDFAgents, each agent MUST provide at least one valid transport address,
+    In RDFAgents, each agent must provide at least one valid transport address,
     for a supported transport service, in each message it sends.
 
-    Additionally, the agent SHOULD provide corresponding contact information in each RDF description of itself.
+    Additionally, the agent should provide corresponding contact information in each RDF description of itself.
 </p>
 
 <hr/>
@@ -980,7 +1197,8 @@ through the Internet without the assistance of specialized intermediary services
 
     <dt><a name="RDFCONCEPTS" id="RDFCONCEPTS">[RDF CONCEPTS]</a></dt>
     <dd><cite>
-        <a href="http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/">Resource Description Framework (RDF): Concepts and Abstract Syntax</a>,
+        <a href="http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/">Resource Description Framework (RDF): Concepts
+            and Abstract Syntax</a>,
         G. Klyne, J. J. Carroll, editors,
         W3C Recommendation,
         <a href="http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/">latest version</a>
@@ -994,6 +1212,15 @@ through the Internet without the assistance of specialized intermediary services
         W3C Recommendation,
         <a href="http://www.w3.org/TR/2008/REC-rdf-sparql-query-20080115/">latest version</a>
         January 15, 2008.
+    </cite></dd>
+
+    <dt><a name="Notation3" id="Notation3">[Notation3]</a></dt>
+    <dd><cite>
+        <a href="http://www.w3.org/TeamSubmission/n3/">Notation3 (N3): A readable RDF syntax</a>
+        T. Berners-Lee and D. Connolly,
+        W3C Team Submission,
+        <a href="http://www.w3.org/TeamSubmission/2011/SUBM-n3-20110328/">latest version</a>
+        March 28, 2011.
     </cite></dd>
 
     <dt><a name="NQuads" id="NQuads">[N-Quads]</a></dt>
@@ -1061,7 +1288,11 @@ through the Internet without the assistance of specialized intermediary services
 
 <h2>C. <a id="notes" name="notes">Notes</a></h2>
 <ul>
-    <li><a href="#note1_ref">[1]</a> ...</li>
+    <li><a id="note1_note" name="note1_note">&nbsp;</a>
+        <a href="#note1_ref">[1]</a> For ease of explanation,
+        every RDFAgents message is considered to carry an RDF dataset,
+        although it is only useful in messages with RDF content.
+    </li>
 </ul>
 
 <hr/>
@@ -1072,6 +1303,8 @@ through the Internet without the assistance of specialized intermediary services
 <p>
     This work has been supported by the <a href="http://tw.rpi.edu/">Tetherless World Constellation</a>
     as well as the Chinese Academy of Sciences <a href="http://english.ia.cas.cn/au/bi/">Institute of Automation</a>.
+
+    ...Franz Inc...
 </p>
 
 <p>

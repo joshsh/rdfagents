@@ -3,6 +3,7 @@ package net.fortytwo.rdfagents.jade.sesame.testing;
 import net.fortytwo.rdfagents.jade.sesame.RDFDatasetHandler;
 import net.fortytwo.rdfagents.model.AgentReference;
 import org.openrdf.model.URI;
+import org.openrdf.rio.RDFFormat;
 
 /**
  * User: josh
