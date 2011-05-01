@@ -113,13 +113,13 @@
             <ul class="toc">
                 <li class="tocline2">DM.1 <a href="#default-graph">The default graph</a></li>
                 <li class="tocline2">DM.2 <a href="#agents">Agents</a></li>
-                <li class="tocline2">DM.3 <a href="#in-rdf">Graphs and agents in RDF</a></li>
+                <li class="tocline2">DM.3 <a href="#metadata">Graphs and agents in RDF</a></li>
                 <li class="tocline2">DM.4 <a href="#messages">Assertional messages</a></li>
                 <li class="tocline2">DM.5 <a href="#lifting-rules">Lifting rules</a> (informative)</li>
             </ul>
         </li>
 
-        <li class="tocline1">AR <a href="#architecture">Architecture</a>
+        <li class="tocline1">AR <a href="#messaging">Messaging</a>
             <ul class="toc">
                 <li class="tocline2">AR.1 <a href="#performatives">Performatives</a></li>
                 <li class="tocline2">AR.2 <a href="#sending-messages">Sending messages</a></li>
@@ -127,6 +127,7 @@
                     <ul class="toc">
                         <li class="tocline3">AR.3.1 <a href="#domain-ontology">RDFAgents domain ontology</a></li>
                         <li class="tocline3">AR.3.2 <a href="#rdf-content-languages">RDF content languages</a></li>
+                        <li class="tocline3">AR.3.3 <a href="#handling-rdf-content">Handling RDF content</a></li>
                     </ul>
                 </li>
             </ul>
@@ -267,6 +268,8 @@
     as well as the conventions and best practices of the Semantic Web and Linked Data.
 
     ...for more information on FIPA, see...
+
+    ...why FIPA?...
 </p>
 
 <h3>1.1 <a id="doc-outline" name="doc-outline">Document Outline</a></h3>
@@ -354,8 +357,21 @@
     More specifically, RDFAgents agents exchange collections of named graphs,
     or <i>RDF Datasets</i>, which are defined as in SPARQL [<a href="#SPARQL">SPARQL</a>]:
     an RDF Dataset consists of zero or more graphs
-    (where each graph contains zero or more statements) named by an IRI,
+    (where each graph contains zero or more statements), each named by an IRI,
     as well as a single unnamed graph which plays a special role in RDFAgents (see below).
+</p>
+
+<p>
+
+<p>
+    RDFAgents recognizes only one basic relationship between an agent and a graph: that of <i>assertion</i>.
+
+    The propositional attitude of assertion is inherited from FIPA's <code>inform</code>
+    and related communicative acts (see [<a href="#FIPASC00037J">FIPA SC00037J</a>]) and is identified with the act of
+    publishing an RDF graph on the Semantic Web.
+
+    An agent which asserts a graph thereby asserts the truth of each RDF statement in the graph
+    as a proposition about the world.
 </p>
 
 <h3>DM.1 <a id="default-graph" name="default-graph">The default graph</a></h3>
@@ -363,12 +379,12 @@
 <p>
     For each message sent or received by an agent,
     there is a distinguished, <i>default graph</i> of statements which are subject to the
-    propositional intent of the message.
+    propositional attitude of the message.
 
     Statements included in the default graph of an assertional message
     (see <a href="#messages">below</a>)
     are thereby asserted to be true by the sender of the message,
-    while the propositional attitude of the sender towards any graph apart from the default graph
+    while the attitude of the sender towards any graph apart from the default graph
     is a matter of vocabulary, community convention, and interpretation by the receiver,
     and is not specified by RDFAgents.
 </p>
@@ -378,54 +394,81 @@
     and no two messages share the same default graph.
 
     As a result, the information directly asserted in a message cannot be qualified with additional metadata,
-    and is to be taken as a claim of absolute truth.
+    and is to be interpreted as a claim of absolute truth.
 
-    Provenance metadata may be attached to the information asserted in a previous message by providing an
-    equivalent copy of its default graph and making statements about the copy (see ___).
+    On the other hand, provenance metadata may be attached to the information asserted in a <i>previous</i> message
+    through the mechanism of graph renaming described <a href="#messages">below</a>.
+</p>
+
+<p>
+    TODO: no way to make statements about empty graphs
 </p>
 
 <h3>DM.2 <a id="agents" name="agents">Agents</a></h3>
 
 <p>
     An <i>agent</i> in RDFAgents is not only an actor capable of exchanging messages with other agents,
-    in the sense of FIPA,
-    but also a first-class entity in the Semantic Web descriptions, or RDF Datasets, attached to messages.
+    but also a first-class entity in the Semantic Web descriptions, or RDF Datasets, carried by messages.
 
     Agents are capable of referring to themselves and to each other,
-    and an agent's FIPA identity (which is used for the addressing and routing of messages)
-    is bound to a Semantic Web identity as follows.
+    an agent's FIPA identity (which is used for the addressing and routing of messages)
+    being bound in a one-to-one fashion with its Semantic Web identity.
 </p>
 
 <p>
     An RDFAgents agent must identify itself with a single, globally unique Semantic Web URI,
     and supply this as its FIPA name in each message it sends
-    (see <a href="#fipa-agent-identity">below</a> for details on FIPA identifiers).
+    (see <a href="#fipa-agent-identity">below</a> for details on FIPA agent identifiers).
 
     The agent may also use this URI in self-referential descriptions.
 
     When an agent receives an assertional message from another agent,
-    it binds the FIPA name of the sender of the message to the corresponding URI.
+    it associates the FIPA name of the sender with the corresponding URI.
 </p>
 
-<h3>DM.3 <a id="in-rdf" name="in-rdf">Graphs and agents in RDF</a></h3>
+<h3>DM.3 <a id="metadata" name="metadata">Graph and agent metadata</a></h3>
 
 <p>
-    <i>authority</i>, <i>warrant</i>
+    RDFAgents uses a vocabulary drawn from
+    the Named Graphs [<a href="#NGVOCAB">NG</a>],
+    Friend of a Friend [<a href="#FOAF">FOAF</a>], and
+    Semantic Web Publishing [<a href="#SWP">SWP</a>]
+    ontologies in order to make statements about named graphs and agents.
 
-    ...basic roles: information providers, syndicators, and consumers...
-
-    <code>swp:assertedBy</code>
+    SWP serves to annotate graphs with provenance metadata,
+    capturing "who said what" relationships between graphs and agents,
+    while FOAF serves to associate agents with their contact information,
+    supporting a "word of mouth" style of agent and information discovery.
 </p>
 
 <p>
-    While there are many possible conventions for expressing agent contact information in RDF,
-    only one is required to be supported by an RDFAgents platform,
-    namely, the use of the vocabulary elements
-    <a href="http://xmlns.com/foaf/spec/#term_account"><code>foaf:account</code></a>
-    to associate an agent with a account, and
-    <a href="http://xmlns.com/foaf/spec/#term_accountServiceHomepage"><code>foaf:accountServiceHomepage</code></a> and
-    <a href="http://xmlns.com/foaf/spec/#term_accountName"><code>foaf:accountName</code></a>
-    to associate the account with a service and a service-specific identifier, respectively.
+    Specifically, graphs are represented as instances of
+    <a href="http://www.w3.org/2004/03/trix/rdfg-1/Graph"><code>rdfg:Graph</code></a>,
+    and agents are represented as instances of
+    <a href="http://xmlns.com/foaf/spec/#term_Agent"><code>foaf:Agent</code></a>.
+
+    An asserted graph is also implicitly a <i>warrant</i> or <i>warrant graph</i> in the sense of SWP:
+    it constitutes a relationship between a set of statements and the <i>authority</i> or agent which
+    asserted them.
+
+    This relationship is expressed with the
+    <a href="http://www.w3.org/2004/03/trix/swp-2/assertedBy"><code>swp:assertedBy</code></a> and
+    <a href="http://www.w3.org/2004/03/trix/swp-2/authority"><code>swp:authority</code></a> properties.
+
+    Finally, agents are annotated with FIPA contact information using the
+    <a href="http://xmlns.com/foaf/spec/#term_mbox"><code>foaf:mbox</code></a> property
+    (typically used with <code>mailto</code> URIs, but compatible with other URI schemes
+    such as <code>http</code> and <code>xmpp</code>).
+</p>
+
+<p>
+    Note: several features of the Semantic Web Publishing vocabulary are not required by this specification,
+    although some are suitable for implementation-specific extensions.
+
+    For example, there is no built-in method of digitally signing named graphs,
+    and SWP's notion of the <i>validity period</i> of a warrant is not used:
+    like the RDF/XML documents of the Web of Data,
+    the information asserted in messages has no temporal or contextual qualifications.
 </p>
 
 <h3>DM.4 <a id="messages" name="messages">Assertional messages</a></h3>
@@ -434,12 +477,11 @@
     Although there are several types of messages exchanged by agents (see <a href="#performatives">below</a>),
     only <i>assertional messages</i>
     (i.e. messages with RDF content and which use the FIPA <code>inform-ref</code> performative)
-    are of interest from the point of view of Semantic Web information exchange.
+    carry Semantic Web information.
 </p>
 
 <p>
-    As explained in the preceding sections,
-    each message sent or received by an agent carries an RDF Dataset,
+    Each assertional message sent or received by an agent carries an RDF Dataset,
     or collection of named graphs,
     in which there are two distinguished resources:
 </p>
@@ -458,13 +500,18 @@
     the receiving agent must apply the following transformation to the sender's dataset:
 </p>
 <ol>
-    <li>name the otherwise unnamed default graph with a newly minted IRI
-        and give it the type <code>rdfg:Graph</code></li>
-    <li>give the sender the type <code>foaf:Agent</code>
-        and add a <code>foaf:mbox</code> link from the sender to each of its transport addresses
+    <li>name the otherwise unnamed default graph with a newly minted IRI,
+        give it the type <a href="http://www.w3.org/2004/03/trix/rdfg-1/Graph"><code>rdfg:Graph</code></a>,
+        and add a <a href="http://www.w3.org/2004/03/trix/swp-2/assertedBy"><code>swp:assertedBy</code></a> self-link
+    </li>
+    <li>give the sender the type <a href="http://xmlns.com/foaf/spec/#term_Agent"><code>foaf:Agent</code></a>
+        and add a <a href="http://xmlns.com/foaf/spec/#term_mbox"><code>foaf:mbox</code></a> link
+        from the sender to each of its transport addresses
         (see ___)
     </li>
-    <li>add an <code>swp:assertedBy</code> link from the (previously) default graph to the sender</li>
+    <li>add an <a href="http://www.w3.org/2004/03/trix/swp-2/authority"><code>swp:authority</code></a> link
+        from the (previously) default graph to the sender
+    </li>
     <!--<li>optionally, attach additional metadata to the graph, such as a timestamp or a certificate,
         and/or to the sender, such as contact information
     </li>-->
@@ -486,7 +533,7 @@
 </p>
 
 <p>
-    Example of a sender's dataset:
+    Example of a sender's dataset (of agent <code>ex:rdfnews</code>):
 </p>
 <pre class="data">
 {
@@ -497,7 +544,7 @@
 }
 </pre>
 <p>
-    A corresponding receiver's dataset:
+    A corresponding receiver's dataset (of agent <code>ex:syndicator</code>):
 </p>
 <pre class="data">
 ex:f93bbef965 {
@@ -509,10 +556,40 @@ ex:f93bbef965 {
 
 {
     ex:f93bbef965 a rdfg:Graph ;
-        swp:assertedBy ex:rdfnews .
+        swp:assertedBy ex:f93bbef965 ;
+        swp:authority ex:rdfnews .
 
     ex:rdfnews a foaf:Agent ;
         foaf:mbox &lt;xmpp:rdfnews@example.org&gt; .
+}
+</pre>
+<p>
+    A second-degree receiver's dataset (of agent <code>ex:consumer</code>):
+</p>
+<pre class="data">
+ex:f93bbef965 {
+    ex:article137 a sioc:Post ;
+        dc:title "1st Beijing International Film Festival kicked off on Saturday" ;
+        dc:created "2011-04-25T10:43:35.000Z"^^xsd:dateTime ;
+        sioc:topic &lt;http://dbpedia.org/resource/Beijing&gt; .
+}
+
+ex:4cbf3b9acd {
+    ex:f93bbef965 a rdfg:Graph ;
+        swp:assertedBy ex:f93bbef965 ;
+        swp:authority ex:rdfnews .
+
+    ex:rdfnews a foaf:Agent ;
+        foaf:mbox &lt;xmpp:rdfnews@example.org&gt; .
+}
+
+{
+    ex:4cbf3b9acd a rdfg:Graph ;
+        swp:assertedBy ex:4cbf3b9acd ;
+        swp:authority ex:syndicator .
+
+    ex:syndicator a foaf:Agent ;
+        foaf:mbox &lt;xmpp:syndicator@example.org&gt; .
 }
 </pre>
 
@@ -521,7 +598,7 @@ ex:f93bbef965 {
 <hr/>
 <!-- ................................................................. -->
 
-<h2>P <a id="architecture" name="architecture">Architecture</a></h2>
+<h2>P <a id="messaging" name="messaging">Messaging</a></h2>
 
 <p>
     ...
@@ -582,18 +659,16 @@ ex:f93bbef965 {
     In order to send a message, an agent needs the recipient's name, which in RDFAgents is a URI,
     and one or more transport addresses, which are also URIs.
 
-    When an agent responds to a message in an already-initiated interaction
-    (for example, when answering a query),
-    an agent can simply "reply" to the original message,
-    using the name and transport addresses supplied in the <code>sender</code> field of the that message.
+    An agent can "reply" to a message in an already-initiated interaction
+    by using the name and transport addresses supplied in the <code>sender</code> field of the that message.
 </p>
 
 <p>
-    In order to <i>initiate</i> an interaction,
-    an agent needs to have gotten the identity of the recipient from some other source.
+    In order to <i>initiate</i> an interaction, however,
+    an agent needs to have acquired the identity of the recipient from some other source.
 
-    The simplest way to do this in RDFAgents is to issue a SPARQL query over all accepted statements,
-    e.g. to find the "author" of a previously asserted graph:
+    The most basic way to do this in RDFAgents is to issue a SPARQL query over all accepted statements,
+    e.g. to find the agent responsible for a previously asserted graph:
 </p>
 
 <pre class="data">
@@ -601,7 +676,8 @@ PREFIX foaf: &lt;http://xmlns.com/foaf/0.1/&gt;
 PREFIX swp: &lt;http://www.w3.org/2004/03/trix/swp-2/&gt;
 
 SELECT ?graph ?agent ?address WHERE {
-    ?graph swp:assertedBy ?agent .
+    ?graph swp:assertedBy ?warrant .
+    ?warrant swp:authority ?agent .
     ?agent foaf:mbox ?address .
 }
 </pre>
@@ -613,15 +689,18 @@ SELECT ?graph ?agent ?address WHERE {
 </p>
 
 <p>
-    Agents should supply all of their contact information (transport addresses) in each message sent,
-    so as to give the other party as well as second-hand information consumers
+    Agents should supply all of their contact information, i.e. transport addresses, in each message sent,
+    so as to give the other party (as well as second-hand information consumers)
     as many options as possible for initiating new interactions.
+</p>
 
+<p>
     In addition, the use of FIPA's <code>conversation-id</code> parameter
     is mandatory in RDFAgents:
-    the initiator must coin a globally unique identifier
-    which is to be used in every message in the interaction,
-    permitting any number of concurrent interactions.
+    the initiator of an interaction must coin a globally unique identifier
+    which is to be used in every message in the interaction.
+
+    This allows an agent to have any number of concurrent "conversations" with another agent.
 </p>
 
 <h3>AR.3 <a id="message-content" name="message-content">Message content</a></h3>
@@ -634,7 +713,7 @@ SELECT ?graph ?agent ?address WHERE {
 
     For example, an RDFAgents agent uses <code>fipa-sl0</code>
     to subscribe to a stream of updates about a Semantic Web resource,
-    while the content of the updates it receives is expressed using TriG or N-Quads syntax.
+    while the content of the updates it receives is expressed in TriG, N-Quads, or another RDF format.
 
     In general, RDF content is used only for assertional messages,
     which represent claims about the world, similar to Semantic Web documents.
@@ -649,14 +728,14 @@ SELECT ?graph ?agent ?address WHERE {
 <p>
     RDFAgents' <code>fipa-sl0</code> content is structured according to a domain ontology with the name
     <code>rdfagents</code>
-    (see ___),
-    which introduces vocabulary elements for queries, subscriptions and failure conditions.
+    (see <a href="#domain-language-and-ontology">below</a> for details),
+    which includes vocabulary elements for queries and error explanations.
 
     Throughout this specification, when a message is said to use the <code>rdfagents</code> domain ontology,
     its content is understood to be expressed in the <code>fipa-sl0</code> content language, and vice versa.
 
-    This is indicated in each message through the use of the FIPA <code>language</code> and <code>ontology</code>
-    parameters
+    This must be indicated in each message through the use of the FIPA
+    <code>language</code> and <code>ontology</code> parameters
     (see [<a href="#FIPASC00061G">FIPA SC00061G</a>]).
 </p>
 
@@ -678,6 +757,7 @@ SELECT ?graph ?agent ?address WHERE {
     <li><code>rdf-n3</code>: the language of expressions in the N3-rdf subset
         of Notation3 [<a href="#Notation3">Notation3</a>],
         itself a superset of N-Triples and Turtle.
+        All statements belong to the default graph.
     </li>
     <li><code>rdf-xml</code>: the language of expressions in RDF/XML [<a href="#RDFXML">RDF/XML</a>],
         the most widely supported RDF format.
@@ -721,6 +801,48 @@ SELECT ?graph ?agent ?address WHERE {
     It is up to the requester to validate the response against the expected format.
 </p>
 
+<h4>AR.3.3 <a id="handling-rdf-content" name="handling-rdf-content">Handling RDF content</a></h4>
+
+<p>
+    It is assumed that, for each supported RDF content language,
+    an RDFAgents implementation conserves the meaning of every RDF Dataset expressible in the language
+    (i.e. produces an equivalent RDF Dataset) when mapping it to a serial form and back again.
+
+    However, the various RDF content languages differ in expressiveness with respect to Named Graphs:
+    four of them cannot express named graphs at all,
+    while <code>rdf-nquads</code> cannot express an <i>empty</i> named graph or default graph.
+
+    To compensate for these differences, the following rules must be observed.
+</p>
+
+<p>
+    When mapping a (sender's) RDF Dataset into the RDF content of a message:
+</p>
+<ol>
+    <li>omit empty named graphs.
+        This will in some cases result in the receiver seeing a slightly different sender's dataset than the sender,
+        but one with the same meaning.
+        Note that a default graph is required in every RDF Dataset, and may be empty.
+    </li>
+    <li>if the RDF content language does not support Named Graphs,
+        omit all graphs apart from the default graph.
+        This may result in a significant loss of information,
+        so the use of a Named Graph format is strongly recommended
+        (and necessary in any application requiring the communication of provenance metadata).
+        However, this loss of information will not introduce inconsistencies,
+        thanks to the Open World Assumption.
+    </li>
+</ol>
+<p>
+    When mapping the RDF content of a message into an RDF Dataset:
+</p>
+<ol>
+    <li>if the sender included any empty named graphs in the serialization, omit them</li>
+    <li>if there are no statements which map into the default graph
+        (e.g. in <code>rdf-nquads</code> content in which every statement is a quad),
+        let there be an empty default graph
+    </li>
+</ol>
 <p>
     RDF content is implicitly grounded in the universal representational space of the Semantic Web.
 </p>
@@ -742,19 +864,6 @@ SELECT ?graph ?agent ?address WHERE {
     or to find additional information.
 
 
-</p>
-
-<p>
-    RDFAgents recognizes only one basic relationship between an agent and a graph: that of <i>assertion</i>.
-
-    The propositional attitude of assertion is inherited from FIPA's <code>inform</code>
-    and related communicative acts (see [<a href="#FIPASC00037J">FIPA SC00037J</a>]) and is identified with the act of
-    publishing an RDF graph on the Semantic Web.
-
-    An agent which asserts a named graph thereby asserts the truth of each RDF statement in the graph
-    as a proposition about the world.
-
-    To assert a graph, an agent uses the graph as
 </p>
 
 <hr/>
@@ -857,7 +966,7 @@ SELECT ?graph ?agent ?address WHERE {
 </p>
 
 <p>
-    Example query:
+    Example of a query message:
 </p>
 
 <pre class="data">
@@ -1013,7 +1122,7 @@ SELECT ?graph ?agent ?address WHERE {
 </p>
 
 <p>
-    Example subscription request:
+    Example of a subscription request:
 </p>
 
 <pre class="data">
@@ -1382,7 +1491,7 @@ through the Internet without the assistance of specialized intermediary services
 </p>
 
 <p>
-    Example URI:
+    Example of a URI:
 </p>
 <pre class="data">
 (uri http://example.org/ArthurDent)
@@ -1397,7 +1506,7 @@ through the Internet without the assistance of specialized intermediary services
 </p>
 
 <p>
-    Example literal:
+    Example of a literal:
 </p>
 <pre class="data">
 (literal "42" :datatype (uri http://www.w3.org/2001/XMLSchema#integer))
@@ -1427,7 +1536,7 @@ through the Internet without the assistance of specialized intermediary services
 </p>
 
 <p>
-    Example query:
+    Example of a query:
 </p>
 <pre class="data">
 (describe (uri http://example.org/ArthurDent) :language rdf-trix)
@@ -1436,7 +1545,7 @@ through the Internet without the assistance of specialized intermediary services
 <h3>A.3 <a id="errors" name="errors">Errors</a></h3>
 
 <p>
-    An <i>error</i> may be defined loosely as any event or circumstance which breaks the ordinary flow of
+    An <i>error</i> may be defined loosely as any event or circumstance which departs from the ordinary flow of
     an interaction and requires explanation.
 
     Error explanations in the <code>rdfagents</code> ontology may (and in some cases, must) be used as the content of a
@@ -1457,7 +1566,7 @@ through the Internet without the assistance of specialized intermediary services
         Used when no more specific error type is appropriate, similar to the 400 HTTP response status code.
     </li>
     <li><code>interaction-expired</code>: indicates that the agent no longer considers the present interaction
-        to be in progress (for example, if an implicit subscription lease has timed out)
+        to be in progress (for example, if an implicit subscription lease has timed out).
     </li>
     <li><code>internal-error</code>: indicates an error which the agent attributes to itself.
         Used when no more specific error type is appropriate, similar to the 500 HTTP response status code.
@@ -1494,18 +1603,22 @@ through the Internet without the assistance of specialized intermediary services
 <h3 id="normative-refs">Normative References</h3>
 <dl class="bib">
 
-    <dt><a name="RFC2396" id="RFC2396">[RFC 2396]</a></dt>
-    <dd><cite>
-        <a href="http://www.ietf.org/rfc/rfc2396.txt">Uniform Resource Identifiers (URI): Generic Syntax</a>,
-        T. Berners-Lee, R. Fielding, L. Masinter,
-        Network Working Group Request for Comments,
-        August 1998.
-    </cite></dd>
-
     <dt><a name="FIPASC00001L" id="FIPASC00001L">[FIPA SC00001L]</a></dt>
     <dd><cite>
         <a href="http://www.fipa.org/specs/fipa00001/SC00001L.html">FIPA Abstract Architecture Specification</a>,
         Foundation for Intelligent Physical Agents standard, December 3, 2002.
+    </cite></dd>
+
+    <dt><a name="FIPASC00008I" id="FIPASC00008I">[FIPA SC00008I]</a></dt>
+    <dd><cite>
+        <a href="http://www.fipa.org/specs/fipa00008/SC00008I.html">FIPA SL Content Language Specification</a>,
+        Foundation for Intelligent Physical Agents standard, December 3, 2002.
+    </cite></dd>
+
+    <dt><a name="FIPASC00023K" id="FIPASC00023K">[FIPA SC00023K]</a></dt>
+    <dd><cite>
+        <a href="http://www.fipa.org/specs/fipa00023/SC00023K.html">FIPA Agent Management Specification</a>,
+        Foundation for Intelligent Physical Agents standard, March 18, 2004.
     </cite></dd>
 
     <dt><a name="FIPASC00027H" id="FIPASC00027H">[FIPA SC00027H]</a></dt>
@@ -1521,9 +1634,9 @@ through the Internet without the assistance of specialized intermediary services
         Foundation for Intelligent Physical Agents standard, December 3, 2002.
     </cite></dd>
 
-    <dt><a name="FIPASC00008I" id="FIPASC00008I">[FIPA SC00008I]</a></dt>
+    <dt><a name="FIPASC00037J" id="FIPASC00037J">[FIPA SC00037J]</a></dt>
     <dd><cite>
-        <a href="http://www.fipa.org/specs/fipa00008/SC00008I.html">FIPA SL Content Language Specification</a>,
+        <a href="http://www.fipa.org/specs/fipa00037/SC00037J.html">FIPA Communicative Act Library Specification</a>,
         Foundation for Intelligent Physical Agents standard, December 3, 2002.
     </cite></dd>
 
@@ -1533,44 +1646,13 @@ through the Internet without the assistance of specialized intermediary services
         Foundation for Intelligent Physical Agents standard, December 3, 2002.
     </cite></dd>
 
-    <dt><a name="FIPASC00023K" id="FIPASC00023K">[FIPA SC00023K]</a></dt>
+    <dt><a name="FOAF" id="FOAF">[FOAF]</a></dt>
     <dd><cite>
-        <a href="http://www.fipa.org/specs/fipa00023/SC00023K.html">FIPA Agent Management Specification</a>,
-        Foundation for Intelligent Physical Agents standard, March 18, 2004.
-    </cite></dd>
-
-    <dt><a name="FIPASC00037J" id="FIPASC00037J">[FIPA SC00037J]</a></dt>
-    <dd><cite>
-        <a href="http://www.fipa.org/specs/fipa00037/SC00037J.html">FIPA Communicative Act Library Specification</a>,
-        Foundation for Intelligent Physical Agents standard, December 3, 2002.
-    </cite></dd>
-
-    <dt><a name="RDFCONCEPTS" id="RDFCONCEPTS">[RDF CONCEPTS]</a></dt>
-    <dd><cite>
-        <a href="http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/">Resource Description Framework (RDF): Concepts
-            and Abstract Syntax</a>,
-        G. Klyne, J. J. Carroll, editors,
-        W3C Recommendation,
-        <a href="http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/">latest version</a>
-        10 February 2004.
-    </cite></dd>
-
-    <dt><a name="SPARQL" id="SPARQL">[SPARQL]</a></dt>
-    <dd><cite>
-        <a href="http://www.w3.org/TR/rdf-sparql-query/">SPARQL Query Language for RDF</a>,
-        E. Prud'hommeaux and A. Seaborne, editors,
-        W3C Recommendation,
-        <a href="http://www.w3.org/TR/2008/REC-rdf-sparql-query-20080115/">latest version</a>
-        January 15, 2008.
-    </cite></dd>
-
-    <dt><a name="Notation3" id="Notation3">[Notation3]</a></dt>
-    <dd><cite>
-        <a href="http://www.w3.org/TeamSubmission/n3/">Notation3 (N3): A readable RDF syntax</a>
-        T. Berners-Lee and D. Connolly,
-        W3C Team Submission,
-        <a href="http://www.w3.org/TeamSubmission/2011/SUBM-n3-20110328/">latest version</a>
-        March 28, 2011.
+        <a href="http://xmlns.com/foaf/spec/">FOAF Vocabulary Specification</a>,
+        D. Brickley and L. Miller,
+        namespace document,
+        <a href="http://xmlns.com/foaf/spec/20100809.html">latest version</a>
+        August 9, 2010.
     </cite></dd>
 
     <dt><a name="NQuads" id="NQuads">[N-Quads]</a></dt>
@@ -1588,6 +1670,73 @@ through the Internet without the assistance of specialized intermediary services
         W3C RDF Core WG internal working draft,
         <a href="http://www.w3.org/TR/rdf-testcases/#ntriples">latest version</a>
         February 10, 2004.
+    </cite></dd>
+
+    <dt><a name="NGVOCAB" id="NGVOCAB">[NG]</a></dt>
+    <dd><cite>
+        <a href="http://www.w3.org/2004/03/trix/rdfg-1/">Named Graphs Vocabulary</a>,
+        J. Carroll, C. Bizer, P. Hayes and P. Stickler,
+        RDF Schema vocabulary.
+    </cite></dd>
+
+    <dt><a name="Notation3" id="Notation3">[Notation3]</a></dt>
+    <dd><cite>
+        <a href="http://www.w3.org/TeamSubmission/n3/">Notation3 (N3): A readable RDF syntax</a>
+        T. Berners-Lee and D. Connolly,
+        W3C Team Submission,
+        <a href="http://www.w3.org/TeamSubmission/2011/SUBM-n3-20110328/">latest version</a>
+        March 28, 2011.
+    </cite></dd>
+
+    <dt><a name="RDFCONCEPTS" id="RDFCONCEPTS">[RDF CONCEPTS]</a></dt>
+    <dd><cite>
+        <a href="http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/">Resource Description Framework (RDF): Concepts
+            and Abstract Syntax</a>,
+        G. Klyne, J. J. Carroll, editors,
+        W3C Recommendation,
+        <a href="http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/">latest version</a>
+        10 February 2004.
+    </cite></dd>
+
+    <dt><a name="RDFXML" id="RDFXML">[RDF/XML]</a></dt>
+    <dd><cite>
+        <a href="http://www.w3.org/TR/REC-rdf-syntax/">RDF/XML Syntax Specification (Revised)</a>,
+        D. Beckett, editor,
+        W3C Recommendation,
+        <a href="http://www.w3.org/TR/2004/REC-rdf-syntax-grammar-20040210/">latest version</a>
+        February 10, 2004.
+    </cite></dd>
+
+    <dt><a name="RFC2396" id="RFC2396">[RFC 2396]</a></dt>
+    <dd><cite>
+        <a href="http://www.ietf.org/rfc/rfc2396.txt">Uniform Resource Identifiers (URI): Generic Syntax</a>,
+        T. Berners-Lee, R. Fielding, L. Masinter,
+        Network Working Group Request for Comments,
+        August 1998.
+    </cite></dd>
+
+    <dt><a name="RFC3066" id="RFC3066">[RFC 3066]</a></dt>
+    <dd><cite>
+        <a href="http://www.ietf.org/rfc/rfc3066.txt">Tags for the Identification of Languages</a>,
+        H. Alvestrand,
+        Network Working Group Request for Comments,
+        January 2001.
+    </cite></dd>
+
+    <dt><a name="SPARQL" id="SPARQL">[SPARQL]</a></dt>
+    <dd><cite>
+        <a href="http://www.w3.org/TR/rdf-sparql-query/">SPARQL Query Language for RDF</a>,
+        E. Prud'hommeaux and A. Seaborne, editors,
+        W3C Recommendation,
+        <a href="http://www.w3.org/TR/2008/REC-rdf-sparql-query-20080115/">latest version</a>
+        January 15, 2008.
+    </cite></dd>
+
+    <dt><a name="SWP" id="SWP">[SWP]</a></dt>
+    <dd><cite>
+        <a href="http://www.w3.org/2004/03/trix/swp-2/">Semantic Web Publishing Vocabulary</a>,
+        C. Bizer,
+        RDF Schema vocabulary.
     </cite></dd>
 
     <dt><a name="TriG" id="TriG">[TriG]</a></dt>
@@ -1615,22 +1764,6 @@ through the Internet without the assistance of specialized intermediary services
         March 28, 2011.
     </cite></dd>
 
-    <dt><a name="RDFXML" id="RDFXML">[RDF/XML]</a></dt>
-    <dd><cite>
-        <a href="http://www.w3.org/TR/REC-rdf-syntax/">RDF/XML Syntax Specification (Revised)</a>,
-        D. Beckett, editor,
-        W3C Recommendation,
-        <a href="http://www.w3.org/TR/2004/REC-rdf-syntax-grammar-20040210/">latest version</a>
-        February 10, 2004.
-    </cite></dd>
-
-    <dt><a name="RFC3066" id="RFC3066">[RFC 3066]</a></dt>
-    <dd><cite>
-        <a href="http://www.ietf.org/rfc/rfc3066.txt">Tags for the Identification of Languages</a>,
-        H. Alvestrand,
-        Network Working Group Request for Comments,
-        January 2001.
-    </cite></dd>
 </dl>
 <h3 id="informative-refs">Informative References</h3>
 <dl class="bib">
@@ -1642,11 +1775,10 @@ through the Internet without the assistance of specialized intermediary services
     </cite></dd>
 
     <dt><a name="named-graphs" id="named-graphs">[Named Graphs]</a></dt>
-    <dd><cite><a href="http://test.websemanticsjournal.org/index.php/ps/article/download/76/74">Named graphs</a></cite>,
+    <dd><cite><a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.59.4871&rep=rep1&type=pdf">Named graphs,
+        provenance and trust</a></cite>,
         J. Carroll, C. Bizer, P. Hayes and P. Stickler,
-        in Web Semantics: Science, Services and Agents on the World Wide Web,
-        volume 3, issue 4, December 2005,
-        pages 247-267.
+        in Proceedings of the 14th International Conference on World Wide Web (WWW 2005).
     </dd>
 </dl>
 
