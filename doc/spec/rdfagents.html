@@ -86,8 +86,7 @@ You haven't seen this yet &lt;subtle hand wave&gt;.</span>
 <div>
     <h2 id="status">Status of this Document</h2>
 
-    <p>This specification is part of a research project currently in progress.
-        It is neither a FIPA standard nor a W3C recommendation.
+    <p>This is neither a FIPA standard nor a W3C recommendation.
         Please direct any comments to <a href="mailto:josh&#x40;fortytwo.net">josh&#x40;fortytwo.net</a>.
     </p>
 </div>
@@ -107,70 +106,68 @@ You haven't seen this yet &lt;subtle hand wave&gt;.</span>
                     <ul class="toc">
                         <li class="tocline2">1.2.1 <a href="#doc-namespaces">Namespaces</a></li>
                         <li class="tocline2">1.2.2 <a href="#doc-data-desc">Data Descriptions</a></li>
-                        <li class="tocline2">1.2.3 <a href="#doc-result-desc">Result Descriptions</a></li>
-                        <li class="tocline2">1.2.4 <a href="#docTerminology">Terminology</a></li>
                     </ul>
             </ul>
         </li>
 
-        <li class="tocline1">DM <a href="#datamodel">Data model</a>
+        <li class="tocline1">2 <a href="#datamodel">Data model</a>
             <ul class="toc">
-                <li class="tocline2">DM.1 <a href="#default-graph">The default graph</a></li>
-                <li class="tocline2">DM.2 <a href="#agents">Agents</a></li>
-                <li class="tocline2">DM.3 <a href="#metadata">Graphs and agents in RDF</a></li>
-                <li class="tocline2">DM.4 <a href="#messages">Assertional messages</a></li>
-                <li class="tocline2">DM.5 <a href="#lifting-rules">Lifting rules</a> (informative)</li>
+                <li class="tocline2">2.1 <a href="#default-graph">The default graph</a></li>
+                <li class="tocline2">2.2 <a href="#agents">Agents</a></li>
+                <li class="tocline2">2.3 <a href="#metadata">Graph and agent metadata</a></li>
+                <li class="tocline2">2.4 <a href="#messages">Assertional messages</a></li>
+                <li class="tocline2">2.5 <a href="#lifting-rules">Lifting rules</a> (informative)</li>
             </ul>
         </li>
 
-        <li class="tocline1">AR <a href="#messaging">Messaging</a>
+        <li class="tocline1">3 <a href="#messaging">Messaging</a>
             <ul class="toc">
-                <li class="tocline2">AR.1 <a href="#performatives">Performatives</a></li>
-                <li class="tocline2">AR.2 <a href="#sending-messages">Sending messages</a></li>
-                <li class="tocline2">AR.3 <a href="#message-content">Message content</a>
+                <li class="tocline2">3.1 <a href="#performatives">Performatives</a></li>
+                <li class="tocline2">3.2 <a href="#sending-messages">Sending messages</a></li>
+                <li class="tocline2">3.3 <a href="#message-content">Message content</a>
                     <ul class="toc">
-                        <li class="tocline3">AR.3.2 <a href="#rdf-content-languages">RDF content languages</a></li>
-                        <li class="tocline3">AR.3.3 <a href="#handling-rdf-content">Handling RDF content</a></li>
+                        <li class="tocline3">3.3.1 <a href="#rdf-content-languages">RDF content languages</a></li>
+                        <li class="tocline3">3.3.2 <a href="#handling-rdf-content">Handling RDF content</a></li>
                     </ul>
                 </li>
             </ul>
         </li>
 
-        <li class="tocline1">P <a href="#protocols">Protocols</a>
+        <li class="tocline1">4 <a href="#protocols">Protocols</a>
             <ul class="toc">
-                <li class="tocline2">P.1 <a href="#query">Query</a>
+                <li class="tocline2">4.1 <a href="#query">Query</a>
                     <ul class="toc">
-                        <li class="tocline3">P.1.1 <a href="#describe-query">The <code>describe</code> query form</a>
+                        <li class="tocline3">4.1.1 <a href="#describe-query">The <code>describe</code> query form</a>
                         </li>
-                        <li class="tocline3">P.1.2 <a href="#query-results">Interpretation of query results</a></li>
-                        <li class="tocline3">P.1.3 <a href="#query-exceptions">Exceptions</a></li>
+                        <li class="tocline3">4.1.2 <a href="#query-results">Interpretation of query results</a></li>
+                        <li class="tocline3">4.1.3 <a href="#query-exceptions">Exceptions</a></li>
                     </ul>
                 </li>
-                <li class="tocline2">P.2 <a href="#pubsub">Publish-Subscribe</a>
+                <li class="tocline2">4.2 <a href="#pubsub">Publish-Subscribe</a>
                     <ul class="toc">
-                        <li class="tocline3">P.2.1 <a href="#pubsub-updates">Interpretation of updates</a></li>
-                        <li class="tocline3">P.2.2 <a href="#pubsub-exceptions">Exceptions</a></li>
+                        <li class="tocline3">4.2.1 <a href="#pubsub-updates">Interpretation of updates</a></li>
+                        <li class="tocline3">4.2.2 <a href="#pubsub-exceptions">Exceptions</a></li>
                     </ul>
                 </li>
             </ul>
         </li>
 
-        <li class="tocline1">FC <a href="#fipa-compliance">FIPA compliance</a>
+        <li class="tocline1">5 <a href="#fipa-compliance">FIPA compliance</a>
             <ul class="toc">
-                <li class="tocline2">FC.1 <a href="#fipa-agent-identity">Agent identity</a>
+                <li class="tocline2">5.1 <a href="#fipa-agent-identity">Agent identity</a>
                     <ul class="toc">
-                        <li class="tocline3">FC.1.1 <a href="#fipa-agent-name">Agent name</a></li>
-                        <li class="tocline3">FC.1.2 <a href="#fipa-transport-addresses">Transport addresses</a></li>
-                        <li class="tocline3">FC.1.3 <a href="#fipa-name-resolution">Name resolution</a></li>
+                        <li class="tocline3">5.1.1 <a href="#fipa-agent-name">Agent name</a></li>
+                        <li class="tocline3">5.1.2 <a href="#fipa-transport-addresses">Transport addresses</a></li>
+                        <li class="tocline3">5.1.3 <a href="#fipa-name-resolution">Name resolution</a></li>
                     </ul>
                 </li>
-                <li class="tocline2">FC.2 <a href="#fipa-agent-management">Agent management</a></li>
-                <li class="tocline2">FC.3 <a href="#fipa-service-discovery">Service discovery</a></li>
-                <li class="tocline2">FC.4 <a href="#fipa-message-exchange">Inter-agent message exchange</a></li>
+                <li class="tocline2">5.2 <a href="#fipa-agent-management">Agent management</a></li>
+                <li class="tocline2">5.3 <a href="#fipa-service-discovery">Service discovery</a></li>
+                <li class="tocline2">5.4 <a href="#fipa-message-exchange">Inter-agent message exchange</a></li>
             </ul>
         </li>
 
-        <li class="tocline1">ID <a href="#information-discovery">Information Discovery</a> (informative)
+        <!--<li class="tocline1">ID <a href="#information-discovery">Information Discovery</a> (informative)
             <ul class="toc">
                 <li class="tocline2">ID.1 <a href="#agent-discovery">Agent discovery</a></li>
                 <li class="tocline2">ID.2 <a href="#resource-discovery">Resource discovery</a></li>
@@ -183,7 +180,7 @@ You haven't seen this yet &lt;subtle hand wave&gt;.</span>
                 <li class="tocline2">IO.2 <a href="#data-streams">RDF streams</a></li>
                 <li class="tocline2">IO.3 <a href="#other-agents">Agent-based systems</a></li>
             </ul>
-        </li>
+        </li>-->
 
         <!--<li class="tocline1">IMP <a href="#implementation">Reference implementation</a> (informative)
         </li>-->
@@ -355,7 +352,7 @@ You haven't seen this yet &lt;subtle hand wave&gt;.</span>
 <hr/>
 <!-- ................................................................. -->
 
-<h2>DM <a id="datamodel" name="datamodel">Data model</a></h2>
+<h2>2 <a id="datamodel" name="datamodel">Data model</a></h2>
 
 <p>
     Information sharing in RDFAgents is based on the exchange of RDF
@@ -385,7 +382,7 @@ You haven't seen this yet &lt;subtle hand wave&gt;.</span>
     as a proposition about the world.
 </p>
 
-<h3>DM.1 <a id="default-graph" name="default-graph">The default graph</a></h3>
+<h3>2.1 <a id="default-graph" name="default-graph">The default graph</a></h3>
 
 <p>
     For each message sent or received by an agent,
@@ -411,7 +408,7 @@ You haven't seen this yet &lt;subtle hand wave&gt;.</span>
     through the mechanism of graph renaming described <a href="#messages">below</a>.
 </p>
 
-<h3>DM.2 <a id="agents" name="agents">Agents</a></h3>
+<h3>2.2 <a id="agents" name="agents">Agents</a></h3>
 
 <p>
     An <i>agent</i> in RDFAgents is not only an actor capable of exchanging messages with other agents,
@@ -433,7 +430,7 @@ You haven't seen this yet &lt;subtle hand wave&gt;.</span>
     it associates the FIPA name of the sender with the corresponding URI.
 </p>
 
-<h3>DM.3 <a id="metadata" name="metadata">Graph and agent metadata</a></h3>
+<h3>2.3 <a id="metadata" name="metadata">Graph and agent metadata</a></h3>
 
 <p>
     RDFAgents uses a vocabulary drawn from
@@ -478,7 +475,7 @@ You haven't seen this yet &lt;subtle hand wave&gt;.</span>
     the information asserted in messages has no temporal or contextual qualifications.
 </p>
 
-<h3>DM.4 <a id="messages" name="messages">Assertional messages</a></h3>
+<h3>2.4 <a id="messages" name="messages">Assertional messages</a></h3>
 
 <p>
     Although there are several types of messages exchanged by agents (see <a href="#performatives">below</a>),
@@ -610,12 +607,12 @@ ex:4cbf3b9acd {
 }
 </pre>
 
-<h3>DM.5 <a id="lifting-rules" name="lifting-rules">Lifting rules</a> (informative)</h3>
+<h3>2.5 <a id="lifting-rules" name="lifting-rules">Lifting rules</a> (informative)</h3>
 
 <hr/>
 <!-- ................................................................. -->
 
-<h2>P <a id="messaging" name="messaging">Messaging</a></h2>
+<h2>3 <a id="messaging" name="messaging">Messaging</a></h2>
 
 <p>
     ...
@@ -644,7 +641,7 @@ ex:4cbf3b9acd {
     Note: message encoding is to be specified in the FIPA <i>message envelope</i> which encloses each ACL message.
 </p>
 
-<h3>AR.1 <a id="performatives" name="performatives">Performatives</a></h3>
+<h3>3.1 <a id="performatives" name="performatives">Performatives</a></h3>
 
 <p>
     For each FIPA message there is a distinct <i>performative</i>,
@@ -667,7 +664,7 @@ ex:4cbf3b9acd {
     Of these,
 </p>
 
-<h3>AR.2 <a id="sending-messages" name="sending-messages">Sending messages</a></h3>
+<h3>3.2 <a id="sending-messages" name="sending-messages">Sending messages</a></h3>
 
 <p>
     The ability to send messages to other agents in an asynchronous,
@@ -720,7 +717,7 @@ SELECT ?graph ?agent ?address WHERE {
     This allows an agent to have any number of concurrent "conversations" with another agent.
 </p>
 
-<h3>AR.3 <a id="message-content" name="message-content">Message content</a></h3>
+<h3>3.3 <a id="message-content" name="message-content">Message content</a></h3>
 
 <p>
     The propositional content of a message is expressed in a FIPA <i>content language</i>,
@@ -753,7 +750,7 @@ SELECT ?graph ?agent ?address WHERE {
     (see [<a href="#FIPASC00061G">FIPA SC00061G</a>]).
 </p>
 
-<h4>AR.3.2 <a id="rdf-content-languages" name="rdf-content-languages">RDF content languages</a></h4>
+<h4>3.3.1 <a id="rdf-content-languages" name="rdf-content-languages">RDF content languages</a></h4>
 
 <p>
     RDFAgents defines the following RDF-based content languages:
@@ -815,7 +812,7 @@ SELECT ?graph ?agent ?address WHERE {
     It is up to the requester to validate the response against the expected format.
 </p>
 
-<h4>AR.3.3 <a id="handling-rdf-content" name="handling-rdf-content">Handling RDF content</a></h4>
+<h4>3.3.2 <a id="handling-rdf-content" name="handling-rdf-content">Handling RDF content</a></h4>
 
 <p>
     It is assumed that, for each supported RDF content language,
@@ -861,7 +858,7 @@ SELECT ?graph ?agent ?address WHERE {
 <hr/>
 <!-- ................................................................. -->
 
-<h2>P <a id="protocols" name="protocols">Protocols</a></h2>
+<h2>4 <a id="protocols" name="protocols">Protocols</a></h2>
 
 <p>
     A FIPA agent potentially follows any number of <i>interaction protocols</i>,
@@ -891,7 +888,7 @@ SELECT ?graph ?agent ?address WHERE {
     (this is true, for example, of the HTTP and XMPP protocols).
 </p>
 
-<h3>P.1 <a id="query" name="query">Query</a></h3>
+<h3>4.1 <a id="query" name="query">Query</a></h3>
 
 <p>
     The Query protocol allows an agent to request a single chunk of information from another agent.
@@ -932,7 +929,7 @@ SELECT ?graph ?agent ?address WHERE {
     carrying the dataset in one of the RDF content languages.
 </p>
 
-<h4>P.1.1 <a id="describe-query" name="describe-query">The <code>describe</code> query form</a></h4>
+<h4>4.1.1 <a id="describe-query" name="describe-query">The <code>describe</code> query form</a></h4>
 
 <p>
     This version of RDFAgents supports exactly one type of query, called <code>describe</code>,
@@ -1006,7 +1003,7 @@ SELECT ?graph ?agent ?address WHERE {
 }&quot;)
 </pre>
 
-<h4>P.1.2 <a id="query-results" name="query-results">Interpretation of query results</a></h4>
+<h4>4.1.2 <a id="query-results" name="query-results">Interpretation of query results</a></h4>
 
 <p>
     In RDFAgents, the <code>inform-result</code> message which supplies the query result
@@ -1027,7 +1024,7 @@ SELECT ?graph ?agent ?address WHERE {
     simply by including it in the sender's dataset of another message.
 </p>
 
-<h4>P.1.3 <a id="query-exceptions" name="query-exceptions">Exceptions</a></h4>
+<h4>4.1.3 <a id="query-exceptions" name="query-exceptions">Exceptions</a></h4>
 
 <p>
     At any point in a Query interaction,
@@ -1052,7 +1049,7 @@ SELECT ?graph ?agent ?address WHERE {
     using a <code>cancel</code> message.
 </p>
 
-<h3>P.2 <a id="pubsub" name="pubsub">Publish-Subscribe</a></h3>
+<h3>4.2 <a id="pubsub" name="pubsub">Publish-Subscribe</a></h3>
 
 <p>
     The Publish-Subscribe protocol enables event-driven streams from information providers to information consumers
@@ -1177,7 +1174,7 @@ SELECT ?graph ?agent ?address WHERE {
 }&quot;)
 </pre>
 
-<h4>P.2.1 <a id="pubsub-updates" name="pubsub-updates">Interpretation of updates</a></h4>
+<h4>4.2.1 <a id="pubsub-updates" name="pubsub-updates">Interpretation of updates</a></h4>
 
 <p>
     As in the Query protocol, an <code>inform-result</code> message containing an update
@@ -1195,7 +1192,7 @@ SELECT ?graph ?agent ?address WHERE {
     simply by including it in the sender's dataset of another message.
 </p>
 
-<h4>P.2.2 <a id="pubsub-exceptions" name="pubsub-exceptions">Exceptions</a></h4>
+<h4>4.2.2 <a id="pubsub-exceptions" name="pubsub-exceptions">Exceptions</a></h4>
 
 <p>
     Exceptions to the Publish-Subscribe protocol are analogous to those of the Query protocol
@@ -1209,7 +1206,7 @@ SELECT ?graph ?agent ?address WHERE {
 <hr/>
 <!-- ................................................................. -->
 
-<h2>FC <a id="fipa-compliance" name="fipa-compliance">FIPA compliance</a></h2>
+<h2>5 <a id="fipa-compliance" name="fipa-compliance">FIPA compliance</a></h2>
 
 <p>
     The FIPA Abstract Architecture [<a href="#FIPASC00001L">FIPA SC00001L</a>]
@@ -1241,7 +1238,7 @@ SELECT ?graph ?agent ?address WHERE {
     false...
 </p>
 
-<h3>FC.1 <a id="fipa-agent-identity" name="fipa-agent-identity">Agent identity</a></h3>
+<h3>5.1 <a id="fipa-agent-identity" name="fipa-agent-identity">Agent identity</a></h3>
 
 <p>
     FIPA defines an agent identifier (AID) as an extensible collection of parameter-value pairs comprising a
@@ -1250,7 +1247,7 @@ SELECT ?graph ?agent ?address WHERE {
     zero or more <i>resolvers</i> or name resolution service addresses.
 </p>
 
-<h4>FC.1.1 <a id="fipa-agent-name" name="fipa-agent-name">Agent name</a></h4>
+<h4>5.1.1 <a id="fipa-agent-name" name="fipa-agent-name">Agent name</a></h4>
 
 <p>
     At creation or registration time, a FIPA agent must be given an <i>agent name</i>
@@ -1298,7 +1295,7 @@ SELECT ?graph ?agent ?address WHERE {
     while the sharing of personal contact information is subject to concerns of privacy and spam control.
 </p>
 
-<h4>FC.1.2 <a id="fipa-transport-addresses" name="fipa-transport-addresses">Transport addresses</a></h4>
+<h4>5.1.2 <a id="fipa-transport-addresses" name="fipa-transport-addresses">Transport addresses</a></h4>
 
 <p>
     A transport address is a physical address at which an agent can be contacted.
@@ -1331,7 +1328,7 @@ SELECT ?graph ?agent ?address WHERE {
     The agent platform itself does not require a transport address and does not need to send or receive messages.
 </p>
 
-<h4>FC.1.3 <a id="fipa-name-resolution" name="fipa-name-resolution">Name resolution</a></h4>
+<h4>5.1.3 <a id="fipa-name-resolution" name="fipa-name-resolution">Name resolution</a></h4>
 
 <p>
     RDFAgents does not require the use of FIPA's <i>resolvers</i> parameter of the agent ID (although it does not
@@ -1379,7 +1376,7 @@ SELECT ?graph ?agent ?address WHERE {
 through the Internet without the assistance of specialized intermediary services.-->
 
 
-<h3>FC.2 <a id="fipa-agent-management" name="fipa-agent-management">Agent management</a></h3>
+<h3>5.2 <a id="fipa-agent-management" name="fipa-agent-management">Agent management</a></h3>
 
 <p>
     FIPA Agent Management [<a href="#FIPASC00023K">FIPA SC00023K</a>] provides the normative
@@ -1404,7 +1401,7 @@ through the Internet without the assistance of specialized intermediary services
 </p>
 <!-- a typical usage scenario involves only one agent per platform -->
 
-<h3>FC.2.1 <a id="fipa-service-discovery" name="fipa-service-discovery">Service discovery</a></h3>
+<h3>5.3 <a id="fipa-service-discovery" name="fipa-service-discovery">Service discovery</a></h3>
 
 <p>
     RDFAgents neither requires nor prohibits the use of FIPA's optional <i>directory facilitator</i>,
@@ -1414,7 +1411,7 @@ through the Internet without the assistance of specialized intermediary services
     mechanism of service discovery via RDF descriptions.
 </p>
 
-<h3>FC.4 <a id="fipa-message-exchange" name="fipa-message-exchange">Inter-agent message exchange</a></h3>
+<h3>5.4 <a id="fipa-message-exchange" name="fipa-message-exchange">Inter-agent message exchange</a></h3>
 
 <p>
     All FIPA agents must have access to at least one <i>message transport service</i>,
@@ -1432,34 +1429,6 @@ through the Internet without the assistance of specialized intermediary services
     and differs in intent from RDFAgents,
     which separates the representation of <i>knowledge</i> in RDF with Named Graphs
     from the representation of <i>actions</i> in FIPA's built-in Semantic Language.
-</p>
-
-<hr/>
-<!-- ................................................................. -->
-
-<h2>IO <a id="integration" name="integration">Integration</a> (informative)</h2>
-
-<p>
-    ...
-</p>
-
-<h3>IO.1 <a id="linked-data" name="linked-data">Linked Data</a></h3>
-
-<p>
-    ...
-</p>
-
-<h3>IO.2 <a id="data-streams" name="data-streams">RDF streams</a></h3>
-
-<p>
-    ... C-SPARQL ...
-    ... SPARQLPush ...
-</p>
-
-<h3>IO.3 <a id="other-agents" name="other-agents">Agent-based systems</a></h3>
-
-<p>
-    ...
 </p>
 
 <hr/>
