@@ -11,6 +11,10 @@
 
 <body>
 
+<span style="color: #f00;"><b>Note:</b> this is a pre-release version of the RDFAgents spec.
+You haven't seen this yet &lt;subtle hand wave&gt;.</span>
+<br/><br/>
+
 <div class="head">
     <p>
         <a href="http://fipa.org">
@@ -60,31 +64,31 @@
     <h2 class="notoc"><a id="abstract" name="abstract">Abstract</a></h2>
 
     <p>
-        RDFAgents is a data model and protocol for real-time, peer-to-peer knowledge sharing on the Semantic Web.
-        etc. etc.
-        This specification defines etc. etc.
+        RDFAgents is a messaging protocol for real-time, peer-to-peer knowledge sharing on the Semantic Web.
+
+        It patterned after, and designed to interoperate with Linked Data,
+        but extends Linked Data principles to support a "word of mouth" style of information discovery
+        over a variety of communications protocols.
+
+        It geared towards ubiquitous Semantic Web computing,
+        lightweight devices with variable network connectivity,
+        and highly reactive, event-driven interfaces to Semantic Web services.
     </p>
 
     <p>
-        ...contributes:
+        This specification defines a data model based on RDF and Named Graphs,
+        a messaging infrastructure based on the FIPA agent standards,
+        and a pair of closely related interaction protocols:
+        one for simple queries,
+        and another for subscription-based information streams.
     </p>
-    <ul>
-        <li>a statement-centric data model based on RDF and Named Graphs</li>
-        <li>a FIPA domain ontology for inter-agent information exchange</li>
-        <li>FIPA performatives and protocols for information sharing supporting privacy, provenance, trust, and
-            information accountability in the context of social machines
-        </li>
-        <li>integration of FIPA agent identity and Semantic Web identity</li>
-        <li>conventions for peer-to-peer information discovery</li>
-    </ul>
-
 </div>
 <div>
     <h2 id="status">Status of this Document</h2>
 
-    <p>This draft is part of a research project currently in progress.
+    <p>This specification is part of a research project currently in progress.
         It is neither a FIPA standard nor a W3C recommendation.
-        Comments are welcome and may be sent to <a href="mailto:josh&#x40;fortytwo.net">josh&#x40;fortytwo.net</a>.
+        Please direct any comments to <a href="mailto:josh&#x40;fortytwo.net">josh&#x40;fortytwo.net</a>.
     </p>
 </div>
 
@@ -125,18 +129,10 @@
                 <li class="tocline2">AR.2 <a href="#sending-messages">Sending messages</a></li>
                 <li class="tocline2">AR.3 <a href="#message-content">Message content</a>
                     <ul class="toc">
-                        <li class="tocline3">AR.3.1 <a href="#domain-ontology">RDFAgents domain ontology</a></li>
                         <li class="tocline3">AR.3.2 <a href="#rdf-content-languages">RDF content languages</a></li>
                         <li class="tocline3">AR.3.3 <a href="#handling-rdf-content">Handling RDF content</a></li>
                     </ul>
                 </li>
-            </ul>
-        </li>
-
-        <li class="tocline1">AP <a href="#attribution-and-provenance">Attribution and provenance</a>
-            <ul class="toc">
-                <li class="tocline2">AP.1 <a href="#named-graphs">Named Graphs</a></li>
-                <li class="tocline2">AP.3 <a href="#quotation">Quotation and syndication</a></li>
             </ul>
         </li>
 
@@ -189,8 +185,8 @@
             </ul>
         </li>
 
-        <li class="tocline1">IMP <a href="#implementation">Reference implementation</a> (informative)
-        </li>
+        <!--<li class="tocline1">IMP <a href="#implementation">Reference implementation</a> (informative)
+        </li>-->
     </ul>
 </div>
 
@@ -216,6 +212,8 @@
 
 <p>
     ... both Linked Data and RDF streams ...
+
+    for an overview of Linked Data, see [<a href="#linked-data-book">Linked Data</a>].
 </p>
 
 <p>
@@ -271,6 +269,19 @@
 
     ...why FIPA?...
 </p>
+
+<p>
+    ...contributes:
+</p>
+<ul>
+    <li>a statement-centric data model based on RDF and Named Graphs</li>
+    <li>a FIPA domain ontology for inter-agent information exchange</li>
+    <li>FIPA performatives and protocols for information sharing supporting privacy, provenance, trust, and
+        information accountability in the context of social machines
+    </li>
+    <li>integration of FIPA agent identity and Semantic Web identity</li>
+    <li>conventions for peer-to-peer information discovery</li>
+</ul>
 
 <h3>1.1 <a id="doc-outline" name="doc-outline">Document Outline</a></h3>
 
@@ -354,7 +365,7 @@
     see [<a href="#RDFCONCEPTS">RDF CONCEPTS</a>]
     and [<a href="#named-graphs">Named Graphs</a>], respectively.
 
-    More specifically, RDFAgents agents exchange collections of named graphs,
+    More specifically, agents exchange collections of named graphs,
     or <i>RDF Datasets</i>, which are defined as in SPARQL [<a href="#SPARQL">SPARQL</a>]:
     an RDF Dataset consists of zero or more graphs
     (where each graph contains zero or more statements), each named by an IRI,
@@ -400,10 +411,6 @@
     through the mechanism of graph renaming described <a href="#messages">below</a>.
 </p>
 
-<p>
-    TODO: no way to make statements about empty graphs
-</p>
-
 <h3>DM.2 <a id="agents" name="agents">Agents</a></h3>
 
 <p>
@@ -416,7 +423,7 @@
 </p>
 
 <p>
-    An RDFAgents agent must identify itself with a single, globally unique Semantic Web URI,
+    An agent in RDFAgents must identify itself with a single, globally unique Semantic Web URI,
     and supply this as its FIPA name in each message it sends
     (see <a href="#fipa-agent-identity">below</a> for details on FIPA agent identifiers).
 
@@ -507,7 +514,7 @@
     <li>give the sender the type <a href="http://xmlns.com/foaf/spec/#term_Agent"><code>foaf:Agent</code></a>
         and add a <a href="http://xmlns.com/foaf/spec/#term_mbox"><code>foaf:mbox</code></a> link
         from the sender to each of its transport addresses
-        (see ___)
+        (see <a href="#fipa-transport-addresses">below</a>)
     </li>
     <li>add an <a href="http://www.w3.org/2004/03/trix/swp-2/authority"><code>swp:authority</code></a> link
         from the (previously) default graph to the sender
@@ -527,9 +534,19 @@
     is independent of the communicative act itself,
     yet captures the informational content and assertional intent of the message.
 
+    It also serves to record a provenance trail which gives due credit to information providers
+    and supports information consumers in deciding which information to accept
+    and in discovering further information.
+
     In a real-world application, the receiver's dataset can be added to a local RDF store for query answering,
     or sent verbatim to other agents,
     who may either trust to its accuracy or verify it by contacting the sender directly.
+</p>
+
+<p>
+    Graph quotation serves a dual purpose in RDFAgents: it gives due credit to information providers,
+    while also giving information consumers a means of contacting providers in order to verify syndicated information
+    or to find additional information.
 </p>
 
 <p>
@@ -711,7 +728,7 @@ SELECT ?graph ?agent ?address WHERE {
     or one of a number of special-purpose languages based on RDF document formats,
     depending on role of the message within a particular protocol.
 
-    For example, an RDFAgents agent uses <code>fipa-sl0</code>
+    For example, an agent uses <code>fipa-sl0</code>
     to subscribe to a stream of updates about a Semantic Web resource,
     while the content of the updates it receives is expressed in TriG, N-Quads, or another RDF format.
 
@@ -723,13 +740,10 @@ SELECT ?graph ?agent ?address WHERE {
     use <code>fipa-sl0</code>.<sup><a href="#note1_note">[1]</a></sup><a name="note1_ref">&nbsp;</a>
 </p>
 
-<h4>AR.3.1 <a id="domain-ontology" name="domain-ontology">RDFAgents domain ontology</a></h4>
-
 <p>
-    RDFAgents' <code>fipa-sl0</code> content is structured according to a domain ontology with the name
-    <code>rdfagents</code>
-    (see <a href="#domain-language-and-ontology">below</a> for details),
-    which includes vocabulary elements for queries and error explanations.
+    FIPA SL content in RDFAgents is explicitly grounded in a domain ontology with the name
+    <code>rdfagents</code> (see <a href="#domain-language-and-ontology">below</a> for details),
+    while RDF content is implicitly grounded in the universal representational space of the Semantic Web.
 
     Throughout this specification, when a message is said to use the <code>rdfagents</code> domain ontology,
     its content is understood to be expressed in the <code>fipa-sl0</code> content language, and vice versa.
@@ -812,7 +826,7 @@ SELECT ?graph ?agent ?address WHERE {
     four of them cannot express named graphs at all,
     while <code>rdf-nquads</code> cannot express an <i>empty</i> named graph or default graph.
 
-    To compensate for these differences, the following rules must be observed.
+    The following rules compensate for these differences.
 </p>
 
 <p>
@@ -821,15 +835,15 @@ SELECT ?graph ?agent ?address WHERE {
 <ol>
     <li>omit empty named graphs.
         This will in some cases result in the receiver seeing a slightly different sender's dataset than the sender,
-        but one with the same meaning.
-        Note that a default graph is required in every RDF Dataset, and may be empty.
+        but one whose meaning is the same, insofar as metadata about an empty graph is useless.
+        Note that a default graph is required in every RDF Dataset, even if it is empty.
     </li>
     <li>if the RDF content language does not support Named Graphs,
         omit all graphs apart from the default graph.
         This may result in a significant loss of information,
         so the use of a Named Graph format is strongly recommended
-        (and necessary in any application requiring the communication of provenance metadata).
-        However, this loss of information will not introduce inconsistencies,
+        (and also necessary in any application requiring the communication of provenance metadata).
+        However, this step will not invalidate the remaining information,
         thanks to the Open World Assumption.
     </li>
 </ol>
@@ -843,28 +857,6 @@ SELECT ?graph ?agent ?address WHERE {
         let there be an empty default graph
     </li>
 </ol>
-<p>
-    RDF content is implicitly grounded in the universal representational space of the Semantic Web.
-</p>
-
-<hr/>
-<!-- ................................................................. -->
-
-<h2>AP <a id="attribution-and-provenance" name="attribution-and-provenance">Attribution and provenance</a></h2>
-
-<p>
-    ...
-</p>
-
-<h3>AP.3 <a id="quotation" name="quotation">Quotation and syndication</a></h3>
-
-<p>
-    Graph quotation serves a dual purpose in RDFAgents: it gives due credit to information providers,
-    while also giving information consumers a means of contacting providers in order to verify syndicated information
-    or to find additional information.
-
-
-</p>
 
 <hr/>
 <!-- ................................................................. -->
@@ -959,7 +951,8 @@ SELECT ?graph ?agent ?address WHERE {
     by indicating the corresponding RDF content language with the <code>language</code> parameter.
 
     When this is the case, the server must either return results in the specified language,
-    or raise an exception if that language is not supported.
+    or raise an exception in the form of a <code>failure</code> message if that language is not supported
+    (see <a href="#query-exceptions">below</a> for more information on exceptions).
 
     Otherwise, the query result may use any one of the built-in RDF content languages listed
     <a href="#rdf-content-languages">above</a>.
@@ -1291,7 +1284,7 @@ SELECT ?graph ?agent ?address WHERE {
 <p>
     The Semantic Web URI of a <a href="http://xmlns.com/foaf/spec/#term_Person"><code>foaf:Person</code></a>
     may be used as an agent name
-    only if the RDFAgents agent and the person thus identified are identical for the purpose of information exchange.
+    only if the agent and the person thus identified are identical for the purpose of information exchange.
 
     This may be the case, for example, when an agent acting as a personal assistant is given the task of sending and
     receiving
@@ -1300,7 +1293,7 @@ SELECT ?graph ?agent ?address WHERE {
     Note, however, that any discoverable contact information of the person which is not valid contact information of the
     agent may lead to unwanted and ineffectual messages from other agents.
 
-    Additionally, it should be kept in mind that the contact information of an RDFAgents agent is shared freely,
+    Additionally, it should be kept in mind that the contact information of an agent is shared freely in RDFAgents,
     much as URIs are shared in Linked Data,
     while the sharing of personal contact information is subject to concerns of privacy and spam control.
 </p>
@@ -1316,7 +1309,7 @@ SELECT ?graph ?agent ?address WHERE {
 
     Since an agent's transport addresses are used as authoritative contact information in RDF
     descriptions of the agent (see <a href="#messages">above</a>),
-    it is necessary for an RDFAgents agent's transport address(es) to be compatible with such use.
+    it is necessary for an agent's transport address(es) to be compatible with such use.
 </p>
 
 <p>
@@ -1324,7 +1317,7 @@ SELECT ?graph ?agent ?address WHERE {
 
     It is thereby also a URI, and can be used as a resource name in RDF descriptions of the agent.
 
-    The the scheme part of the transport addresses of an RDFAgents agent should correspond
+    The the scheme part of the transport addresses of an agent in RDFAgents should correspond
     to a well-known messaging protocol (e.g. <code>http</code> or <code>xmpp</code>),
     and their scheme-specific part should serve to identify the recipient in an unambiguous, global fashion.
 </p>
@@ -1772,6 +1765,14 @@ through the Internet without the assistance of specialized intermediary services
         <a href="http://www.fipa.org/specs/fipa00011/XC00011B.html">FIPA RDF Content Language Specification</a>,
         Foundation for Intelligent Physical Agents experimental specification,
         August 10, 2001.
+    </cite></dd>
+
+    <dt><a name="linked-data-book" id="linked-data-book"></a>[Linked Data]</dt>
+    <dd><cite>
+        <a href="http://linkeddatabook.com/editions/1.0/">Linked Data: Evolving the Web into a Global Data Space</a>
+        (1st edition),
+        T. Heath and C. Bizer,
+        Synthesis Lectures on the Semantic Web: Theory and Technology, 1:1, 1-136, Morgan & Claypool, 2011.
     </cite></dd>
 
     <dt><a name="named-graphs" id="named-graphs">[Named Graphs]</a></dt>
