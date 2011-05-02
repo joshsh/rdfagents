@@ -29,17 +29,17 @@ You haven't really seen this yet &lt;subtle hand gesture&gt;.</span>
 
     <h1 id="main">RDFAgents</h1>
 
-    <h2><a name="w3c-doctype" id="w3c-doctype">Draft 1 May 2011</a></h2>
+    <h2><a name="w3c-doctype" id="w3c-doctype">Draft 3 May 2011</a></h2>
     <dl>
         <dt>This version:</dt>
         <dd>
-            <a href="http://fortytwo.net/2011/rdfagents/spec-20110501">http://fortytwo.net/2011/rdfagents/spec-20110501</a>
+            <a href="http://fortytwo.net/2011/rdfagents/spec-20110503">http://fortytwo.net/2011/rdfagents/spec-20110503</a>
         </dd>
         <dt>Latest version:</dt>
         <dd><a href="http://fortytwo.net/2011/rdfagents/spec">http://fortytwo.net/2011/rdfagents/spec</a></dd>
         <dt>Previous version:</dt>
         <dd>
-            <a href="http://fortytwo.net/2011/rdfagents/spec-20110501">http://fortytwo.net/2011/rdfagents/spec-20110501</a>
+            <a href="http://fortytwo.net/2011/rdfagents/spec-20110503">http://fortytwo.net/2011/rdfagents/spec-20110503</a>
         </dd>
         <dt>Editor:</dt>
         <dd rel="author foaf:maker dc:creator" rev="made foaf:made">
@@ -86,7 +86,8 @@ You haven't really seen this yet &lt;subtle hand gesture&gt;.</span>
 <div>
     <h2 id="status">Status of this Document</h2>
 
-    <p>This is neither a FIPA standard nor a W3C recommendation.
+    <p>
+        This is neither a FIPA standard nor a W3C recommendation.
         Please direct any comments to <a href="mailto:josh&#x40;fortytwo.net">josh&#x40;fortytwo.net</a>.
     </p>
 </div>
@@ -102,12 +103,13 @@ You haven't really seen this yet &lt;subtle hand gesture&gt;.</span>
         <li class="tocline1">1 <a href="#introduction">Introduction</a> (informative)
             <ul class="toc">
                 <li class="tocline2">1.1 <a href="#doc-outline">Document Outline</a>
-                <li class="tocline2">1.2 <a href="#doc-conventions">Document Conventions</a>
-                    <ul class="toc">
-                        <li class="tocline2">1.2.1 <a href="#doc-namespaces">Namespaces</a></li>
-                        <li class="tocline2">1.2.2 <a href="#doc-data-desc">Data Descriptions</a></li>
-                        <li class="tocline2">1.2.3 <a href="#doc-fipa-acl">FIPA ACL</a></li>
-                    </ul>
+                <li class="tocline2">1.2 <a href="#doc-conventions">Document Conventions</a></li>
+                <!--  <ul class="toc">
+                 <li class="tocline2">1.2.1 <a href="#doc-namespaces">Namespaces</a></li>
+                 <li class="tocline2">1.2.2 <a href="#doc-data-desc">RDF Datasets</a></li>
+                 <li class="tocline2">1.2.3 <a href="#doc-sparql">SPARQL queries</a></li>
+                 <li class="tocline2">1.2.4 <a href="#doc-fipa-acl">FIPA ACL</a></li>
+             </ul>   -->
             </ul>
         </li>
 
@@ -116,8 +118,7 @@ You haven't really seen this yet &lt;subtle hand gesture&gt;.</span>
                 <li class="tocline2">2.1 <a href="#default-graph">The default graph</a></li>
                 <li class="tocline2">2.2 <a href="#agents">Agents</a></li>
                 <li class="tocline2">2.3 <a href="#metadata">Graph and agent metadata</a></li>
-                <li class="tocline2">2.4 <a href="#messages">Assertional messages</a></li>
-                <li class="tocline2">2.5 <a href="#lifting-rules">Lifting rules</a> (informative)</li>
+                <li class="tocline2">2.4 <a href="#asserting-graphs">Asserting graphs</a></li>
             </ul>
         </li>
 
@@ -168,6 +169,14 @@ You haven't really seen this yet &lt;subtle hand gesture&gt;.</span>
             </ul>
         </li>
 
+        <li class="tocline1">6 <a href="#usage-patterns">Usage patterns</a> (informative)
+            <ul class="toc">
+                <li class="tocline2">6.1 <a href="#provenance-trail">The provenance trail</a></li>
+                <li class="tocline2">6.2 <a href="#information-discovery">Information discovery</a></li>
+                <li class="tocline2">6.3 <a href="#rdf-streams">RDF streams</a></li>
+            </ul>
+        </li>
+
         <!--<li class="tocline1">ID <a href="#information-discovery">Information Discovery</a> (informative)
             <ul class="toc">
                 <li class="tocline2">ID.1 <a href="#agent-discovery">Agent discovery</a></li>
@@ -209,10 +218,11 @@ You haven't really seen this yet &lt;subtle hand gesture&gt;.</span>
 
 <p>
     As the Semantic Web becomes a ubiquitous resource,
-    it has to adapt to computing platforms which are less and less like a rack-mounted Web server,
+    it has to adapt to computing platforms which are less and less like a rack-mounted Web server
     and to user interfaces which are less and less like a Web browser.
 
-    For mobile devices such as phones and navigation systems with intermittent network connectivity,
+    For mobile devices with intermittent network connectivity,
+    such as phones and navigation systems,
     message-oriented protocols are often more appropriate than the request-response model of HTTP.
 
     For applications which demand particularly low latency,
@@ -220,12 +230,12 @@ You haven't really seen this yet &lt;subtle hand gesture&gt;.</span>
     connection-oriented protocols are best.
 
     Moreover, it is increasingly important for end-user applications to "talk back" to the Semantic Web,
-    reversing the usual client and server roles in order to broadcast information to one's peers.
+    reversing the usual client and server roles in order to broadcast information to their peers.
 </p>
 
 <p>
     All of the above are motivation for a message-oriented, transport-agnostic, and peer-to-peer style of
-    information sharing reminiscent of agent-based systems.
+    information sharing in the manner of agent-based systems.
 
     In order to integrate these environments with Semantic Web data and services,
     this specification introduces a high-level messaging protocol
@@ -240,54 +250,9 @@ You haven't really seen this yet &lt;subtle hand gesture&gt;.</span>
     while preserving a provenance trail.
 
     It takes a minimalist approach to information discovery and retrieval which adapts
-    the "follow your nose" mechanism of <a href="http://linkeddatabook.com/editions/1.0/">Linked Data</a>
+    the "follow your nose" mechanism of <a href="http://linkeddata.org/">Linked Data</a>
     to a peer-to-peer, conversational mode of interaction supporting <i>RDF data streams</i> as well
     as one-shot requests for resource descriptions.
-</p>
-
-
-<p>
-    RDFAgents adheres closely to Linked Data best practices
-    while replacing the request-response, client-server model of HTTP
-    with the asynchronous and peer-to-peer model of FIPA agents.
-
-    In analogy to the four <a href="http://www.w3.org/DesignIssues/LinkedData.html">Linked Data principles</a>,
-    the basic principles of RDFAgents are as follows:
-</p>
-<ol>
-    <li>Use Semantic Web <i>URIs</i> as names for things</li>
-    <li>Use FIPA <i>agent identifiers</i> as names for <i>agents</i></li>
-    <li>When someone <i>asks</i> an agent about a URI, provide useful information using the standards (RDF, SPARQL)</li>
-    <li>Include <i>links</i> to other URIs and <i>quotations</i> from other agents, so that they can discover related
-        information.
-    </li>
-</ol>
-<p>
-    For example, if an information consumer asks the agent named <code>info@example.org</code>
-    about the thing named <code>http://dbpedia.org/resource/Beijing</code>,
-    that agent should respond with an RDF description of the city of Beijing.
-
-    The description should include links to related things such as China, Beijing universities and historical landmarks,
-    and
-    so on.
-
-    Furthermore, if the description includes information from multiple sources,
-    such as a news service <code>news@foo.com</code> or a weather service <code>weather@bar.net</code>,
-    this should be indicated through the use of Named Graphs and graph quotation.
-    This gives the user the option of contacting those sources directly
-    in order to get more detailed or more up-to-date news or weather information about Beijing.
-</p>
-
-<p>
-    ...[paraphrase] Foundations of Intelligent Physical Agents (FIPA) is a standards organization
-    whose goal is to make available specifications that maximize interoperability across agent-based systems.
-    ...
-
-    ... FIPA agents communicate by exchanging messages which represent speech acts,
-    and which are encoded in an agent communication language...
-
-    ...FIPA includes basic security in the form of message validity (reliable delivery) and message encryption...
-
 </p>
 
 <h3>1.1 <a id="doc-outline" name="doc-outline">Document Outline</a></h3>
@@ -299,9 +264,9 @@ You haven't really seen this yet &lt;subtle hand gesture&gt;.</span>
 
 <p>
     <a href="#datamodel">Section 2</a> (Data model) of the specification
-    defines the combination of data model components (RDF, Named Graphs, RDF Datasets,
+    describes the various constituents of the data model (RDF, Named Graphs, RDF Datasets,
     and the special <i>performative</i> role of the default graph of a dataset)
-    which underlie information sharing in RDFAgents.
+    which underlies information sharing in RDFAgents.
 
     The representation of agents and graphs in RDF are described,
     along with a convention for sending and receiving information to and from other agents while recording
@@ -316,7 +281,7 @@ You haven't really seen this yet &lt;subtle hand gesture&gt;.</span>
 
 <p>
     <a href="#protocols">Section 4</a> (Interaction protocols) describes the Query and Publish-Subscribe
-    interaction protocols which define the flow of a conversation between two agents exchanging information in
+    interaction protocols which guide the flow of a conversation between two agents exchanging information in
     a request-response pattern or a subscription-based pattern, respectively.
 
     Exceptions to the normal interaction flow are also specified.
@@ -329,6 +294,14 @@ You haven't really seen this yet &lt;subtle hand gesture&gt;.</span>
     Mandatory features of FIPA which are minimized in RDFAgents,
     as well as optional features which are omitted,
     are described along with additional constraints imposed by RDFAgents above and beyond FIPA.
+</p>
+
+<p>
+    <a href="#usage-patterns">Section 6</a> (Usage patterns) discusses several practical aspects of agent-based
+    knowledge sharing,
+    including reasoning over the RDFAgents provenance trail,
+    publishing data in a way analogous to Linked Data on the Web,
+    and integrating agents with other RDF streaming technologies.
 </p>
 
 <p>
@@ -347,10 +320,9 @@ You haven't really seen this yet &lt;subtle hand gesture&gt;.</span>
 
 <h3>1.2 <a id="doc-conventions" name="doc-conventions">Document Conventions</a></h3>
 
-<h4>1.2.1 <a id="doc-namespaces" name="doc-namespaces">Namespaces</a></h4>
+<h4>Namespaces</h4>
 
-<p>In this document, examples assume the following namespace prefix bindings unless
-    otherwise stated:</p>
+<p>In this document, all examples assume the following namespace prefix bindings:</p>
 
 <div>
     <table>
@@ -389,13 +361,12 @@ You haven't really seen this yet &lt;subtle hand gesture&gt;.</span>
     </table>
 </div>
 
-<h4>1.2.2 <a id="doc-data-desc" name="doc-data-desc">RDF Datasets</a></h4>
+<h4>RDF Datasets</h4>
 
 <p>
-    All examples of RDF Datasets (i.e. collections of Named Graphs) in this document use the
-    <a class="inform" href="http://www4.wiwiss.fu-berlin.de/bizer/TriG/">TriG</a>
-    RDF serialization format,
-    a particularly human-readable plain text format supporting Named Graphs.
+    All examples of RDF Datasets (i.e. collections of Named Graphs) in this document use
+    <a class="inform" href="http://www4.wiwiss.fu-berlin.de/bizer/TriG/">TriG</a>,
+    a particularly human-readable RDF serialization format supporting Named Graphs.
 
     For simplicity, namespace declarations are omitted from the beginning of each example;
     all namespaces are assumed to be defined as <a href="#doc-namespaces">above</a>.
@@ -408,7 +379,7 @@ You haven't really seen this yet &lt;subtle hand gesture&gt;.</span>
 }
 </pre>
 <p>
-    is an abbreviation of:
+    is an abbreviation for:
 </p>
 <pre class="data">
 @prefix ex: &lt;http://example.org/&gt; .
@@ -419,12 +390,23 @@ You haven't really seen this yet &lt;subtle hand gesture&gt;.</span>
 }
 </pre>
 
-<h4>1.2.3 <a id="doc-fipa-acl" name="doc-fipa-acl">FIPA ACL</a></h4>
+<h4>SPARQL queries</h4>
+
+<p>
+    Examples of SPARQL queries (see [<a href="#SPARQL">SPARQL</a>]) also omit namespace declarations. For example:
+</p>
+<pre class="data">
+SELECT ?agent ?address WHERE {
+    ?agent foaf:mbox ?address .
+}
+</pre>
+
+<h4>FIPA ACL</h4>
 
 <p>
     Examples of messages and content expressions in FIPA's Agent Communication Language
     are given using their string representation (see [<a href="#FIPASC00070I">FIPA SC00070I</a>]).
-    They resemble nested lists in Lisp.
+    They resemble nested lists as in Lisp.
 
     For example, here is a simple ACL message:
 </p>
@@ -449,14 +431,15 @@ You haven't really seen this yet &lt;subtle hand gesture&gt;.</span>
     data and Named Graph metadata.
 
     For details on the RDF and the Named Graph data models,
-    see [<a href="#RDFCONCEPTS">RDF CONCEPTS</a>]
+    see [<a href="#RDFCONCEPTS">RDF Concepts</a>]
     and [<a href="#named-graphs">Named Graphs</a>], respectively.
 
     More specifically, agents exchange collections of named graphs,
-    or <i>RDF Datasets</i>, which are defined as in SPARQL [<a href="#SPARQL">SPARQL</a>]:
-    an RDF Dataset consists of zero or more graphs
+    or <i>RDF Datasets</i>, which are defined as in SPARQL (see [<a href="#SPARQL">SPARQL</a>]).
+
+    An RDF Dataset consists of zero or more graphs
     (where each graph contains zero or more statements), each named by an IRI,
-    as well as a single unnamed graph which plays a special role in RDFAgents (see below).
+    as well as a single unnamed graph which plays a special role in RDFAgents.
 </p>
 
 <p>
@@ -465,7 +448,7 @@ You haven't really seen this yet &lt;subtle hand gesture&gt;.</span>
     RDFAgents recognizes only one basic relationship between an agent and a graph: that of <i>assertion</i>.
 
     The propositional attitude of assertion is inherited from FIPA's <code>inform</code>
-    and related communicative acts (see [<a href="#FIPASC00037J">FIPA SC00037J</a>]) and is identified with the act of
+    and related communicative acts (see [<a href="#FIPASC00037J">FIPA SC00037J</a>]) and is equated with the act of
     publishing an RDF graph on the Semantic Web.
 
     An agent which asserts a graph thereby asserts the truth of each RDF statement in the graph
@@ -565,7 +548,7 @@ You haven't really seen this yet &lt;subtle hand gesture&gt;.</span>
     the information asserted in messages has no temporal or contextual qualifications.
 </p>
 
-<h3>2.4 <a id="messages" name="messages">Assertional messages</a></h3>
+<h3>2.4 <a id="asserting-graphs" name="asserting-graphs">Asserting graphs</a></h3>
 
 <p>
     Although there are several types of messages exchanged by agents (see <a href="#performatives">below</a>),
@@ -622,18 +605,12 @@ You haven't really seen this yet &lt;subtle hand gesture&gt;.</span>
     yet captures the informational content and assertional intent of the message.
 
     It also serves to record a provenance trail which gives due credit to information providers
-    and supports information consumers in deciding which information to accept
+    while supporting information consumers in deciding which information to accept
     and in discovering further information.
 
     In a real-world application, the receiver's dataset can be added to a local RDF store for query answering,
     or sent verbatim to other agents,
     who may either trust to its accuracy or verify it by contacting the sender directly.
-</p>
-
-<p>
-    Graph quotation serves a dual purpose in RDFAgents: it gives due credit to information providers,
-    while also giving information consumers a means of contacting providers in order to verify syndicated information
-    or to find additional information.
 </p>
 
 <p>
@@ -697,39 +674,49 @@ ex:4cbf3b9acd {
 }
 </pre>
 
-<h3>2.5 <a id="lifting-rules" name="lifting-rules">Lifting rules</a> (informative)</h3>
-
 <hr/>
 <!-- ................................................................. -->
 
 <h2>3 <a id="messaging" name="messaging">Messaging</a></h2>
 
 <p>
-    ...
+    RDFAgents is layered on top of the FIPA standards,
+    which specify most aspects of agent management and message exchange.
 
-    An RDFAgents <i>platform</i> is a
+    Most of this section will discuss only those aspects of agent messaging which are unique to RDFAgents
+    (for more information on FIPA, see <a href="#fipa-compliance">Section 5</a>).
+</p>
 
-    An <i>agent</i> is
+<p>
+    Briefly, agents operate within an RDFAgents <i>platform</i>,
+    which is a concrete implementation of this specification and the underlying FIPA standards.
 
+    Generally, an RDFAgents implementation is expected to be realized as a lightweight extension of
+    an existing FIPA implementation such as <a href="http://jade.tilab.com/">JADE</a>
+    or <a href="http://sourceforge.net/projects/fipa-os/">FIPA-OS</a>.
+
+    An <i>agent</i> is an entity capable of sending and receiving messages,
+    possibly obeying one or more well-defined <i>interaction protocols</i>.
 
     Agents communicate by exchanging <i>messages</i> which represent speech acts,
     and which are encoded in an <i>agent communication language</i>.
+</p>
 
+<p>
     RDFAgents uses the least expressive subset, <code>fipa-sl0</code>,
     of FIPA's standard Semantic Language [<a href="#FIPASC00008I">FIPA SC00008I</a>]
     for agent communication.
 
-    The Semantic Language uses S-expression syntax,
+    The Semantic Language is based on S-expression syntax,
     as in the Lisp family of programming languages,
     and permits the expression of <i>propositions</i> or statements of truth,
     <i>actions</i> representing speech acts,
-    and <i>references</i> to objects in the domain of discourse
-    (which in RDFAgents is a domain of queries and subscriptions).
+    and <i>references</i> to objects in the domain of discourse.
 </p>
 
-<p>
+<!--<p>
     Note: message encoding is to be specified in the FIPA <i>message envelope</i> which encloses each ACL message.
-</p>
+</p>-->
 
 <h3>3.1 <a id="performatives" name="performatives">Performatives</a></h3>
 
@@ -751,7 +738,8 @@ ex:4cbf3b9acd {
     <li><code>subscribe</code>: requests a subscription to a stream of updates</li>
 </ul>
 <p>
-    Of these,
+    Of these, only <code>inform-ref</code>, <code>query-ref</code>, and <code>subscribe</code>
+    deal with Semantic Web content (queries and datasets).
 </p>
 
 <h3>3.2 <a id="sending-messages" name="sending-messages">Sending messages</a></h3>
@@ -771,14 +759,11 @@ ex:4cbf3b9acd {
     In order to <i>initiate</i> an interaction, however,
     an agent needs to have acquired the identity of the recipient from some other source.
 
-    The most basic way to do this in RDFAgents is to issue a SPARQL query over all accepted statements,
-    e.g. to find the agent responsible for a previously asserted graph:
+    The most basic way to do so in RDFAgents is to issue a SPARQL query over all accepted statements,
+    e.g. in order to contact the authority responsible for a previously asserted graph:
 </p>
 
 <pre class="data">
-PREFIX foaf: &lt;http://xmlns.com/foaf/0.1/&gt;
-PREFIX swp: &lt;http://www.w3.org/2004/03/trix/swp-2/&gt;
-
 SELECT ?graph ?agent ?address WHERE {
     ?graph swp:assertedBy ?warrant .
     ?warrant swp:authority ?agent .
@@ -799,12 +784,11 @@ SELECT ?graph ?agent ?address WHERE {
 </p>
 
 <p>
-    In addition, the use of FIPA's <code>conversation-id</code> parameter
-    is mandatory in RDFAgents:
-    the initiator of an interaction must coin a globally unique identifier
-    which is to be used in every message in the interaction.
+    Note that the initiator of an interaction in either the Query or Publish-Subscribe protocol
+    must supply a globally unique <code>conversation-id</code> for use in every message in the interaction.
 
-    This allows an agent to have any number of concurrent "conversations" with another agent.
+    This allows an agent to carry on any number of concurrent conversations with other agents,
+    and to make good use of records of past conversations.
 </p>
 
 <h3>3.3 <a id="message-content" name="message-content">Message content</a></h3>
@@ -813,18 +797,18 @@ SELECT ?graph ?agent ?address WHERE {
     The propositional content of a message is expressed in a FIPA <i>content language</i>,
     for which RDFAgents uses either <code>fipa-sl0</code>
     or one of a number of special-purpose languages based on RDF document formats,
-    depending on role of the message within a particular protocol.
+    depending on role played by the message.
 
     For example, an agent uses <code>fipa-sl0</code>
     to subscribe to a stream of updates about a Semantic Web resource,
     while the content of the updates it receives is expressed in TriG, N-Quads, or another RDF format.
 
     In general, RDF content is used only for assertional messages,
-    which represent claims about the world, similar to Semantic Web documents.
+    which represent claims about the world.
 
     Messages for all other purposes
     (for example, posing a query, requesting or confirming a subscription)
-    use <code>fipa-sl0</code>.<sup><a href="#note1_note">[1]</a></sup><a name="note1_ref">&nbsp;</a>
+    use <code>fipa-sl0</code> or nothing at all.
 </p>
 
 <p>
@@ -832,7 +816,7 @@ SELECT ?graph ?agent ?address WHERE {
     <code>rdfagents</code> (see <a href="#domain-language-and-ontology">below</a> for details),
     while RDF content is implicitly grounded in the universal representational space of the Semantic Web.
 
-    Throughout this specification, when a message is said to use the <code>rdfagents</code> domain ontology,
+    Throughout this specification, when a message is required to use the <code>rdfagents</code> domain ontology,
     its content is understood to be expressed in the <code>fipa-sl0</code> content language, and vice versa.
 
     This must be indicated in each message through the use of the FIPA
@@ -883,12 +867,13 @@ SELECT ?graph ?agent ?address WHERE {
 <p>
     An RDFAgents platform must support at least one of the above languages,
     where supporting a language means that the platform can both parse and write the full range of valid
-    expressions in the language to and from the corresponding RDF Datasets.
+    expressions in the language (to and from the corresponding RDF Datasets).
 
     However, an RDFAgents platform need not support all of the above languages.
 
     For the sake of interoperability,
-    it is recommended that the <code>rdf-xml</code> and <code>rdf-nquads</code> languages be supported.
+    it is recommended that the <code>rdf-xml</code> and <code>rdf-nquads</code> languages be supported,
+    at a minimum.
 </p>
 
 <p>
@@ -899,7 +884,7 @@ SELECT ?graph ?agent ?address WHERE {
     may choose to respond with a content expression in the
     <a href="http://docs.api.talis.com/platform-api/output-types/rdf-json">Talis RDF/JSON format</a>.
 
-    It is up to the requester to validate the response against the expected format.
+    However, it is up to the requester to validate the response against the expected format.
 </p>
 
 <h4>3.3.2 <a id="handling-rdf-content" name="handling-rdf-content">Handling RDF content</a></h4>
@@ -1524,6 +1509,165 @@ through the Internet without the assistance of specialized intermediary services
 <hr/>
 <!-- ................................................................. -->
 
+<h2>6. <a id="usage-patterns" name="usage-patterns">Usage patterns</a> (informative)</h2>
+
+<h3>6.1 <a id="provenance-trail" name="provenance-trail">The provenance trail</a></h3>
+
+<p>
+    This specification defines the rules by which provenance information is to be recorded
+    throughout the process of information exchange,
+    creating an "A says that B says X" pattern of nested assertions.
+
+    It does not specify how an agent should reason upon the provenance trail in order to decide
+    which information to accept as true.
+
+    There are many possible options, and this choice is best left to the application.
+
+    However, some straightforward strategies are illustrated in the following.
+    Given an RDF Dataset such as the receiver's dataset of a message,
+    the problem is to either accept or reject each graph in the dataset,
+    merging the accepted graphs into a single graph of accepted statements.
+</p>
+
+<p>
+    <b>Strategy #1: It's All Good</b>.
+
+    Accept all graphs.
+
+    This is the simplest possible strategy (apart from "None of it is good", that is),
+    and the one used by most applications which consume heterogeneous Semantic Web data.
+
+    In the absence of a clear set of conventions for expressing provenance metadata,
+    all you can do is to accept information arbitrarily and hope for the best.
+
+    This strategy ignores not only the variable trustworthiness of information providers,
+    but also the fact that graphs may be provided (or <i>quoted</i>) in a message without necessarily
+    being <i>asserted</i>.
+
+    Nonetheless, it may be good enough for some applications,
+    such as data browsers and crawlers.
+</p>
+
+<p>
+    <b>Strategy #2: The Grapevine</b>.
+
+    This strategy is a little more sophisticated than the above,
+    in that it only accepts graphs which have been explicitly asserted...
+    or which have been asserted to have been asserted, and so on.
+
+    It proceeds as follows.
+</p>
+<ol>
+    <li>Accept the default graph. This is assumed to be a set of statements asserted by the agent itself.</li>
+    <li>Find all <code>swp:assertedBy</code> statements in the graph(s) just accepted.</li>
+    <li>For the subject of each of those statements,
+        if it is the name of graph which has not yet been accepted, accept that graph.
+    </li>
+    <li>Repeat at (2) as long as new graphs have been accepted.</li>
+</ol>
+
+<p>
+    <b>Strategy #3: Authoritative Sources</b>.
+    To add an element of trust to the above, we can select not only asserted graphs,
+    but also the agents who asserted them. I.e. use this SPARQL query for step (2):
+</p>
+<pre class="data">
+SELECT ?graph ?agent WHERE {
+    ?graph swp:assertedBy ?warrant .
+    ?warrant swp:authority ?agent .
+}
+</pre>
+
+<p>
+    ...and apply some criterion to <code>agent</code>
+    (perhaps looking it up in a global whitelist of trusted peers or blacklist of known spammers)
+    and rejecting <code>graph</code> if the agent fails to meet the criterion.
+
+    In application-specific contexts, additional metadata relating to belief and trust could be used
+    to support a Web of Trust among communicating agents.
+</p>
+
+<h3>6.2 <a id="information-discovery" name="information-discovery">Information discovery</a></h3>
+
+<p>
+    The <code>describe</code> query operation supported by RDFAgents is purposely similar to
+    the convention of dereferencing HTTP URIs on the Web of Data.
+
+    This is a very simple way of interacting with Semantic Web datasets which has proven effective.
+
+    However,
+</p>
+
+<p class="quote">
+    The Semantic Web isn't just about putting data on the web.
+    It is about making links, so that a person or machine can explore the web of data.
+    With linked data, when you have some of it, you can find other, related, data.
+</p>
+
+<p>
+    In order to support such "follow your nose" information discovery,
+    agents need a set of best practices for publishing data in a way which facilitates exploration.
+
+    By analogy to the four
+    <a href="http://www.w3.org/DesignIssues/LinkedData.html">Linked Data principles</a>,
+    the following are suggested:
+</p>
+<ol>
+    <li>Use Semantic Web <i>URIs</i> as names for things, including agents.</li>
+    <li>Provide contact information for agents, so that other agents can request information from them.</li>
+    <li>When an agent issues a query for a URI, provide useful information using the standards (RDF, FIPA).</li>
+    <li>Include <i>links</i> to other URIs and also <i>attribute</i> information to primary sources,
+        so that people can discover related information.
+    </li>
+</ol>
+<p>
+    For example, if an information consumer asks the agent named <code>http://example.org/info</code>
+    about the thing named <code>http://dbpedia.org/resource/Beijing</code>,
+    that agent should respond with an RDF Dataset about the city of Beijing.
+
+    The description should include links to related things such as China,
+    Beijing universities and historical landmarks, and so on.
+
+    Furthermore, if the agent has information about Beijing from other sources,
+    such as a news service <code>http://foo.com/news</code> or a weather service <code>http://bar.net/weather</code>,
+    some of that information should be included in the dataset along with appropriate attribution metadata.
+
+    This gives the information consumer the option of contacting those sources directly
+    in order to get more detailed or more up-to-date news or weather information about Beijing.
+</p>
+
+<p>
+    For more information on Linked Data, see the [<a href="#linked-data-book">Linked Data Book</a>].
+</p>
+
+<h3>6.3 <a id="rdf-streams" name="rdf-streams">RDF streams</a></h3>
+
+<p>
+    The similarity of the Query and Publish-Subscribe interaction protocols makes them nearly interchangeable
+    from the point of view of the information consumer.
+
+    An agent which ordinarily requests a single RDF description of a resource,
+    in the manner of a Linked Data client,
+    can just as well subscribe to an open-ended stream of information about that resource,
+    responding to <i>updates</i> in the same way that it responds to <i>query results</i>.
+
+    For an agent, the gap between "static" and "real-time" Semantic Web data is a small one.
+</p>
+
+<p>
+    On the data provider's side,
+    there are a number of existing tools for generating Semantic Web data streams,
+    among them <a href="http://wiki.larkc.eu/c-sparql">C-SPARQL</a>,
+    a SPARQL dialect for continuous queries,
+    <a href="http://code.google.com/p/sparqlpush/">SPARQLPuSH</a>,
+    which transports RDF updates over HTTP,
+    and services such as <a href="http://twitlogic.fortytwo.net">TwitLogic</a>
+    which produce RDF streams based on specific real-time data sources.
+</p>
+
+<hr/>
+<!-- ................................................................. -->
+
 <h2>A. <a id="domain-language-and-ontology" name="domain-language-and-ontology">Domain language and ontology</a></h2>
 
 <p>
@@ -1539,7 +1683,7 @@ through the Internet without the assistance of specialized intermediary services
     A <a href="http://www.w3.org/TR/rdf-concepts/#dfn-URI-reference">URI reference</a>
     is constructed with the <code>uri</code> function,
     whose only parameter expects a Unicode string encoded as described in
-    [<a href="#RDFCONCEPTS">RDF CONCEPTS</a>].
+    [<a href="#RDFCONCEPTS">RDF Concepts</a>].
 </p>
 
 <p>
@@ -1552,7 +1696,7 @@ through the Internet without the assistance of specialized intermediary services
     <a href="http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal">Literals</a>
     are constructed with the function <code>literal</code> with one required parameter,
     which expects the label of the literal as the quoted form of a string encoded in Unicode Normal Form C
-    (as described in [<a href="#RDFCONCEPTS">RDF CONCEPTS</a>]),
+    (as described in [<a href="#RDFCONCEPTS">RDF Concepts</a>]),
     and optional named parameters <code>language</code> and <code>datatype</code>,
     which expect a language tag (see [<a href="#RFC3066">RFC 3066</a>]) and a URI reference, respectively.
 </p>
@@ -1740,7 +1884,7 @@ through the Internet without the assistance of specialized intermediary services
         March 28, 2011.
     </cite></dd>
 
-    <dt><a name="RDFCONCEPTS" id="RDFCONCEPTS">[RDF CONCEPTS]</a></dt>
+    <dt><a name="RDFCONCEPTS" id="RDFCONCEPTS">[RDF Concepts]</a></dt>
     <dd><cite>
         <a href="http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/">Resource Description Framework (RDF): Concepts
             and Abstract Syntax</a>,
@@ -1834,7 +1978,7 @@ through the Internet without the assistance of specialized intermediary services
         August 10, 2001.
     </cite></dd>
 
-    <dt><a name="linked-data-book" id="linked-data-book"></a>[Linked Data]</dt>
+    <dt><a name="linked-data-book" id="linked-data-book"></a>[Linked Data Book]</dt>
     <dd><cite>
         <a href="http://linkeddatabook.com/editions/1.0/">Linked Data: Evolving the Web into a Global Data Space</a>
         (1st edition),
@@ -1853,21 +1997,21 @@ through the Internet without the assistance of specialized intermediary services
 <hr/>
 <!-- ................................................................. -->
 
-<h2>C. <a id="acknowledgements" name="acknowledgements">Acknowledgements</a></h2>
+<h2>C. <a id="acknowledgements" name="acknowledgements">Acknowledgements</a> (informative)</h2>
 
 <p>
-    This work has been supported by the <a href="http://tw.rpi.edu/">Tetherless World Constellation</a>
-    as well as the Chinese Academy of Sciences <a href="http://english.ia.cas.cn/au/bi/">Institute of Automation</a>.
-
-    ...Franz Inc...
+    This work has been supported in various stages by the
+    <a href="http://tw.rpi.edu/">Tetherless World Constellation</a> and <a href="http://franz.com/">Franz Inc.</a>
+    in collaboration with the
+    <a href="http://english.ia.cas.cn/au/bi/">Institute of Automation</a>, Chinese Academy of Sciences.
 </p>
 
-<p>
+<!--<p>
     Contributors of feedback, code, etc.
-</p>
+</p>-->
 
 <p>
-    The format of this document draws upon
+    The format of this document is based on
     <a href="http://www.w3.org/">W3C</a> and
     <a href="http://buzzword.org.uk/">Buzzword.org.uk</a> specifications.
 </p>
@@ -1875,9 +2019,9 @@ through the Internet without the assistance of specialized intermediary services
 <hr/>
 <!-- ................................................................. -->
 
-<h2>D. <a id="changes" name="changes">Changes</a></h2>
+<h2>D. <a id="changes" name="changes">Changes</a> (informative)</h2>
 <dl>
-    <dt>1 May 2011</dt>
+    <dt>3 May 2011</dt>
     <dd>Initial version</dd>
 </dl>
 
