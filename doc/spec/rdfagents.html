@@ -1082,7 +1082,7 @@ SELECT ?graph ?agent ?address WHERE {
 
 <p>
     In RDFAgents, the <code>inform-result</code> message which supplies the query result
-    has the same propositional status as an <code>inform</code> message
+    has the same propositional force as an <code>inform</code> message
     (see [<a href="#FIPASC00037J">FIPA SC00037J</a>]):
     it is an assertion by the server that the content of the message is a true proposition,
     or in RDFAgents terms,
@@ -1253,7 +1253,7 @@ SELECT ?graph ?agent ?address WHERE {
 
 <p>
     As in the Query protocol, an <code>inform-result</code> message containing an update
-    has the same propositional status as an <code>inform</code> message:
+    has the same propositional force as an <code>inform</code> message:
     it is an assertion by the publisher, to all potential information consumers,
     that all statements in the default graph of the sender's dataset are true.
 
@@ -1304,14 +1304,14 @@ SELECT ?graph ?agent ?address WHERE {
     The following subsections will describe additional constraints imposed by RDFAgents with respect to FIPA compliance,
     and discuss optional elements of FIPA which are not required by RDFAgents.
 
-    All elements of FIPA not discussed in the following are to be considered independent of RDFAgents,
+    All elements of FIPA not discussed in this specification are to be considered independent of RDFAgents,
     and may be realized in implementation-specific ways.
 </p>
 
-<p>
+<!--<p>
     ...RDFAgents does not deal with intention, only with the communication of propositions which are absolutely true or
     false...
-</p>
+</p>-->
 
 <h3>5.1 <a id="fipa-agent-identity" name="fipa-agent-identity">Agent identity</a></h3>
 
@@ -1348,9 +1348,9 @@ SELECT ?graph ?agent ?address WHERE {
 </p>
 
 <p>
-    The resource denoted by the agent name is implicitly an instance of
+    The resource denoted by the agent name is explicitly typed an instance of
     <a href="http://xmlns.com/foaf/spec/#term_Agent"><code>foaf:Agent</code></a>
-    within RDFAgents and should be explicitly declared as such in RDF descriptions mentioning the agent.
+    in the receiver's dataset of every assertional message it sends.
 </p>
 
 <p>
@@ -1381,7 +1381,7 @@ SELECT ?graph ?agent ?address WHERE {
 
     Since an agent's transport addresses are used as authoritative contact information in RDF
     descriptions of the agent (see <a href="#messages">above</a>),
-    it is necessary for an agent's transport address(es) to be compatible with such use.
+    they are required to be compatible with such use.
 </p>
 
 <p>
@@ -1391,7 +1391,7 @@ SELECT ?graph ?agent ?address WHERE {
 
     The the scheme part of the transport addresses of an agent in RDFAgents should correspond
     to a well-known messaging protocol (e.g. <code>http</code> or <code>xmpp</code>),
-    and their scheme-specific part should serve to identify the recipient in an unambiguous, global fashion.
+    and its scheme-specific part should serve to identify the recipient in an unambiguous, global fashion.
 </p>
 
 <p>
@@ -1400,31 +1400,24 @@ SELECT ?graph ?agent ?address WHERE {
     For compatibility with <a href="http://xmlns.com/foaf/spec/#term_mbox"><code>foaf:mbox</code></a>
     (an inverse functional property), no two agents may share the same transport address(es).
 
-    The agent platform itself does not require a transport address and does not need to send or receive messages.
+    The agent platform itself does not require a transport address, as it does not need to send or receive messages.
 </p>
 
 <h4>5.1.3 <a id="fipa-name-resolution" name="fipa-name-resolution">Name resolution</a></h4>
 
 <p>
-    RDFAgents does not require the use of FIPA's <i>resolvers</i> parameter of the agent ID (although it does not
+    RDFAgents does not mandate the use of FIPA's <i>resolvers</i> parameter of the agent ID (although it does not
     probihit its use).
 
     No specialized lookup services are provided for agent names.
 
     Instead, transport addresses are inferred from the RDF descriptions of agents.
 
-    An RDFAgents platform must be capable of reading RDF descriptions and applying at least the following rule for the
-    mapping of contact information to transport addresses.
-</p>
+    An RDFAgents platform must be capable of extracting contact information from RDF Datasets according to the
+    RDFAgents vocabulary (see the example SPARQL query <a href="#sending-messages">above</a>)
+    and mapping the URIs thus discovered to transport addresses.
 
-<p>
-    Every RDFAgents platform must include a list of transport-level services with which it is capable of interoperating.
-
-    This list may contain as few as a single service, identified by the URL of its home page.
-
-    Each service must be bound to a transport protocol such that,
-    when the platform is provided with the service-specific identifier of a recipient,
-    it can send a message to that recipient using the associated protocol.
+    Any invalid transport addresses are simply to be discarded.
 </p>
 
 <p>
@@ -1434,22 +1427,17 @@ SELECT ?graph ?agent ?address WHERE {
 
 <pre class="data">
 {
-    ex:rdfnews a foaf:Agent ;
-        foaf:name &quot;RDF News Agent&quot; ;
-        foaf:account [
-            a foaf:OnlineAccount ;
-            foaf:accountServiceHomepage &lt;http://www.jabber.org/&gt; ;
-            foaf:accountName &quot;rdfnews@example.org&quot; ] .
+    ex:rdfnews foaf:mbox &lt;xmpp:rdfnews@example.org&gt; .
 }</pre>
 
 <p>
-    In order to make use of this information, an RDFAgents platform must interoperate with the service
-    identified by <code>http://www.jabber.org/</code>,
-    which involves knowing that it is an XMPP-based service, supporting the XMPP protocol, and having a Jabber account.
+    In order to make use of this information,
+    an RDFAgents platform must recognize the <code>xmpp</code> URI scheme as corresponding to the XMPP protocol,
+    and include a XMPP message transport service with access to an XMPP network (preferably, the global XMPP network).
 </p>
+
 <!--Furthermore, the combination of a name and a transport address is expected to be sufficient for the delivery of a message
 through the Internet without the assistance of specialized intermediary services.-->
-
 
 <h3>5.2 <a id="fipa-agent-management" name="fipa-agent-management">Agent management</a></h3>
 
@@ -1499,8 +1487,8 @@ through the Internet without the assistance of specialized intermediary services
 </p>
 
 <p>
-    RDFAgents does not make use of FIPA's experimental RDF content language [<a href="#FIPAXC00011B">FIPA XC00011B</a>],
-    which predates Named Graphs (using RDF reification for statement metadata)
+    RDFAgents does not make use of FIPA's experimental RDF content language [<a href="#FIPAXC00011B">FIPA XC00011B</a>].
+    This language predates Named Graphs (using RDF reification for statement metadata)
     and differs in intent from RDFAgents,
     which separates the representation of <i>knowledge</i> in RDF with Named Graphs
     from the representation of <i>actions</i> in FIPA's built-in Semantic Language.
@@ -1514,7 +1502,7 @@ through the Internet without the assistance of specialized intermediary services
 <h3>6.1 <a id="provenance-trail" name="provenance-trail">The provenance trail</a></h3>
 
 <p>
-    This specification defines the rules by which provenance information is to be recorded
+    RDFAgents defines the rules by which provenance information is to be recorded
     throughout the process of information exchange,
     creating an "A says that B says X" pattern of nested assertions.
 
@@ -1525,7 +1513,7 @@ through the Internet without the assistance of specialized intermediary services
 
     However, some straightforward strategies are illustrated in the following.
     Given an RDF Dataset such as the receiver's dataset of a message,
-    the problem is to either accept or reject each graph in the dataset,
+    the problem in each case is to either accept or reject each graph in the dataset,
     merging the accepted graphs into a single graph of accepted statements.
 </p>
 
@@ -1534,7 +1522,7 @@ through the Internet without the assistance of specialized intermediary services
 
     Accept all graphs.
 
-    This is the simplest possible strategy (apart from "None of it is good", that is),
+    This is the simplest possible strategy (apart from "None of it is Good", that is),
     and the one used by most applications which consume heterogeneous Semantic Web data.
 
     In the absence of a clear set of conventions for expressing provenance metadata,
@@ -1569,7 +1557,7 @@ through the Internet without the assistance of specialized intermediary services
 <p>
     <b>Strategy #3: Authoritative Sources</b>.
     To add an element of trust to the above, we can select not only asserted graphs,
-    but also the agents who asserted them. I.e. use this SPARQL query for step (2):
+    but also the agents who asserted them, e.g. by using this SPARQL query in step (2):
 </p>
 <pre class="data">
 SELECT ?graph ?agent WHERE {
@@ -1579,11 +1567,11 @@ SELECT ?graph ?agent WHERE {
 </pre>
 
 <p>
-    ...and apply some criterion to <code>agent</code>
+    For each result, we apply some criterion to <code>agent</code>
     (perhaps looking it up in a global whitelist of trusted peers or blacklist of known spammers)
     and rejecting <code>graph</code> if the agent fails to meet the criterion.
 
-    In application-specific contexts, additional metadata relating to belief and trust could be used
+    In more application-specific contexts, additional metadata relating to belief and trust might be used
     to support a Web of Trust among communicating agents.
 </p>
 
@@ -1593,7 +1581,7 @@ SELECT ?graph ?agent WHERE {
     The <code>describe</code> query operation supported by RDFAgents is purposely similar to
     the convention of dereferencing HTTP URIs on the Web of Data.
 
-    This is a very simple way of interacting with Semantic Web datasets which has proven effective.
+    This is a particularly simple way of interacting with Semantic Web datasets which has nonetheless proven effective.
 
     However,
 </p>
