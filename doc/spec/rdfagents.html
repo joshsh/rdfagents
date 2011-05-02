@@ -5,14 +5,14 @@
 
 <head>
     <meta name="RCS-Id" content="$Id: Overview.html,v 1.14 2008/01/16 15:38:27 eric Exp $"/>
-    <title>RDFAgents: real-time Semantic Web messaging (draft)</title>
+    <title>RDFAgents: real-time messaging for the Semantic Web (draft)</title>
     <link rel="stylesheet" type="text/css" href="fortytwo-draft.css"/>
 </head>
 
 <body>
 
 <span style="color: #f00;"><b>Note:</b> this is a pre-release version of the RDFAgents spec.
-You haven't seen this yet &lt;subtle hand wave&gt;.</span>
+You haven't really seen this yet &lt;subtle hand gesture&gt;.</span>
 <br/><br/>
 
 <div class="head">
@@ -70,7 +70,7 @@ You haven't seen this yet &lt;subtle hand wave&gt;.</span>
         but extends Linked Data principles to support a "word of mouth" style of information discovery
         over a variety of communications protocols.
 
-        It geared towards ubiquitous Semantic Web computing,
+        It is geared towards ubiquitous Semantic Web computing,
         lightweight devices with variable network connectivity,
         and highly reactive, event-driven interfaces to Semantic Web services.
     </p>
@@ -79,7 +79,7 @@ You haven't seen this yet &lt;subtle hand wave&gt;.</span>
         This specification defines a data model based on RDF and Named Graphs,
         a messaging infrastructure based on the FIPA agent standards,
         and a pair of closely related interaction protocols:
-        one for simple queries,
+        one for request-response queries,
         and another for subscription-based information streams.
     </p>
 </div>
@@ -106,6 +106,7 @@ You haven't seen this yet &lt;subtle hand wave&gt;.</span>
                     <ul class="toc">
                         <li class="tocline2">1.2.1 <a href="#doc-namespaces">Namespaces</a></li>
                         <li class="tocline2">1.2.2 <a href="#doc-data-desc">Data Descriptions</a></li>
+                        <li class="tocline2">1.2.3 <a href="#doc-fipa-acl">FIPA ACL</a></li>
                     </ul>
             </ul>
         </li>
@@ -133,7 +134,7 @@ You haven't seen this yet &lt;subtle hand wave&gt;.</span>
             </ul>
         </li>
 
-        <li class="tocline1">4 <a href="#protocols">Protocols</a>
+        <li class="tocline1">4 <a href="#protocols">Interaction protocols</a>
             <ul class="toc">
                 <li class="tocline2">4.1 <a href="#query">Query</a>
                     <ul class="toc">
@@ -197,9 +198,8 @@ You haven't seen this yet &lt;subtle hand wave&gt;.</span>
         </ul>
     </li>
     <li class="tocline2">B <a href="#references">References</a></li>
-    <li class="tocline2">C <a href="#notes">Notes</a> (informative)</li>
-    <li class="tocline2">D <a href="#acknowledgements">Acknowledgements</a> (informative)</li>
-    <li class="tocline2">E <a href="#changes">Changes</a> (informative)</li>
+    <li class="tocline2">C <a href="#acknowledgements">Acknowledgements</a> (informative)</li>
+    <li class="tocline2">D <a href="#changes">Changes</a> (informative)</li>
 </ul>
 
 <hr/>
@@ -208,10 +208,43 @@ You haven't seen this yet &lt;subtle hand wave&gt;.</span>
 <h2>1 <a id="introduction" name="introduction">Introduction</a> (informative)</h2>
 
 <p>
-    ... both Linked Data and RDF streams ...
+    As the Semantic Web becomes a ubiquitous resource,
+    it has to adapt to computing platforms which are less and less like a rack-mounted Web server,
+    and to user interfaces which are less and less like a Web browser.
 
-    for an overview of Linked Data, see [<a href="#linked-data-book">Linked Data</a>].
+    For mobile devices such as phones and navigation systems with intermittent network connectivity,
+    message-oriented protocols are often more appropriate than the request-response model of HTTP.
+
+    For applications which demand particularly low latency,
+    such as real-time multimedia,
+    connection-oriented protocols are best.
+
+    Moreover, it is increasingly important for end-user applications to "talk back" to the Semantic Web,
+    reversing the usual client and server roles in order to broadcast information to one's peers.
 </p>
+
+<p>
+    All of the above are motivation for a message-oriented, transport-agnostic, and peer-to-peer style of
+    information sharing reminiscent of agent-based systems.
+
+    In order to integrate these environments with Semantic Web data and services,
+    this specification introduces a high-level messaging protocol
+    which combines current Semantic Web best practices with <a href="http://fipa.org/">FIPA</a>
+    (Foundation for Intelligent Physical Agents),
+    the most widely adopted body of standards for agent-based systems.
+</p>
+
+<p>
+    Among the many variations on the theme of <i>Semantic Web agents</i>,
+    this protocol focuses specifically on transmitting declarative Semantic Web information from point A to point B
+    while preserving a provenance trail.
+
+    It takes a minimalist approach to information discovery and retrieval which adapts
+    the "follow your nose" mechanism of <a href="http://linkeddatabook.com/editions/1.0/">Linked Data</a>
+    to a peer-to-peer, conversational mode of interaction supporting <i>RDF data streams</i> as well
+    as one-shot requests for resource descriptions.
+</p>
+
 
 <p>
     RDFAgents adheres closely to Linked Data best practices
@@ -250,48 +283,70 @@ You haven't seen this yet &lt;subtle hand wave&gt;.</span>
     whose goal is to make available specifications that maximize interoperability across agent-based systems.
     ...
 
-    ...RDFAgents inherits FIPA...
-
     ... FIPA agents communicate by exchanging messages which represent speech acts,
     and which are encoded in an agent communication language...
 
     ...FIPA includes basic security in the form of message validity (reliable delivery) and message encryption...
 
-    ...transport-agnosticism...
-
-    ...In reading this document, it will be helpful to have some familiarity with the FIPA and RDF specifications,
-    as well as the conventions and best practices of the Semantic Web and Linked Data.
-
-    ...for more information on FIPA, see...
-
-    ...why FIPA?...
 </p>
-
-<p>
-    ...contributes:
-</p>
-<ul>
-    <li>a statement-centric data model based on RDF and Named Graphs</li>
-    <li>a FIPA domain ontology for inter-agent information exchange</li>
-    <li>FIPA performatives and protocols for information sharing supporting privacy, provenance, trust, and
-        information accountability in the context of social machines
-    </li>
-    <li>integration of FIPA agent identity and Semantic Web identity</li>
-    <li>conventions for peer-to-peer information discovery</li>
-</ul>
 
 <h3>1.1 <a id="doc-outline" name="doc-outline">Document Outline</a></h3>
 
-<p>Unless otherwise noted in the section heading, all sections and appendices in this document are normative.</p>
-
 <p>
-    This section of the document, <a href="#introduction">section 1</a>, introduces the RDFAgents specification.
-    It presents the organization of this specification document and the conventions used throughout the specification.
+    This section (Introduction) provides an overview of the rest of the specification
+    and introduces the conventions used throughout.
 </p>
 
-<p><a href="#basic-patterns">Section 2</a> of the specification etc. etc.</p>
+<p>
+    <a href="#datamodel">Section 2</a> (Data model) of the specification
+    defines the combination of data model components (RDF, Named Graphs, RDF Datasets,
+    and the special <i>performative</i> role of the default graph of a dataset)
+    which underlie information sharing in RDFAgents.
+
+    The representation of agents and graphs in RDF are described,
+    along with a convention for sending and receiving information to and from other agents while recording
+    provenance and attribution metadata.
+</p>
+
+<p>
+    <a href="#messaging">Section 3</a> (Messaging) introduces the FIPA infrastructure upon which RDFAgent is based,
+    describes the various types of messages which are used in the protocol,
+    and defines rules and formats for transmitting RDF content.
+</p>
+
+<p>
+    <a href="#protocols">Section 4</a> (Interaction protocols) describes the Query and Publish-Subscribe
+    interaction protocols which define the flow of a conversation between two agents exchanging information in
+    a request-response pattern or a subscription-based pattern, respectively.
+
+    Exceptions to the normal interaction flow are also specified.
+</p>
+
+<p>
+    <a href="#fipa-compliance">Section 5</a> (FIPA compliance) describes the relationship between an RDFAgents
+    implementation and the FIPA standards to which it conforms.
+
+    Mandatory features of FIPA which are minimized in RDFAgents,
+    as well as optional features which are omitted,
+    are described along with additional constraints imposed by RDFAgents above and beyond FIPA.
+</p>
+
+<p>
+    <a href="#domain-language-and-ontology">Appendix A</a> (Domain language and ontology)
+    defines the FIPA domain ontology and the language of S-expressions according to which RDFAgents queries
+    and error explanations are formatted.
+
+    <a href="#references">Appendix B</a> (References),
+    <a href="#acknowledgements">Appendix C</a> (Acknowledgements),
+    and <a href="#changes">Appendix D</a> (Changes) are self-explanatory.
+</p>
+
+<p>
+    Unless otherwise noted in the section heading, all sections and appendices in this document are normative.
+</p>
 
 <h3>1.2 <a id="doc-conventions" name="doc-conventions">Document Conventions</a></h3>
+
 <h4>1.2.1 <a id="doc-namespaces" name="doc-namespaces">Namespaces</a></h4>
 
 <p>In this document, examples assume the following namespace prefix bindings unless
@@ -334,21 +389,56 @@ You haven't seen this yet &lt;subtle hand wave&gt;.</span>
     </table>
 </div>
 
-<h4>1.2.2 <a id="doc-data-desc" name="doc-data-desc">Data Descriptions</a></h4>
+<h4>1.2.2 <a id="doc-data-desc" name="doc-data-desc">RDF Datasets</a></h4>
 
-<p>This document uses the
+<p>
+    All examples of RDF Datasets (i.e. collections of Named Graphs) in this document use the
     <a class="inform" href="http://www4.wiwiss.fu-berlin.de/bizer/TriG/">TriG</a>
-    RDF serialization format to show each triple explicitly. TriG, like Turtle, allows IRIs to be abbreviated with
-    prefixes:</p>
+    RDF serialization format,
+    a particularly human-readable plain text format supporting Named Graphs.
+
+    For simplicity, namespace declarations are omitted from the beginning of each example;
+    all namespaces are assumed to be defined as <a href="#doc-namespaces">above</a>.
+
+    For example, the following:
+</p>
 <pre class="data">
-@prefix dc:   &lt;http://purl.org/dc/elements/1.1/&gt; .
-@prefix :     &lt;http://example.org/book/&gt; .
-:book1  dc:title  &quot;SPARQL Tutorial&quot; .
+{
+    ex:rdfnews a foaf:Agent .
+}
 </pre>
 <p>
-    TriG also supports graph syntax...
+    is an abbreviation of:
 </p>
+<pre class="data">
+@prefix ex: &lt;http://example.org/&gt; .
+@prefix foaf: &lt;http://xmlns.com/foaf/0.1/&gt; .
 
+{
+    ex:rdfnews a foaf:Agent .
+}
+</pre>
+
+<h4>1.2.3 <a id="doc-fipa-acl" name="doc-fipa-acl">FIPA ACL</a></h4>
+
+<p>
+    Examples of messages and content expressions in FIPA's Agent Communication Language
+    are given using their string representation (see [<a href="#FIPASC00070I">FIPA SC00070I</a>]).
+    They resemble nested lists in Lisp.
+
+    For example, here is a simple ACL message:
+</p>
+<pre class="data">
+(inform-done
+    :sender (agent-identifier
+        :name http://example.org/rdfnews
+        :addresses (sequence xmpp:rdfnews@example.org))
+    :receiver (set (agent-identifier
+        :name http://fortytwo.net/agents/smith
+        :addresses (sequence xmpp:smith@fortytwo.net)))
+    :protocol fipa-subscribe
+    :conversation-id 089f5b468e)
+</pre>
 <hr/>
 <!-- ................................................................. -->
 
@@ -858,7 +948,7 @@ SELECT ?graph ?agent ?address WHERE {
 <hr/>
 <!-- ................................................................. -->
 
-<h2>4 <a id="protocols" name="protocols">Protocols</a></h2>
+<h2>4 <a id="protocols" name="protocols">Interaction protocols</a></h2>
 
 <p>
     A FIPA agent potentially follows any number of <i>interaction protocols</i>,
@@ -1424,7 +1514,7 @@ through the Internet without the assistance of specialized intermediary services
 </p>
 
 <p>
-    RDFAgents does not make use of FIPA's experimental RDF content language [<a href="#fipa-rdf">FIPA RDF</a>],
+    RDFAgents does not make use of FIPA's experimental RDF content language [<a href="#FIPAXC00011B">FIPA XC00011B</a>],
     which predates Named Graphs (using RDF reification for statement metadata)
     and differs in intent from RDFAgents,
     which separates the representation of <i>knowledge</i> in RDF with Named Graphs
@@ -1729,7 +1819,15 @@ through the Internet without the assistance of specialized intermediary services
 </dl>
 <h3 id="informative-refs">Informative References</h3>
 <dl class="bib">
-    <dt><a name="fipa-rdf" id="fipa-rdf">[FIPA RDF]</a></dt>
+    <dt><a name="FIPASC00070I" id="FIPASC00070I">[FIPA SC00070I]</a></dt>
+    <dd><cite>
+        <a href="http://www.fipa.org/specs/fipa00070/SC00070I.html">FIPA ACL Message Representation
+            in String Specification</a>,
+        Foundation for Intelligent Physical Agents standard,
+        December 3, 2002.
+    </cite></dd>
+
+    <dt><a name="FIPAXC00011B" id="FIPAXC00011B">[FIPA XC00011B]</a></dt>
     <dd><cite>
         <a href="http://www.fipa.org/specs/fipa00011/XC00011B.html">FIPA RDF Content Language Specification</a>,
         Foundation for Intelligent Physical Agents experimental specification,
@@ -1755,19 +1853,7 @@ through the Internet without the assistance of specialized intermediary services
 <hr/>
 <!-- ................................................................. -->
 
-<h2>C. <a id="notes" name="notes">Notes</a></h2>
-<ul>
-    <li><a id="note1_note" name="note1_note">&nbsp;</a>
-        <a href="#note1_ref">[1]</a> For ease of explanation,
-        every RDFAgents message is considered to carry an RDF Dataset,
-        although it is only useful in messages with RDF content.
-    </li>
-</ul>
-
-<hr/>
-<!-- ................................................................. -->
-
-<h2>D. <a id="acknowledgements" name="acknowledgements">Acknowledgements</a></h2>
+<h2>C. <a id="acknowledgements" name="acknowledgements">Acknowledgements</a></h2>
 
 <p>
     This work has been supported by the <a href="http://tw.rpi.edu/">Tetherless World Constellation</a>
@@ -1789,7 +1875,7 @@ through the Internet without the assistance of specialized intermediary services
 <hr/>
 <!-- ................................................................. -->
 
-<h2>E. <a id="changes" name="changes">Changes</a></h2>
+<h2>D. <a id="changes" name="changes">Changes</a></h2>
 <dl>
     <dt>1 May 2011</dt>
     <dd>Initial version</dd>
