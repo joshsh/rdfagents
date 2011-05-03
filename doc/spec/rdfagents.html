@@ -4,7 +4,6 @@
       xmlns="http://www.w3.org/1999/xhtml"
       xmlns:dc="http://purl.org/dc/terms/"
       xmlns:foaf="http://xmlns.com/foaf/0.1/"
-      xmlns:h5="http://buzzword.org.uk/rdf/h5#"
       xml:lang="en">
 
 <head>
@@ -34,7 +33,7 @@ You haven't actually seen this yet &lt;subtle hand gesture&gt;.</span>
 
     <h1 id="main">RDFAgents</h1>
 
-    <h2><a id="w3c-doctype">Draft 3 May 2011</a></h2>
+    <h2><a id="w3c-doctype">Draft <span property="dc:modified" content="2011-05-03">3 May 2011</span></a></h2>
     <dl>
         <dt>This version:</dt>
         <dd>
@@ -290,7 +289,7 @@ You haven't actually seen this yet &lt;subtle hand gesture&gt;.</span>
     <a href="#usage-patterns">Section 6</a> (Usage patterns) discusses several practical aspects of agent-based
     knowledge sharing,
     including reasoning over the RDFAgents provenance trail,
-    publishing data in a way analogous to Linked Data on the Web,
+    publishing data (answering queries) in a way analogous to Linked Data on the Web,
     and integrating agents with other RDF streaming technologies.
 </p>
 
@@ -1593,7 +1592,7 @@ SELECT ?graph ?agent WHERE {
     <li>Provide contact information for agents, so that other agents can request information from them.</li>
     <li>When an agent issues a query for a URI, provide useful information using the standards (RDF, FIPA).</li>
     <li>Include <i>links</i> to other URIs and also <i>attribute</i> information to primary sources,
-        so that people can discover related information.
+        so that agents can discover related information.
     </li>
 </ol>
 <p>
