@@ -1,7 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
+<html version="XHTML+RDFa 1.0"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:dc="http://purl.org/dc/terms/"
+      xmlns:foaf="http://xmlns.com/foaf/0.1/"
+      xmlns:h5="http://buzzword.org.uk/rdf/h5#"
+      xml:lang="en">
 
 <head>
     <title>RDFAgents: real-time messaging for the Semantic Web (draft)</title>
@@ -10,9 +14,11 @@
 
 <body>
 
-<span style="color: #f00;"><b>Note:</b> this is a pre-release version of the RDFAgents spec.
-You haven't really seen this yet &lt;subtle hand gesture&gt;.</span>
-<br/><br/>
+<div>
+    <span style="color: #f00;"><b>Note:</b> this is a pre-release version of the RDFAgents spec.
+You haven't actually seen this yet &lt;subtle hand gesture&gt;.</span>
+    <br/><br/>
+</div>
 
 <div class="head">
     <p>
@@ -28,7 +34,7 @@ You haven't really seen this yet &lt;subtle hand gesture&gt;.</span>
 
     <h1 id="main">RDFAgents</h1>
 
-    <h2><a name="w3c-doctype" id="w3c-doctype">Draft 3 May 2011</a></h2>
+    <h2><a id="w3c-doctype">Draft 3 May 2011</a></h2>
     <dl>
         <dt>This version:</dt>
         <dd>
@@ -60,7 +66,7 @@ You haven't really seen this yet &lt;subtle hand gesture&gt;.</span>
 <!-- ................................................................. -->
 
 <div>
-    <h2 class="notoc"><a id="abstract" name="abstract">Abstract</a></h2>
+    <h2 class="notoc"><a id="abstract">Abstract</a></h2>
 
     <p>
         RDFAgents is a messaging protocol for real-time, peer-to-peer knowledge sharing on the Semantic Web.
@@ -95,13 +101,13 @@ You haven't really seen this yet &lt;subtle hand gesture&gt;.</span>
 <!-- ................................................................. -->
 
 <div class="toc">
-    <h2><a id="contents" name="contents">Table of Contents</a></h2>
+    <h2><a id="contents">Table of Contents</a></h2>
 
     <ul class="toc">
 
         <li class="tocline1">1 <a href="#introduction">Introduction</a> (informative)
             <ul class="toc">
-                <li class="tocline2">1.1 <a href="#doc-outline">Document Outline</a>
+                <li class="tocline2">1.1 <a href="#doc-outline">Document Outline</a></li>
                 <li class="tocline2">1.2 <a href="#doc-conventions">Document Conventions</a></li>
                 <!--  <ul class="toc">
                  <li class="tocline2">1.2.1 <a href="#doc-namespaces">Namespaces</a></li>
@@ -176,27 +182,12 @@ You haven't really seen this yet &lt;subtle hand gesture&gt;.</span>
             </ul>
         </li>
 
-        <!--<li class="tocline1">ID <a href="#information-discovery">Information Discovery</a> (informative)
-            <ul class="toc">
-                <li class="tocline2">ID.1 <a href="#agent-discovery">Agent discovery</a></li>
-                <li class="tocline2">ID.2 <a href="#resource-discovery">Resource discovery</a></li>
-            </ul>
-        </li>
-
-        <li class="tocline1">IO <a href="#integration">Integration</a> (informative)
-            <ul class="toc">
-                <li class="tocline2">IO.1 <a href="#linked-data">Linked Data</a></li>
-                <li class="tocline2">IO.2 <a href="#data-streams">RDF streams</a></li>
-                <li class="tocline2">IO.3 <a href="#other-agents">Agent-based systems</a></li>
-            </ul>
-        </li>-->
-
         <!--<li class="tocline1">IMP <a href="#implementation">Reference implementation</a> (informative)
         </li>-->
     </ul>
 </div>
 
-<h3><a id="appendices" name="appendices">Appendices</a></h3>
+<h3><a id="appendices">Appendices</a></h3>
 <ul class="toc">
     <li class="tocline2">A <a href="#domain-language-and-ontology">Domain language and ontology</a>
         <ul class="toc">
@@ -213,7 +204,7 @@ You haven't really seen this yet &lt;subtle hand gesture&gt;.</span>
 <hr/>
 <!-- ................................................................. -->
 
-<h2>1 <a id="introduction" name="introduction">Introduction</a> (informative)</h2>
+<h2>1 <a id="introduction">Introduction</a> (informative)</h2>
 
 <p>
     As the Semantic Web becomes a ubiquitous resource,
@@ -254,7 +245,7 @@ You haven't really seen this yet &lt;subtle hand gesture&gt;.</span>
     as one-shot requests for resource descriptions.
 </p>
 
-<h3>1.1 <a id="doc-outline" name="doc-outline">Document Outline</a></h3>
+<h3>1.1 <a id="doc-outline">Document Outline</a></h3>
 
 <p>
     This section (Introduction) provides an overview of the rest of the specification
@@ -317,7 +308,7 @@ You haven't really seen this yet &lt;subtle hand gesture&gt;.</span>
     Unless otherwise noted in the section heading, all sections and appendices in this document are normative.
 </p>
 
-<h3>1.2 <a id="doc-conventions" name="doc-conventions">Document Conventions</a></h3>
+<h3>1.2 <a id="doc-conventions">Document Conventions</a></h3>
 
 <h4>Namespaces</h4>
 
@@ -423,7 +414,7 @@ SELECT ?agent ?address WHERE {
 <hr/>
 <!-- ................................................................. -->
 
-<h2>2 <a id="datamodel" name="datamodel">Data model</a></h2>
+<h2>2 <a id="datamodel">Data model</a></h2>
 
 <p>
     Information sharing in RDFAgents is based on the exchange of RDF
@@ -442,8 +433,6 @@ SELECT ?agent ?address WHERE {
 </p>
 
 <p>
-
-<p>
     RDFAgents recognizes only one basic relationship between an agent and a graph: that of <i>assertion</i>.
 
     The propositional attitude of assertion is inherited from FIPA's <code>inform</code>
@@ -454,7 +443,7 @@ SELECT ?agent ?address WHERE {
     as a proposition about the world.
 </p>
 
-<h3>2.1 <a id="default-graph" name="default-graph">The default graph</a></h3>
+<h3>2.1 <a id="default-graph">The default graph</a></h3>
 
 <p>
     For each message sent or received by an agent,
@@ -480,7 +469,7 @@ SELECT ?agent ?address WHERE {
     through the mechanism of graph renaming described <a href="#messages">below</a>.
 </p>
 
-<h3>2.2 <a id="agents" name="agents">Agents</a></h3>
+<h3>2.2 <a id="agents">Agents</a></h3>
 
 <p>
     An <i>agent</i> in RDFAgents is not only an actor capable of exchanging messages with other agents,
@@ -502,7 +491,7 @@ SELECT ?agent ?address WHERE {
     it associates the FIPA name of the sender with the corresponding URI.
 </p>
 
-<h3>2.3 <a id="metadata" name="metadata">Graph and agent metadata</a></h3>
+<h3>2.3 <a id="metadata">Graph and agent metadata</a></h3>
 
 <p>
     RDFAgents uses a vocabulary drawn from
@@ -547,7 +536,7 @@ SELECT ?agent ?address WHERE {
     the information asserted in messages has no temporal or contextual qualifications.
 </p>
 
-<h3>2.4 <a id="asserting-graphs" name="asserting-graphs">Asserting graphs</a></h3>
+<h3>2.4 <a id="asserting-graphs">Asserting graphs</a></h3>
 
 <p>
     Although there are several types of messages exchanged by agents (see <a href="#performatives">below</a>),
@@ -676,7 +665,7 @@ ex:4cbf3b9acd {
 <hr/>
 <!-- ................................................................. -->
 
-<h2>3 <a id="messaging" name="messaging">Messaging</a></h2>
+<h2>3 <a id="messaging">Messaging</a></h2>
 
 <p>
     RDFAgents is layered on top of the FIPA standards,
@@ -717,7 +706,7 @@ ex:4cbf3b9acd {
     Note: message encoding is to be specified in the FIPA <i>message envelope</i> which encloses each ACL message.
 </p>-->
 
-<h3>3.1 <a id="performatives" name="performatives">Performatives</a></h3>
+<h3>3.1 <a id="performatives">Performatives</a></h3>
 
 <p>
     For each FIPA message there is a distinct <i>performative</i>,
@@ -741,7 +730,7 @@ ex:4cbf3b9acd {
     deal with Semantic Web content (queries and datasets).
 </p>
 
-<h3>3.2 <a id="sending-messages" name="sending-messages">Sending messages</a></h3>
+<h3>3.2 <a id="sending-messages">Sending messages</a></h3>
 
 <p>
     The ability to send messages to other agents in an asynchronous,
@@ -790,7 +779,7 @@ SELECT ?graph ?agent ?address WHERE {
     and to make good use of records of past conversations.
 </p>
 
-<h3>3.3 <a id="message-content" name="message-content">Message content</a></h3>
+<h3>3.3 <a id="message-content">Message content</a></h3>
 
 <p>
     The propositional content of a message is expressed in a FIPA <i>content language</i>,
@@ -823,7 +812,7 @@ SELECT ?graph ?agent ?address WHERE {
     (see [<a href="#FIPASC00061G">FIPA SC00061G</a>]).
 </p>
 
-<h4>3.3.1 <a id="rdf-content-languages" name="rdf-content-languages">RDF content languages</a></h4>
+<h4>3.3.1 <a id="rdf-content-languages">RDF content languages</a></h4>
 
 <p>
     RDFAgents defines the following RDF-based content languages:
@@ -886,7 +875,7 @@ SELECT ?graph ?agent ?address WHERE {
     However, it is up to the requester to validate the response against the expected format.
 </p>
 
-<h4>3.3.2 <a id="handling-rdf-content" name="handling-rdf-content">Handling RDF content</a></h4>
+<h4>3.3.2 <a id="handling-rdf-content">Handling RDF content</a></h4>
 
 <p>
     It is assumed that, for each supported RDF content language,
@@ -932,7 +921,7 @@ SELECT ?graph ?agent ?address WHERE {
 <hr/>
 <!-- ................................................................. -->
 
-<h2>4 <a id="protocols" name="protocols">Interaction protocols</a></h2>
+<h2>4 <a id="protocols">Interaction protocols</a></h2>
 
 <p>
     A FIPA agent potentially follows any number of <i>interaction protocols</i>,
@@ -962,7 +951,7 @@ SELECT ?graph ?agent ?address WHERE {
     (this is true, for example, of the HTTP and XMPP protocols).
 </p>
 
-<h3>4.1 <a id="query" name="query">Query</a></h3>
+<h3>4.1 <a id="query">Query</a></h3>
 
 <p>
     The Query protocol allows an agent to request a single chunk of information from another agent.
@@ -974,7 +963,7 @@ SELECT ?graph ?agent ?address WHERE {
 <p class="figure">
     <img src="resources/query-protocol.png" width="387" height="320" alt="RDFAgents query protocol"/>
     <br/>
-    Figure 1: the Query protocol
+    Figure 1: the Query interaction protocol
 </p>
 
 <p>
@@ -1003,7 +992,7 @@ SELECT ?graph ?agent ?address WHERE {
     carrying the dataset in one of the RDF content languages.
 </p>
 
-<h4>4.1.1 <a id="describe-query" name="describe-query">The <code>describe</code> query form</a></h4>
+<h4>4.1.1 <a id="describe-query">The <code>describe</code> query form</a></h4>
 
 <p>
     This version of RDFAgents supports exactly one type of query, called <code>describe</code>,
@@ -1077,7 +1066,7 @@ SELECT ?graph ?agent ?address WHERE {
 }&quot;)
 </pre>
 
-<h4>4.1.2 <a id="query-results" name="query-results">Interpretation of query results</a></h4>
+<h4>4.1.2 <a id="query-results">Interpretation of query results</a></h4>
 
 <p>
     In RDFAgents, the <code>inform-result</code> message which supplies the query result
@@ -1098,7 +1087,7 @@ SELECT ?graph ?agent ?address WHERE {
     simply by including it in the sender's dataset of another message.
 </p>
 
-<h4>4.1.3 <a id="query-exceptions" name="query-exceptions">Exceptions</a></h4>
+<h4>4.1.3 <a id="query-exceptions">Exceptions</a></h4>
 
 <p>
     At any point in a Query interaction,
@@ -1123,7 +1112,7 @@ SELECT ?graph ?agent ?address WHERE {
     using a <code>cancel</code> message.
 </p>
 
-<h3>4.2 <a id="pubsub" name="pubsub">Publish-Subscribe</a></h3>
+<h3>4.2 <a id="pubsub">Publish-Subscribe</a></h3>
 
 <p>
     The Publish-Subscribe protocol enables event-driven streams from information providers to information consumers
@@ -1134,10 +1123,10 @@ SELECT ?graph ?agent ?address WHERE {
 </p>
 
 <p class="figure">
-    <a id="figure2" name="figure2">
+    <a id="figure2">
         <img src="resources/pubsub-protocol.png" width="387" height="419" alt="RDFAgents publish-subscribe protocol"/>
         <br/>
-        Figure 2: the Publish-Subscribe protocol
+        Figure 2: the Publish-Subscribe interaction protocol
     </a>
 </p>
 
@@ -1248,7 +1237,7 @@ SELECT ?graph ?agent ?address WHERE {
 }&quot;)
 </pre>
 
-<h4>4.2.1 <a id="pubsub-updates" name="pubsub-updates">Interpretation of updates</a></h4>
+<h4>4.2.1 <a id="pubsub-updates">Interpretation of updates</a></h4>
 
 <p>
     As in the Query protocol, an <code>inform-result</code> message containing an update
@@ -1266,7 +1255,7 @@ SELECT ?graph ?agent ?address WHERE {
     simply by including it in the sender's dataset of another message.
 </p>
 
-<h4>4.2.2 <a id="pubsub-exceptions" name="pubsub-exceptions">Exceptions</a></h4>
+<h4>4.2.2 <a id="pubsub-exceptions">Exceptions</a></h4>
 
 <p>
     Exceptions to the Publish-Subscribe protocol are analogous to those of the Query protocol
@@ -1280,7 +1269,7 @@ SELECT ?graph ?agent ?address WHERE {
 <hr/>
 <!-- ................................................................. -->
 
-<h2>5 <a id="fipa-compliance" name="fipa-compliance">FIPA compliance</a></h2>
+<h2>5 <a id="fipa-compliance">FIPA compliance</a></h2>
 
 <p>
     The FIPA Abstract Architecture [<a href="#FIPASC00001L">FIPA SC00001L</a>]
@@ -1312,7 +1301,7 @@ SELECT ?graph ?agent ?address WHERE {
     false...
 </p>-->
 
-<h3>5.1 <a id="fipa-agent-identity" name="fipa-agent-identity">Agent identity</a></h3>
+<h3>5.1 <a id="fipa-agent-identity">Agent identity</a></h3>
 
 <p>
     FIPA defines an agent identifier (AID) as an extensible collection of parameter-value pairs comprising a
@@ -1321,7 +1310,7 @@ SELECT ?graph ?agent ?address WHERE {
     zero or more <i>resolvers</i> or name resolution service addresses.
 </p>
 
-<h4>5.1.1 <a id="fipa-agent-name" name="fipa-agent-name">Agent name</a></h4>
+<h4>5.1.1 <a id="fipa-agent-name">Agent name</a></h4>
 
 <p>
     At creation or registration time, a FIPA agent must be given an <i>agent name</i>
@@ -1369,7 +1358,7 @@ SELECT ?graph ?agent ?address WHERE {
     while the sharing of personal contact information is subject to concerns of privacy and spam control.
 </p>
 
-<h4>5.1.2 <a id="fipa-transport-addresses" name="fipa-transport-addresses">Transport addresses</a></h4>
+<h4>5.1.2 <a id="fipa-transport-addresses">Transport addresses</a></h4>
 
 <p>
     A transport address is a physical address at which an agent can be contacted.
@@ -1402,7 +1391,7 @@ SELECT ?graph ?agent ?address WHERE {
     The agent platform itself does not require a transport address, as it does not need to send or receive messages.
 </p>
 
-<h4>5.1.3 <a id="fipa-name-resolution" name="fipa-name-resolution">Name resolution</a></h4>
+<h4>5.1.3 <a id="fipa-name-resolution">Name resolution</a></h4>
 
 <p>
     RDFAgents does not mandate the use of FIPA's <i>resolvers</i> parameter of the agent ID (although it does not
@@ -1438,7 +1427,7 @@ SELECT ?graph ?agent ?address WHERE {
 <!--Furthermore, the combination of a name and a transport address is expected to be sufficient for the delivery of a message
 through the Internet without the assistance of specialized intermediary services.-->
 
-<h3>5.2 <a id="fipa-agent-management" name="fipa-agent-management">Agent management</a></h3>
+<h3>5.2 <a id="fipa-agent-management">Agent management</a></h3>
 
 <p>
     FIPA Agent Management [<a href="#FIPASC00023K">FIPA SC00023K</a>] provides the normative
@@ -1463,7 +1452,7 @@ through the Internet without the assistance of specialized intermediary services
 </p>
 <!-- a typical usage scenario involves only one agent per platform -->
 
-<h3>5.3 <a id="fipa-service-discovery" name="fipa-service-discovery">Service discovery</a></h3>
+<h3>5.3 <a id="fipa-service-discovery">Service discovery</a></h3>
 
 <p>
     RDFAgents neither requires nor prohibits the use of FIPA's optional <i>directory facilitator</i>,
@@ -1473,7 +1462,7 @@ through the Internet without the assistance of specialized intermediary services
     mechanism of service discovery via RDF descriptions.
 </p>
 
-<h3>5.4 <a id="fipa-message-exchange" name="fipa-message-exchange">Inter-agent message exchange</a></h3>
+<h3>5.4 <a id="fipa-message-exchange">Inter-agent message exchange</a></h3>
 
 <p>
     All FIPA agents must have access to at least one <i>message transport service</i>,
@@ -1496,9 +1485,9 @@ through the Internet without the assistance of specialized intermediary services
 <hr/>
 <!-- ................................................................. -->
 
-<h2>6. <a id="usage-patterns" name="usage-patterns">Usage patterns</a> (informative)</h2>
+<h2>6. <a id="usage-patterns">Usage patterns</a> (informative)</h2>
 
-<h3>6.1 <a id="provenance-trail" name="provenance-trail">The provenance trail</a></h3>
+<h3>6.1 <a id="provenance-trail">The provenance trail</a></h3>
 
 <p>
     RDFAgents defines the rules by which provenance information is to be recorded
@@ -1574,7 +1563,7 @@ SELECT ?graph ?agent WHERE {
     to support a Web of Trust among communicating agents.
 </p>
 
-<h3>6.2 <a id="information-discovery" name="information-discovery">Information discovery</a></h3>
+<h3>6.2 <a id="information-discovery">Information discovery</a></h3>
 
 <p>
     The <code>describe</code> query operation supported by RDFAgents is purposely similar to
@@ -1627,7 +1616,7 @@ SELECT ?graph ?agent WHERE {
     For more information on Linked Data, see the [<a href="#linked-data-book">Linked Data Book</a>].
 </p>
 
-<h3>6.3 <a id="rdf-streams" name="rdf-streams">RDF streams</a></h3>
+<h3>6.3 <a id="rdf-streams">RDF streams</a></h3>
 
 <p>
     The similarity of the Query and Publish-Subscribe interaction protocols makes them nearly interchangeable
@@ -1655,7 +1644,7 @@ SELECT ?graph ?agent WHERE {
 <hr/>
 <!-- ................................................................. -->
 
-<h2>A. <a id="domain-language-and-ontology" name="domain-language-and-ontology">Domain language and ontology</a></h2>
+<h2>A. <a id="domain-language-and-ontology">Domain language and ontology</a></h2>
 
 <p>
     The RDFAgents domain ontology, identified by <code>rdfagents</code>,
@@ -1664,7 +1653,7 @@ SELECT ?graph ?agent WHERE {
     It is used in combination with a grammar of legal S-expressions in the <code>fipa-sl0</code> content language.
 </p>
 
-<h3>A.1 <a id="rdf-resources" name="rdf-resources">RDF resources</a></h3>
+<h3>A.1 <a id="rdf-resources">RDF resources</a></h3>
 
 <p>
     A <a href="http://www.w3.org/TR/rdf-concepts/#dfn-URI-reference">URI reference</a>
@@ -1698,7 +1687,7 @@ SELECT ?graph ?agent WHERE {
     <a href="http://www.w3.org/TR/rdf-concepts/#section-blank-nodes">Blank nodes</a> cannot be referred to directly.
 </p>
 
-<h3>A.2 <a id="queries" name="queries">Queries</a></h3>
+<h3>A.2 <a id="queries">Queries</a></h3>
 
 <p>
     The <code>describe</code> query form constructs a referential expression for an RDF Dataset
@@ -1725,7 +1714,7 @@ SELECT ?graph ?agent WHERE {
 (describe (uri http://example.org/ArthurDent) :language rdf-trix)
 </pre>
 
-<h3>A.3 <a id="errors" name="errors">Errors</a></h3>
+<h3>A.3 <a id="errors">Errors</a></h3>
 
 <p>
     An <i>error</i> may be defined loosely as any event or circumstance which departs from the ordinary flow of
@@ -1781,55 +1770,55 @@ SELECT ?graph ?agent WHERE {
 <hr/>
 <!-- ................................................................. -->
 
-<h2>B. <a id="references" name="references">References</a></h2>
+<h2>B. <a id="references">References</a></h2>
 
 <h3 id="normative-refs">Normative References</h3>
 <dl class="bib">
 
-    <dt><a name="FIPASC00001L" id="FIPASC00001L">[FIPA SC00001L]</a></dt>
+    <dt><a id="FIPASC00001L">[FIPA SC00001L]</a></dt>
     <dd><cite>
         <a href="http://www.fipa.org/specs/fipa00001/SC00001L.html">FIPA Abstract Architecture Specification</a>,
         Foundation for Intelligent Physical Agents standard, December 3, 2002.
     </cite></dd>
 
-    <dt><a name="FIPASC00008I" id="FIPASC00008I">[FIPA SC00008I]</a></dt>
+    <dt><a id="FIPASC00008I">[FIPA SC00008I]</a></dt>
     <dd><cite>
         <a href="http://www.fipa.org/specs/fipa00008/SC00008I.html">FIPA SL Content Language Specification</a>,
         Foundation for Intelligent Physical Agents standard, December 3, 2002.
     </cite></dd>
 
-    <dt><a name="FIPASC00023K" id="FIPASC00023K">[FIPA SC00023K]</a></dt>
+    <dt><a id="FIPASC00023K">[FIPA SC00023K]</a></dt>
     <dd><cite>
         <a href="http://www.fipa.org/specs/fipa00023/SC00023K.html">FIPA Agent Management Specification</a>,
         Foundation for Intelligent Physical Agents standard, March 18, 2004.
     </cite></dd>
 
-    <dt><a name="FIPASC00027H" id="FIPASC00027H">[FIPA SC00027H]</a></dt>
+    <dt><a id="FIPASC00027H">[FIPA SC00027H]</a></dt>
     <dd><cite>
         <a href="http://www.fipa.org/specs/fipa00027/SC00027H.html">FIPA Query Interaction Protocol Specification</a>,
         Foundation for Intelligent Physical Agents standard, December 3, 2002.
     </cite></dd>
 
-    <dt><a name="FIPASC00035H" id="FIPASC00035H">[FIPA SC00035H]</a></dt>
+    <dt><a id="FIPASC00035H">[FIPA SC00035H]</a></dt>
     <dd><cite>
         <a href="http://www.fipa.org/specs/fipa00035/SC00035H.html">FIPA Subscribe Interaction Protocol
             Specification</a>,
         Foundation for Intelligent Physical Agents standard, December 3, 2002.
     </cite></dd>
 
-    <dt><a name="FIPASC00037J" id="FIPASC00037J">[FIPA SC00037J]</a></dt>
+    <dt><a id="FIPASC00037J">[FIPA SC00037J]</a></dt>
     <dd><cite>
         <a href="http://www.fipa.org/specs/fipa00037/SC00037J.html">FIPA Communicative Act Library Specification</a>,
         Foundation for Intelligent Physical Agents standard, December 3, 2002.
     </cite></dd>
 
-    <dt><a name="FIPASC00061G" id="FIPASC00061G">[FIPA SC00061G]</a></dt>
+    <dt><a id="FIPASC00061G">[FIPA SC00061G]</a></dt>
     <dd><cite>
         <a href="http://www.fipa.org/specs/fipa00061/SC00061G.html">FIPA ACL Message Structure Specification</a>,
         Foundation for Intelligent Physical Agents standard, December 3, 2002.
     </cite></dd>
 
-    <dt><a name="FOAF" id="FOAF">[FOAF]</a></dt>
+    <dt><a id="FOAF">[FOAF]</a></dt>
     <dd><cite>
         <a href="http://xmlns.com/foaf/spec/">FOAF Vocabulary Specification</a>,
         D. Brickley and L. Miller,
@@ -1838,7 +1827,7 @@ SELECT ?graph ?agent WHERE {
         August 9, 2010.
     </cite></dd>
 
-    <dt><a name="NQuads" id="NQuads">[N-Quads]</a></dt>
+    <dt><a id="NQuads">[N-Quads]</a></dt>
     <dd><cite>
         <a href="http://sw.deri.org/2008/07/n-quads/">N-Quads: Extending N-Triples with Context</a>,
         R. Cyganiak, A. Harth, and A. Hogan,
@@ -1847,7 +1836,7 @@ SELECT ?graph ?agent WHERE {
         November 12, 2009.
     </cite></dd>
 
-    <dt><a name="NTriples" id="NTriples">[N-Triples]</a></dt>
+    <dt><a id="NTriples">[N-Triples]</a></dt>
     <dd><cite>
         <a href="http://www.w3.org/2001/sw/RDFCore/ntriples/">N-Triples</a>,
         W3C RDF Core WG internal working draft,
@@ -1855,14 +1844,14 @@ SELECT ?graph ?agent WHERE {
         February 10, 2004.
     </cite></dd>
 
-    <dt><a name="NGVOCAB" id="NGVOCAB">[NG]</a></dt>
+    <dt><a id="NGVOCAB">[NG]</a></dt>
     <dd><cite>
         <a href="http://www.w3.org/2004/03/trix/rdfg-1/">Named Graphs Vocabulary</a>,
         J. Carroll, C. Bizer, P. Hayes and P. Stickler,
         RDF Schema vocabulary.
     </cite></dd>
 
-    <dt><a name="Notation3" id="Notation3">[Notation3]</a></dt>
+    <dt><a id="Notation3">[Notation3]</a></dt>
     <dd><cite>
         <a href="http://www.w3.org/TeamSubmission/n3/">Notation3 (N3): A readable RDF syntax</a>
         T. Berners-Lee and D. Connolly,
@@ -1871,7 +1860,7 @@ SELECT ?graph ?agent WHERE {
         March 28, 2011.
     </cite></dd>
 
-    <dt><a name="RDFCONCEPTS" id="RDFCONCEPTS">[RDF Concepts]</a></dt>
+    <dt><a id="RDFCONCEPTS">[RDF Concepts]</a></dt>
     <dd><cite>
         <a href="http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/">Resource Description Framework (RDF): Concepts
             and Abstract Syntax</a>,
@@ -1881,7 +1870,7 @@ SELECT ?graph ?agent WHERE {
         10 February 2004.
     </cite></dd>
 
-    <dt><a name="RDFXML" id="RDFXML">[RDF/XML]</a></dt>
+    <dt><a id="RDFXML">[RDF/XML]</a></dt>
     <dd><cite>
         <a href="http://www.w3.org/TR/REC-rdf-syntax/">RDF/XML Syntax Specification (Revised)</a>,
         D. Beckett, editor,
@@ -1890,7 +1879,7 @@ SELECT ?graph ?agent WHERE {
         February 10, 2004.
     </cite></dd>
 
-    <dt><a name="RFC2396" id="RFC2396">[RFC 2396]</a></dt>
+    <dt><a id="RFC2396">[RFC 2396]</a></dt>
     <dd><cite>
         <a href="http://www.ietf.org/rfc/rfc2396.txt">Uniform Resource Identifiers (URI): Generic Syntax</a>,
         T. Berners-Lee, R. Fielding, L. Masinter,
@@ -1898,7 +1887,7 @@ SELECT ?graph ?agent WHERE {
         August 1998.
     </cite></dd>
 
-    <dt><a name="RFC3066" id="RFC3066">[RFC 3066]</a></dt>
+    <dt><a id="RFC3066">[RFC 3066]</a></dt>
     <dd><cite>
         <a href="http://www.ietf.org/rfc/rfc3066.txt">Tags for the Identification of Languages</a>,
         H. Alvestrand,
@@ -1906,7 +1895,7 @@ SELECT ?graph ?agent WHERE {
         January 2001.
     </cite></dd>
 
-    <dt><a name="SPARQL" id="SPARQL">[SPARQL]</a></dt>
+    <dt><a id="SPARQL">[SPARQL]</a></dt>
     <dd><cite>
         <a href="http://www.w3.org/TR/rdf-sparql-query/">SPARQL Query Language for RDF</a>,
         E. Prud'hommeaux and A. Seaborne, editors,
@@ -1915,14 +1904,14 @@ SELECT ?graph ?agent WHERE {
         January 15, 2008.
     </cite></dd>
 
-    <dt><a name="SWP" id="SWP">[SWP]</a></dt>
+    <dt><a id="SWP">[SWP]</a></dt>
     <dd><cite>
         <a href="http://www.w3.org/2004/03/trix/swp-2/">Semantic Web Publishing Vocabulary</a>,
         C. Bizer,
         RDF Schema vocabulary.
     </cite></dd>
 
-    <dt><a name="TriG" id="TriG">[TriG]</a></dt>
+    <dt><a id="TriG">[TriG]</a></dt>
     <dd><cite>
         <a href="http://www4.wiwiss.fu-berlin.de/bizer/TriG/">The TriG Syntax</a>,
         C. Bizer and R. Cyganiak,
@@ -1930,7 +1919,7 @@ SELECT ?graph ?agent WHERE {
         July 30, 2007.
     </cite></dd>
 
-    <dt><a name="TriX" id="TriX">[TriX]</a></dt>
+    <dt><a id="TriX">[TriX]</a></dt>
     <dd><cite>
         <a href="http://www.hpl.hp.com/techreports/2003/HPL-2003-268.html">RDF Triples in XML</a>,
         J. Carroll and P. Stickler,
@@ -1938,7 +1927,7 @@ SELECT ?graph ?agent WHERE {
         2003.
     </cite></dd>
 
-    <dt><a name="Turtle" id="Turtle">[Turtle]</a></dt>
+    <dt><a id="Turtle">[Turtle]</a></dt>
     <dd><cite>
         <a href="http://www.w3.org/TeamSubmission/turtle/">Turtle - Terse RDF Triple Language</a>,
         D. Beckett and T. Berners-Lee,
@@ -1950,7 +1939,7 @@ SELECT ?graph ?agent WHERE {
 </dl>
 <h3 id="informative-refs">Informative References</h3>
 <dl class="bib">
-    <dt><a name="FIPASC00070I" id="FIPASC00070I">[FIPA SC00070I]</a></dt>
+    <dt><a id="FIPASC00070I">[FIPA SC00070I]</a></dt>
     <dd><cite>
         <a href="http://www.fipa.org/specs/fipa00070/SC00070I.html">FIPA ACL Message Representation
             in String Specification</a>,
@@ -1958,23 +1947,23 @@ SELECT ?graph ?agent WHERE {
         December 3, 2002.
     </cite></dd>
 
-    <dt><a name="FIPAXC00011B" id="FIPAXC00011B">[FIPA XC00011B]</a></dt>
+    <dt><a id="FIPAXC00011B">[FIPA XC00011B]</a></dt>
     <dd><cite>
         <a href="http://www.fipa.org/specs/fipa00011/XC00011B.html">FIPA RDF Content Language Specification</a>,
         Foundation for Intelligent Physical Agents experimental specification,
         August 10, 2001.
     </cite></dd>
 
-    <dt><a name="linked-data-book" id="linked-data-book"></a>[Linked Data Book]</dt>
+    <dt><a id="linked-data-book"></a>[Linked Data Book]</dt>
     <dd><cite>
         <a href="http://linkeddatabook.com/editions/1.0/">Linked Data: Evolving the Web into a Global Data Space</a>
         (1st edition),
         T. Heath and C. Bizer,
-        Synthesis Lectures on the Semantic Web: Theory and Technology, 1:1, 1-136, Morgan & Claypool, 2011.
+        Synthesis Lectures on the Semantic Web: Theory and Technology, 1:1, 1-136, Morgan &amp; Claypool, 2011.
     </cite></dd>
 
-    <dt><a name="named-graphs" id="named-graphs">[Named Graphs]</a></dt>
-    <dd><cite><a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.59.4871&rep=rep1&type=pdf">Named graphs,
+    <dt><a id="named-graphs">[Named Graphs]</a></dt>
+    <dd><cite><a href="http://portal.acm.org/citation.cfm?id=1060835">Named graphs,
         provenance and trust</a></cite>,
         J. Carroll, C. Bizer, P. Hayes and P. Stickler,
         in Proceedings of the 14th International Conference on World Wide Web (WWW 2005).
@@ -1984,7 +1973,7 @@ SELECT ?graph ?agent WHERE {
 <hr/>
 <!-- ................................................................. -->
 
-<h2>C. <a id="acknowledgements" name="acknowledgements">Acknowledgements</a> (informative)</h2>
+<h2>C. <a id="acknowledgements">Acknowledgements</a> (informative)</h2>
 
 <p>
     This work has been supported in various stages by the
@@ -2006,7 +1995,7 @@ SELECT ?graph ?agent WHERE {
 <hr/>
 <!-- ................................................................. -->
 
-<h2>D. <a id="changes" name="changes">Changes</a> (informative)</h2>
+<h2>D. <a id="changes">Changes</a> (informative)</h2>
 <dl>
     <dt>3 May 2011</dt>
     <dd>Initial version</dd>
