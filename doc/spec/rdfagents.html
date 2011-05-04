@@ -41,16 +41,15 @@ You haven't actually seen this yet &lt;subtle hand gesture&gt;.</span>
         </dd>
         <dt>Latest version:</dt>
         <dd><a href="http://fortytwo.net/2011/rdfagents/spec">http://fortytwo.net/2011/rdfagents/spec</a></dd>
-        <dt>Previous version:</dt>
+        <!--<dt>Previous version:</dt>
         <dd>
             <a href="http://fortytwo.net/2011/rdfagents/spec-20110503">http://fortytwo.net/2011/rdfagents/spec-20110503</a>
-        </dd>
+        </dd>-->
         <dt>Editor:</dt>
         <dd rel="author foaf:maker dc:creator" rev="made foaf:made">
             <address about="http://fortytwo.net/foaf#josh" typeof="foaf:Person" style="font-style:normal">
-                <a property="foaf:name" rel="foaf:page" href="http://fortytwo.net">Joshua Shinavier</a>
+                <a property="foaf:name" rel="foaf:page" href="http://fortytwo.net">Joshua Shinavier</a> (RPI)
             </address>
-            <!--&lt;<a href="mailto:josh@fortytwo.net">josh@fortytwo.net</a>&gt;-->
         </dd>
     </dl>
 
@@ -257,7 +256,7 @@ You haven't actually seen this yet &lt;subtle hand gesture&gt;.</span>
     and the special <i>performative</i> role of the default graph of a dataset)
     which underlies information sharing in RDFAgents.
 
-    The representation of agents and graphs in RDF are described,
+    The representation of agents and graphs in RDF is described,
     along with a convention for sending and receiving information to and from other agents while recording
     provenance and attribution metadata.
 </p>
@@ -270,8 +269,8 @@ You haven't actually seen this yet &lt;subtle hand gesture&gt;.</span>
 
 <p>
     <a href="#protocols">Section 4</a> (Interaction protocols) describes the Query and Publish-Subscribe
-    interaction protocols which guide the flow of a conversation between two agents exchanging information in
-    a request-response pattern or a subscription-based pattern, respectively.
+    interaction protocols which guide the flow of a conversation between two agents (in
+    a request-response pattern or a subscription-based pattern, respectively).
 
     Exceptions to the normal interaction flow are also specified.
 </p>
@@ -506,9 +505,9 @@ SELECT ?agent ?address WHERE {
 </p>
 
 <p>
-    Specifically, graphs are represented as instances of
+    Graphs are represented as instances of
     <a href="http://www.w3.org/2004/03/trix/rdfg-1/Graph"><code>rdfg:Graph</code></a>,
-    and agents are represented as instances of
+    while agents are represented as instances of
     <a href="http://xmlns.com/foaf/spec/#term_Agent"><code>foaf:Agent</code></a>.
 
     An asserted graph is also implicitly a <i>warrant</i> or <i>warrant graph</i> in the sense of SWP:
@@ -545,8 +544,7 @@ SELECT ?agent ?address WHERE {
 </p>
 
 <p>
-    Each assertional message sent or received by an agent carries an RDF Dataset,
-    or collection of named graphs,
+    Each assertional message sent or received by an agent carries an RDF Dataset
     in which there are two distinguished resources:
 </p>
 
@@ -691,10 +689,10 @@ ex:4cbf3b9acd {
 
 <p>
     RDFAgents uses the least expressive subset, <code>fipa-sl0</code>,
-    of FIPA's standard Semantic Language [<a href="#FIPASC00008I">FIPA SC00008I</a>]
+    of FIPA's standard Semantic Language [<a href="#FIPASC00008I">FIPA SC00008I</a>],
     for agent communication.
 
-    The Semantic Language is based on S-expression syntax,
+    The Semantic Language can be serialized using S-expression syntax,
     as in the Lisp family of programming languages,
     and permits the expression of <i>propositions</i> or statements of truth,
     <i>actions</i> representing speech acts,
@@ -837,9 +835,10 @@ SELECT ?graph ?agent ?address WHERE {
     </li>
     <li><code>rdf-nquads</code>: the language of expressions in the N-Quads [<a href="#NQuads">N-Quads</a>] format,
         which extends N-Triples with context.
-        In RDFAgents, the context component of an N-Quads tuple must be a graph name.
-        If a tuple has no context component, it represents a statement in the default graph;
-        otherwise, it represents a statement in the graph thus named.
+        In RDFAgents, the optional context component of an N-Quads tuple must be a graph name.
+        If a tuple has a context component,
+        it represents a statement in the graph thus named.
+        Otherwise, it represents a statement in the default graph.
     </li>
     <li><code>rdf-trig</code>: the language of expressions in the TriG [<a href="#TriG">TriG</a>] format,
         which expressly supports Named Graphs and RDF Datasets.
@@ -847,7 +846,7 @@ SELECT ?graph ?agent ?address WHERE {
     </li>
     <li><code>rdf-trix</code>: the language of expressions in the TriX [<a href="#TriX">TriX</a>] XML-based format
         with support for graph names.
-        Named and unnamed graphs are interpreted as in <code>rdf-trig</code>.
+        Named and unnamed graphs are handled as in <code>rdf-trig</code>.
     </li>
 </ul>
 
@@ -856,7 +855,7 @@ SELECT ?graph ?agent ?address WHERE {
     where supporting a language means that the platform can both parse and write the full range of valid
     expressions in the language (to and from the corresponding RDF Datasets).
 
-    However, an RDFAgents platform need not support all of the above languages.
+    However, an RDFAgents platform need not support all of the above.
 
     For the sake of interoperability,
     it is recommended that the <code>rdf-xml</code> and <code>rdf-nquads</code> languages be supported,
@@ -902,7 +901,7 @@ SELECT ?graph ?agent ?address WHERE {
         This may result in a significant loss of information,
         so the use of a Named Graph format is strongly recommended
         (and also necessary in any application requiring the communication of provenance metadata).
-        However, this step will not invalidate the remaining information,
+        However, this loss will not invalidate the remaining information,
         thanks to the Open World Assumption.
     </li>
 </ol>
@@ -1052,8 +1051,8 @@ SELECT ?graph ?agent ?address WHERE {
     :conversation-id c976b710a5
     :language rdf-trig
     :content &quot;
-@prefix ex: &lt;http://example.org/&gt; .
 @prefix dc: &lt;http://purl.org/dc/terms/&gt; .
+@prefix ex: &lt;http://example.org/&gt; .
 @prefix sioc: &lt;http://rdfs.org/sioc/ns#&gt; .
 @prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt; .
 
@@ -1140,7 +1139,7 @@ SELECT ?graph ?agent ?address WHERE {
     are subject to the same constraints as a query in the Query protocol,
     the only difference being the performative and the <code>protocol</code> field of the message.
 
-    Specifically, the subscription request must contain a <code>describe</code> query form
+    In particular, the subscription request must contain a <code>describe</code> functional term
     in the <code>fipa-sl0</code> content language whose argument is the topic of the desired stream.
 </p>
 
@@ -1223,8 +1222,8 @@ SELECT ?graph ?agent ?address WHERE {
     :conversation-id 089f5b468e
     :language rdf-trig
     :content &quot;
-@prefix ex: &lt;http://example.org/&gt; .
 @prefix dc: &lt;http://purl.org/dc/terms/&gt; .
+@prefix ex: &lt;http://example.org/&gt; .
 @prefix sioc: &lt;http://rdfs.org/sioc/ns#&gt; .
 @prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt; .
 
@@ -1335,7 +1334,7 @@ SELECT ?graph ?agent ?address WHERE {
 </p>
 
 <p>
-    The resource denoted by the agent name is explicitly typed an instance of
+    The resource denoted by the agent name is explicitly typed as an instance of
     <a href="http://xmlns.com/foaf/spec/#term_Agent"><code>foaf:Agent</code></a>
     in the receiver's dataset of every assertional message it sends.
 </p>
@@ -1394,17 +1393,17 @@ SELECT ?graph ?agent ?address WHERE {
 
 <p>
     RDFAgents does not mandate the use of FIPA's <i>resolvers</i> parameter of the agent ID (although it does not
-    probihit its use).
+    probihit its use), which aids in discovering additional transport addresses of an agent.
 
     No specialized lookup services are provided for agent names.
 
-    Instead, transport addresses are inferred from the RDF descriptions of agents.
+    Instead, transport addresses are extracted from the RDF descriptions of agents.
 
     An RDFAgents platform must be capable of extracting contact information from RDF Datasets according to the
     RDFAgents vocabulary (see the example SPARQL query <a href="#sending-messages">above</a>)
     and mapping the URIs thus discovered to transport addresses.
 
-    Any invalid transport addresses are simply to be discarded.
+    Any URIs which are not valid URLs (and therefore not valid transport addresses) are simply to be discarded.
 </p>
 
 <p>
@@ -1419,8 +1418,9 @@ SELECT ?graph ?agent ?address WHERE {
 
 <p>
     In order to make use of this information,
-    an RDFAgents platform must recognize the <code>xmpp</code> URI scheme as corresponding to the XMPP protocol,
-    and include a XMPP message transport service with access to an XMPP network (preferably, the global XMPP network).
+    an RDFAgents platform must know that the <code>xmpp</code> URI scheme corresponds to the XMPP protocol,
+    and it must have access to a XMPP message transport service
+    (preferably, one with a connection to a public XMPP server).
 </p>
 
 <!--Furthermore, the combination of a name and a transport address is expected to be sufficient for the delivery of a message
@@ -1475,7 +1475,7 @@ through the Internet without the assistance of specialized intermediary services
 
 <p>
     RDFAgents does not make use of FIPA's experimental RDF content language [<a href="#FIPAXC00011B">FIPA XC00011B</a>].
-    This language predates Named Graphs (using RDF reification for statement metadata)
+    This language predates Named Graphs (using RDF reification for statement metadata instead)
     and differs in intent from RDFAgents,
     which separates the representation of <i>knowledge</i> in RDF with Named Graphs
     from the representation of <i>actions</i> in FIPA's built-in Semantic Language.
@@ -1533,7 +1533,7 @@ through the Internet without the assistance of specialized intermediary services
     It proceeds as follows.
 </p>
 <ol>
-    <li>Accept the default graph. This is assumed to be a set of statements asserted by the agent itself.</li>
+    <li>Accept the default graph. This is considered to be a set of statements asserted by the agent to itself.</li>
     <li>Find all <code>swp:assertedBy</code> statements in the graph(s) just accepted.</li>
     <li>For the subject of each of those statements,
         if it is the name of graph which has not yet been accepted, accept that graph.
@@ -1556,10 +1556,10 @@ SELECT ?graph ?agent WHERE {
 <p>
     For each result, we apply some criterion to <code>agent</code>
     (perhaps looking it up in a global whitelist of trusted peers or blacklist of known spammers)
-    and rejecting <code>graph</code> if the agent fails to meet the criterion.
+    and reject <code>graph</code> if the agent fails to meet this criterion.
 
-    In more application-specific contexts, additional metadata relating to belief and trust might be used
-    to support a Web of Trust among communicating agents.
+    In more application-specific contexts, additional metadata relating to belief and trust could be used
+    in order to support a Web of Trust among communicating agents.
 </p>
 
 <h3>6.2 <a id="information-discovery">Information discovery</a></h3>
@@ -1657,7 +1657,7 @@ SELECT ?graph ?agent WHERE {
 <p>
     A <a href="http://www.w3.org/TR/rdf-concepts/#dfn-URI-reference">URI reference</a>
     is constructed with the <code>uri</code> function,
-    whose only parameter expects a Unicode string encoded as described in
+    whose only parameter expects a Unicode string encoded as in
     [<a href="#RDFCONCEPTS">RDF Concepts</a>].
 </p>
 
