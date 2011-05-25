@@ -688,7 +688,7 @@ ex:4cbf3b9acd {
 </p>
 
 <p>
-    RDFAgents uses the least expressive subset, <code>fipa-sl0</code>,
+    RDFAgents uses a reduced expressivity subset, <code>fipa-sl2</code>,
     of FIPA's standard Semantic Language [<a href="#FIPASC00008I">FIPA SC00008I</a>],
     for agent communication.
 
@@ -780,11 +780,11 @@ SELECT ?graph ?agent ?address WHERE {
 
 <p>
     The propositional content of a message is expressed in a FIPA <i>content language</i>,
-    for which RDFAgents uses either <code>fipa-sl0</code>
+    for which RDFAgents uses either <code>fipa-sl2</code>
     or one of a number of special-purpose languages based on RDF document formats,
     depending on role played by the message.
 
-    For example, an agent uses <code>fipa-sl0</code>
+    For example, an agent uses <code>fipa-sl2</code>
     to subscribe to a stream of updates about a Semantic Web resource,
     while the content of the updates it receives is expressed in TriG, N-Quads, or another RDF format.
 
@@ -793,7 +793,7 @@ SELECT ?graph ?agent ?address WHERE {
 
     Messages for all other purposes
     (for example, posing a query, requesting or confirming a subscription)
-    use <code>fipa-sl0</code> or nothing at all.
+    use <code>fipa-sl2</code> or nothing at all.
 </p>
 
 <p>
@@ -802,7 +802,7 @@ SELECT ?graph ?agent ?address WHERE {
     while RDF content is implicitly grounded in the universal representational space of the Semantic Web.
 
     Throughout this specification, when a message is required to use the <code>rdfagents</code> domain ontology,
-    its content is understood to be expressed in the <code>fipa-sl0</code> content language, and vice versa.
+    its content is understood to be expressed in the <code>fipa-sl2</code> content language, and vice versa.
 
     This must be indicated in each message through the use of the FIPA
     <code>language</code> and <code>ontology</code> parameters
@@ -971,14 +971,14 @@ SELECT ?graph ?agent ?address WHERE {
     The client initiates a Query interaction by posing a query to the server in the form of a FIPA
     <code>query-ref</code> message,
     where the query is expressed using an RDFAgents query form (see <a href="#describe-query">below</a>)
-    in the <code>fipa-sl0</code> content language.
+    in the <code>fipa-sl2</code> content language.
 </p>
 
 <p>
     Upon receipt of the query, the server either agrees or refuses to evaluate it.
 
     If the server refuses, it sends a <code>refuse</code> message to the client
-    whose content is an explanation in the <code>fipa-sl0</code> content language, completing the interaction.
+    whose content is an explanation in the <code>fipa-sl2</code> content language, completing the interaction.
 
     If the server agrees, it chooses whether to send an <code>agree</code> notification to the client
     or to proceed directly to the evaluation of the query.
@@ -1030,7 +1030,7 @@ SELECT ?graph ?agent ?address WHERE {
 	:addresses (sequence xmpp:rdfnews@example.org)))
     :protocol fipa-query
     :conversation-id c976b710a5
-    :language fipa-sl0
+    :language fipa-sl2
     :ontology rdfagents
     :content "(describe (uri http://dbpedia.org/resource/Beijing) :language rdf-trig)")
 </pre>
@@ -1140,7 +1140,7 @@ SELECT ?graph ?agent ?address WHERE {
     the only difference being the performative and the <code>protocol</code> field of the message.
 
     In particular, the subscription request must contain a <code>describe</code> functional term
-    in the <code>fipa-sl0</code> content language whose argument is the topic of the desired stream.
+    in the <code>fipa-sl2</code> content language whose argument is the topic of the desired stream.
 </p>
 
 <p>
@@ -1148,7 +1148,7 @@ SELECT ?graph ?agent ?address WHERE {
     register a corresponding subscription.
 
     If the publisher refuses, it sends a <code>refuse</code> message to the client
-    whose content is an explanation in the <code>fipa-sl0</code> content language, completing the interaction.
+    whose content is an explanation in the <code>fipa-sl2</code> content language, completing the interaction.
 
     If the publisher agrees, it must send an <code>agree</code> notification as its first message to the
     subscriber in the current interaction (i.e. before it sends any updates).
@@ -1186,7 +1186,7 @@ SELECT ?graph ?agent ?address WHERE {
         :addresses (sequence xmpp:rdfnews@example.org)))
     :protocol fipa-subscribe
     :conversation-id  089f5b468e
-    :language fipa-sl0
+    :language fipa-sl2
     :ontology rdfagents
     :content "(describe (uri http://dbpedia.org/resource/Beijing) :language rdf-trig)")
 </pre>
@@ -1649,7 +1649,7 @@ SELECT ?graph ?agent WHERE {
     The RDFAgents domain ontology, identified by <code>rdfagents</code>,
     provides a simple model of queries and error explanations for use in FIPA messages.
 
-    It is used in combination with a grammar of legal S-expressions in the <code>fipa-sl0</code> content language.
+    It is used in combination with a grammar of legal S-expressions in the <code>fipa-sl2</code> content language.
 </p>
 
 <h3>A.1 <a id="rdf-resources">RDF resources</a></h3>
