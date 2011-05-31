@@ -13,6 +13,7 @@
     <modules>
         <module>core</module>
         <module>jade</module>
+        <module>sail</module>
     </modules>
 
     <build>

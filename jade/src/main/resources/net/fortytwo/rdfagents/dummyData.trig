@@ -1,0 +1,44 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rdfg: <http://www.w3.org/2004/03/trix/rdfg-1/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix swp:  <http://www.w3.org/2004/03/trix/swp-2/> .
+@prefix :     <http://example.org/ns#> .
+
+{
+    :arthur a foaf:Person ;
+        foaf:knows :ford ;
+        foaf:mbox <mailto:arthur@example.org> .
+
+    :ford a foaf:Agent ;
+        foaf:mbox <mailto:ford@example.org> ;
+		foaf:knows :arthur, :zaphod ;
+		rdfs:comment "he really knows where his towel is" .
+
+	:zaphod a foaf:Agent ;
+	    foaf:knows :ford ;
+	    foaf:mbox <mailto:zaphod@example.org> .
+
+	:wowbagger a foaf:Agent ;
+	    foaf:knows :arthur ;
+	    foaf:mbox <mailto:wowbagger@example.org> .
+
+	:zaphodsGraph a rdfg:Graph ;
+	    swp:assertedBy :zaphodsGraph ;
+	    swp:authority :zaphod .
+
+	:wowbaggersGraph a rdfg:Graph ;
+	    swp:assertedBy :wowbaggersGraph ;
+	    swp:authority :wowbagger .
+}
+
+:zaphodsGraph
+{
+	:zaphod a foaf:Agent;
+		rdfs:comment "so cool you could keep a side of meat in him for a month".
+}
+
+:wowbaggersGraph
+{
+    :arthur a foaf:Person;
+    	rdfs:comment "he's a jerk".
+}

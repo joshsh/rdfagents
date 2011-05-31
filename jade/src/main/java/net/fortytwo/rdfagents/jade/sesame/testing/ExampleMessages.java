@@ -1,7 +1,6 @@
 package net.fortytwo.rdfagents.jade.sesame.testing;
 
 import jade.content.ContentManager;
-import jade.content.abs.AbsIRE;
 import jade.content.lang.Codec;
 import jade.content.lang.sl.SLCodec;
 import jade.content.onto.BasicOntology;
@@ -9,7 +8,7 @@ import jade.core.AID;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.StringACLCodec;
-import net.fortytwo.rdfagents.jade.onto.RDFAgentsOntology;
+import net.fortytwo.rdfagents.jade.RDFAgentsOntology;
 
 import java.util.Random;
 
@@ -34,7 +33,7 @@ public class ExampleMessages {
             "\t<http://rdf.freebase.com/ns/m/047txg>,\n" +
             "\t<http://sws.geonames.org/1816670/> ;\n" +
             "    [...]",
-            EXAMPLE_DESCRIBE_QUERY = "(describe (resource http://dbpedia.org/resource/Beijing) :language rdf-trig)";
+            EXAMPLE_DESCRIBE_QUERY = "(describe (uri http://dbpedia.org/resource/Beijing) :language rdf-trig)";
 
     public static void main(final String[] args) throws Exception {
         Random r = new Random();
@@ -81,7 +80,7 @@ public class ExampleMessages {
         m.setConversationId(convId);
         m.setLanguage(codec.getName());
         m.setOntology(RDFAgentsOntology.getInstance().getName());
-        m.setContent("(describe (resource \"http://dbpedia.org/resource/Beijing\"))");
+        m.setContent("(describe (uri \"http://dbpedia.org/resource/Beijing\"))");
         print(m);
 
         m = new ACLMessage(ACLMessage.INFORM_REF);

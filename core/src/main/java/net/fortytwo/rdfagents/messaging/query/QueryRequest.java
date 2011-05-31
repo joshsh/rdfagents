@@ -9,16 +9,16 @@ import net.fortytwo.rdfagents.model.AgentReference;
  */
 public abstract class QueryRequest<Q> {
     private final Q query;
-    private final AgentReference participant;
+    private final AgentReference remoteParticipant;
 
     /**
      * @param query       the query to answer
-     * @param participant the identity of the remote participant who is requested to answer the query
+     * @param remoteParticipant the identity of the remote participant who is requested to answer the query
      */
     public QueryRequest(final Q query,
-                        final AgentReference participant) {
+                        final AgentReference remoteParticipant) {
         this.query = query;
-        this.participant = participant;
+        this.remoteParticipant = remoteParticipant;
     }
 
     /**
@@ -31,7 +31,7 @@ public abstract class QueryRequest<Q> {
     /**
      * @return the identity of the remote participant who is requested to answer the query
      */
-    public AgentReference getParticipant() {
-        return participant;
+    public AgentReference getRemoteParticipant() {
+        return remoteParticipant;
     }
 }

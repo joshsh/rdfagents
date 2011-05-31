@@ -7,7 +7,6 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
 import net.fortytwo.rdfagents.util.Configuration;
 import net.fortytwo.rdfagents.RDFAgents;
-import net.fortytwo.rdfagents.jade.RDFJadeHelper;
 import net.fortytwo.rdfagents.jade.sesame.behaviors.QueryAnsweringBehavior;
 import net.fortytwo.rdfagents.util.properties.PropertyException;
 import net.fortytwo.rdfagents.util.properties.TypedProperties;
