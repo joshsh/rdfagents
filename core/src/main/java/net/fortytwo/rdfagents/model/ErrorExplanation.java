@@ -53,4 +53,8 @@ public class ErrorExplanation {
     public String getMessage() {
         return message;
     }
+
+    public String toString() {
+        return type + "(" + message + ")";
+    }
 }

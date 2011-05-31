@@ -1,8 +1,9 @@
 package net.fortytwo.rdfagents.messaging.query;
 
-import net.fortytwo.rdfagents.model.Agent;
-import net.fortytwo.rdfagents.model.AgentReference;
+import net.fortytwo.rdfagents.messaging.FailureException;
 import net.fortytwo.rdfagents.messaging.Role;
+import net.fortytwo.rdfagents.model.AgentReference;
+import net.fortytwo.rdfagents.model.ErrorExplanation;
 
 /**
  * The agent role of answering queries posed by other agents.
@@ -15,17 +16,13 @@ import net.fortytwo.rdfagents.messaging.Role;
  */
 public abstract class QueryServer<Q, A> extends Role {
 
-    protected enum Decision {ANSWER_NOW, ANSWER_LATER, REFUSE}
+    public enum Decision {ANSWER_WITH_CONFIRMATION, ANSWER_WITHOUT_CONFIRMATION, REFUSE}
 
-    protected enum Outcome {SUCCESS, FAILURE}
-
-    private boolean active = true;
-
-    public QueryServer(final Agent agent) {
+    public QueryServer(final AgentReference agent) {
         super(agent);
     }
 
-    protected abstract Commitment considerQueryRequest(Q query, AgentReference initiator);
+    public abstract Commitment considerQueryRequest(Q query, AgentReference initiator);
 
     /**
      * Evaluate a query to produce a result.
@@ -33,34 +30,9 @@ public abstract class QueryServer<Q, A> extends Role {
      * the actual query is answered independently of the initiator.
      *
      * @param query the query to answer
-     * @return a corresponding query result containing either the answer to the query or a failure message
+     * @return the answer to the query
      */
-    protected abstract QueryResponse<A> answer(Q query);
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public void handle(final Q query,
-                       final AgentReference initiator) {
-        Commitment c = considerQueryRequest(query, initiator);
-    }
-
-    protected Commitment answerNow() {
-        return new Commitment(Decision.ANSWER_NOW, null);
-    }
-
-    protected Commitment answerLater() {
-        return new Commitment(Decision.ANSWER_LATER, null);
-    }
-
-    protected Commitment refuse(final String message) {
-        return new Commitment(Decision.REFUSE, message);
-    }
+    public abstract A answer(Q query) throws FailureException;
 
     /**
      * A commitment (or lack thereof) to answer a query.
@@ -70,16 +42,12 @@ public abstract class QueryServer<Q, A> extends Role {
      */
     public class Commitment {
         public final Decision decision;
-        public final String message;
+        public final ErrorExplanation explanation;
 
         public Commitment(final Decision decision,
-                          final String message) {
+                          final ErrorExplanation explanation) {
             this.decision = decision;
-            this.message = message;
-
-            if (Decision.REFUSE == decision && (null == message || 0 == message.length())) {
-                throw new IllegalArgumentException("a non-empty refusal message must be provided");
-            }
+            this.explanation = explanation;
         }
     }
 

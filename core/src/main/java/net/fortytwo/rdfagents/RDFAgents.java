@@ -2,10 +2,17 @@ package net.fortytwo.rdfagents;
 
 import org.openrdf.model.impl.URIImpl;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.logging.Logger;
+
 /**
  * A collection of global constants for the RDFAgents messaging API.
  */
 public class RDFAgents {
+    private static final Logger LOGGER = Logger.getLogger(RDFAgents.class.getName());
+
     // Agent profile properties
     public static final String
             QUERY_ANSWERING_SUPPORTED = "behavior.query.answer.supported",
@@ -52,6 +59,21 @@ public class RDFAgents {
             return true;
         } catch (Throwable t) {
             return false;
+        }
+    }
+
+    public static String stackTraceToString(final Throwable t) {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try {
+            t.printStackTrace(new PrintStream(out));
+            return out.toString();
+        } finally {
+            try {
+                out.close();
+            } catch (IOException e) {
+                LOGGER.severe("failed to serialize stack trace.  Secondary error is: " + e);
+                e.printStackTrace(System.err);
+            }
         }
     }
 }

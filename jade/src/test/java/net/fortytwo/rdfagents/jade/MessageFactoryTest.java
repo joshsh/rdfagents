@@ -138,7 +138,7 @@ public class MessageFactoryTest extends RDFAgentsTestCase {
 
     public void testRequestQueryCancellation() throws Exception {
         ACLMessage query = messageFactory.poseQuery(sender, receiver, resourceX);
-        ACLMessage c = messageFactory.requestQueryCancellation(sender, receiver, query);
+        ACLMessage c = messageFactory.requestQueryCancellation(sender, receiver, query.getConversationId());
 
         assertIsCancellationRequest(c, query);
         assertEquals("fipa-query", c.getProtocol());
@@ -146,7 +146,7 @@ public class MessageFactoryTest extends RDFAgentsTestCase {
 
     public void testConfirmQueryCancellation() throws Exception {
         ACLMessage query = messageFactory.poseQuery(sender, receiver, resourceX);
-        ACLMessage c = messageFactory.requestQueryCancellation(sender, receiver, query);
+        ACLMessage c = messageFactory.requestQueryCancellation(sender, receiver, query.getConversationId());
         ACLMessage confirm = messageFactory.confirmQueryCancellation(receiver, sender, c);
 
         assertIsReply(confirm, c);
@@ -156,7 +156,7 @@ public class MessageFactoryTest extends RDFAgentsTestCase {
 
     public void testFailToCancelQuery() throws Exception {
         ACLMessage query = messageFactory.poseQuery(sender, receiver, resourceX);
-        ACLMessage c = messageFactory.requestQueryCancellation(sender, receiver, query);
+        ACLMessage c = messageFactory.requestQueryCancellation(sender, receiver, query.getConversationId());
         ErrorExplanation ex = new ErrorExplanation(ErrorExplanation.Type.InteractionExplired, "I don't remember you.");
         ACLMessage fail = messageFactory.failToCancelQuery(receiver, sender, c, ex);
 

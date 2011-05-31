@@ -1,5 +1,6 @@
 package net.fortytwo.rdfagents.messaging.subscribe;
 
+import net.fortytwo.rdfagents.model.AgentReference;
 import net.fortytwo.rdfagents.model.ErrorExplanation;
 import net.fortytwo.rdfagents.messaging.Role;
 import net.fortytwo.rdfagents.model.Agent;
@@ -12,7 +13,7 @@ import net.fortytwo.rdfagents.model.Agent;
  * @author Joshua Shinavier (http://fortytwo.net).
  */
 public abstract class Subscriber<Q, A> extends Role {
-    public Subscriber(final Agent client) {
+    public Subscriber(final AgentReference client) {
         super(client);
     }
 

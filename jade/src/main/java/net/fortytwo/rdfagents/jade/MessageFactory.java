@@ -142,7 +142,7 @@ public class MessageFactory {
                     }
                 }
             } else {
-                throw new FailureException("resource of unexpected type in query: " + message.getContent());
+                throw new NotUnderstoodException("resource of unexpected type in query: " + message.getContent());
             }
         } catch (NullPointerException e) {
             throw new NotUnderstoodException("invalid content for this type of message: " + message.getContent());
@@ -197,6 +197,21 @@ public class MessageFactory {
         }
     }
 
+    public ACLMessage notUnderstood(final ACLMessage replyTo,
+                                    final AgentReference sender,
+                                    final AgentReference intendedReceiver,
+                                    final ErrorExplanation explanation) {
+        ACLMessage message = createReplyTo(replyTo, sender, intendedReceiver, ACLMessage.NOT_UNDERSTOOD);
+
+        try {
+            addExplanation(message, explanation);
+        } catch (FailureException e) {
+            LOGGER.severe("failed to generate not-understood message: " + e.getExplanation());
+        }
+
+        return message;
+    }
+
     public ACLMessage poseQuery(final AgentReference sender,
                                 final AgentReference intendedReceiver,
                                 final Value subject,
@@ -225,7 +240,7 @@ public class MessageFactory {
 
     public ACLMessage agreeToAnswerQuery(final AgentReference sender,
                                          final AgentReference intendedReceiver,
-                                         final ACLMessage replyTo) throws FailureException {
+                                         final ACLMessage replyTo) throws FailureException, NotUnderstoodException {
         validateMessage(replyTo, FIPANames.InteractionProtocol.FIPA_QUERY, ACLMessage.QUERY_REF);
 
         ACLMessage message = createReplyTo(replyTo, sender, intendedReceiver, ACLMessage.AGREE);
@@ -248,33 +263,37 @@ public class MessageFactory {
     public ACLMessage failToInformOfQueryResult(final AgentReference sender,
                                                 final AgentReference intendedReceiver,
                                                 final ACLMessage request,
-                                                final ErrorExplanation explanation) throws FailureException {
+                                                final ErrorExplanation explanation) throws NotUnderstoodException {
         validateMessage(request, FIPANames.InteractionProtocol.FIPA_QUERY, ACLMessage.QUERY_REF);
 
         ACLMessage message = createReplyTo(request, sender, intendedReceiver, ACLMessage.FAILURE);
 
-        addExplanation(message, explanation);
+        try {
+            addExplanation(message, explanation);
+        } catch (FailureException e) {
+            LOGGER.severe("failed to generate failure message: " + e.getExplanation());
+        }
 
         return message;
     }
 
     public ACLMessage requestQueryCancellation(final AgentReference sender,
                                                final AgentReference intendedReceiver,
-                                               final ACLMessage query) throws FailureException {
-        validateMessage(query, FIPANames.InteractionProtocol.FIPA_QUERY, ACLMessage.QUERY_REF);
+                                               final String conversationId) throws FailureException {
+        //validateMessage(query, FIPANames.InteractionProtocol.FIPA_QUERY, ACLMessage.QUERY_REF);
 
         ACLMessage message = new ACLMessage(ACLMessage.CANCEL);
         message.setSender(toAID(sender));
         message.addReceiver(toAID(intendedReceiver));
         message.setProtocol(FIPANames.InteractionProtocol.FIPA_QUERY);
-        message.setConversationId(query.getConversationId());
+        message.setConversationId(conversationId);
 
         return message;
     }
 
     public ACLMessage confirmQueryCancellation(final AgentReference sender,
                                                final AgentReference intendedReceiver,
-                                               final ACLMessage request) throws FailureException {
+                                               final ACLMessage request) throws FailureException, NotUnderstoodException {
         validateMessage(request, FIPANames.InteractionProtocol.FIPA_QUERY, ACLMessage.CANCEL);
 
         ACLMessage message = createReplyTo(request, sender, intendedReceiver, ACLMessage.CONFIRM);
@@ -285,12 +304,16 @@ public class MessageFactory {
     public ACLMessage failToCancelQuery(final AgentReference sender,
                                         final AgentReference intendedReceiver,
                                         final ACLMessage request,
-                                        final ErrorExplanation explanation) throws FailureException {
+                                        final ErrorExplanation explanation) throws NotUnderstoodException {
         validateMessage(request, FIPANames.InteractionProtocol.FIPA_QUERY, ACLMessage.CANCEL);
 
         ACLMessage message = createReplyTo(request, sender, intendedReceiver, ACLMessage.FAILURE);
 
-        addExplanation(message, explanation);
+        try {
+            addExplanation(message, explanation);
+        } catch (FailureException e) {
+            LOGGER.severe("failed to generate failure message: " + e.getExplanation());
+        }
 
         return message;
     }
@@ -311,7 +334,7 @@ public class MessageFactory {
     public ACLMessage refuseSubscriptionRequest(final AgentReference sender,
                                                 final AgentReference intendedReceiver,
                                                 final ACLMessage replyTo,
-                                                final ErrorExplanation explanation) throws FailureException {
+                                                final ErrorExplanation explanation) throws FailureException, NotUnderstoodException {
         validateMessage(replyTo, FIPANames.InteractionProtocol.FIPA_SUBSCRIBE, ACLMessage.SUBSCRIBE);
 
         ACLMessage message = createReplyTo(replyTo, sender, intendedReceiver, ACLMessage.REFUSE);
@@ -323,7 +346,7 @@ public class MessageFactory {
 
     public ACLMessage agreeToSubcriptionRequest(final AgentReference sender,
                                                 final AgentReference intendedReceiver,
-                                                final ACLMessage replyTo) throws FailureException {
+                                                final ACLMessage replyTo) throws FailureException, NotUnderstoodException {
         validateMessage(replyTo, FIPANames.InteractionProtocol.FIPA_SUBSCRIBE, ACLMessage.SUBSCRIBE);
 
         ACLMessage message = createReplyTo(replyTo, sender, intendedReceiver, ACLMessage.AGREE);
@@ -346,19 +369,23 @@ public class MessageFactory {
     public ACLMessage failToInformOfSubscriptionUpdate(final AgentReference sender,
                                                        final AgentReference intendedReceiver,
                                                        final ACLMessage request,
-                                                       final ErrorExplanation explanation) throws FailureException {
+                                                       final ErrorExplanation explanation) throws NotUnderstoodException {
         validateMessage(request, FIPANames.InteractionProtocol.FIPA_SUBSCRIBE, ACLMessage.SUBSCRIBE);
 
         ACLMessage message = createReplyTo(request, sender, intendedReceiver, ACLMessage.FAILURE);
 
-        addExplanation(message, explanation);
+        try {
+            addExplanation(message, explanation);
+        } catch (FailureException e) {
+            LOGGER.severe("failed to generate failure message: " + e.getExplanation());
+        }
 
         return message;
     }
 
     public ACLMessage requestSubscriptionCancellation(final AgentReference sender,
                                                       final AgentReference intendedReceiver,
-                                                      final ACLMessage subscribe) throws FailureException {
+                                                      final ACLMessage subscribe) throws FailureException, NotUnderstoodException {
         validateMessage(subscribe, FIPANames.InteractionProtocol.FIPA_SUBSCRIBE, ACLMessage.SUBSCRIBE);
 
         ACLMessage message = new ACLMessage(ACLMessage.CANCEL);
@@ -372,7 +399,7 @@ public class MessageFactory {
 
     public ACLMessage confirmSubscriptionCancellation(final AgentReference sender,
                                                       final AgentReference intendedReceiver,
-                                                      final ACLMessage request) throws FailureException {
+                                                      final ACLMessage request) throws FailureException, NotUnderstoodException {
         validateMessage(request, FIPANames.InteractionProtocol.FIPA_SUBSCRIBE, ACLMessage.CANCEL);
 
         ACLMessage message = createReplyTo(request, sender, intendedReceiver, ACLMessage.CONFIRM);
@@ -383,12 +410,16 @@ public class MessageFactory {
     public ACLMessage failToCancelSubscription(final AgentReference sender,
                                                final AgentReference intendedReceiver,
                                                final ACLMessage request,
-                                               final ErrorExplanation explanation) throws FailureException {
+                                               final ErrorExplanation explanation) throws NotUnderstoodException {
         validateMessage(request, FIPANames.InteractionProtocol.FIPA_SUBSCRIBE, ACLMessage.CANCEL);
 
         ACLMessage message = createReplyTo(request, sender, intendedReceiver, ACLMessage.FAILURE);
 
-        addExplanation(message, explanation);
+        try {
+            addExplanation(message, explanation);
+        } catch (FailureException e) {
+            LOGGER.severe("failed to generate failure message: " + e.getExplanation());
+        }
 
         return message;
     }
@@ -490,7 +521,7 @@ public class MessageFactory {
             contentManager.fillContent(message, exp);
 
             // TODO: remove me.  This is just a sanity check.
-            AbsContentElement el = contentManager.extractAbsContent(message);
+            //AbsContentElement el = contentManager.extractAbsContent(message);
         } catch (Codec.CodecException e) {
             throw new FailureException(e);
         } catch (OntologyException e) {
@@ -536,21 +567,21 @@ public class MessageFactory {
 
     private void validateMessage(final ACLMessage message,
                                  final String protocol,
-                                 final int performative) throws FailureException {
+                                 final int performative) throws NotUnderstoodException {
         if (null == message.getConversationId()) {
-            throw new FailureException("missing conversation ID");
+            throw new NotUnderstoodException("missing conversation ID");
         }
 
         if (null == message.getProtocol() || 0 == message.getProtocol().length()) {
-            throw new FailureException("missing protocol");
+            throw new NotUnderstoodException("missing protocol");
         }
 
         if (!message.getProtocol().equals(protocol)) {
-            throw new FailureException("unexpected protocol: " + message.getProtocol());
+            throw new NotUnderstoodException("unexpected protocol: " + message.getProtocol());
         }
 
         if (performative != message.getPerformative()) {
-            throw new FailureException("unexpected performative (code): " + performative);
+            throw new NotUnderstoodException("unexpected performative (code): " + performative);
         }
     }
 
@@ -751,7 +782,7 @@ public class MessageFactory {
         return a;
     }
 
-    private AgentReference fromAID(final AID s) throws NotUnderstoodException {
+    public AgentReference fromAID(final AID s) throws NotUnderstoodException {
         if (null == s.getName()) {
             throw new NotUnderstoodException("missing agent name in message");
         }
@@ -775,6 +806,11 @@ public class MessageFactory {
             }
         }
 
-        return new AgentReference(name, (URI[]) addresses.toArray());
+        URI[] uris = new URI[addresses.size()];
+        int i = 0;
+        for (URI u : addresses) {
+            uris[i++] = u;
+        }
+        return new AgentReference(name, uris);
     }
 }
