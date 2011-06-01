@@ -7,11 +7,8 @@ import jade.core.Specifier;
 import jade.util.leap.LinkedList;
 import jade.util.leap.List;
 import jade.wrapper.AgentContainer;
-import jade.wrapper.AgentController;
-import jade.wrapper.StaleProxyException;
-import net.fortytwo.rdfagents.model.RDFAgent;
-import net.fortytwo.rdfagents.model.RDFAgentsPlatform;
 import net.fortytwo.rdfagents.data.DatasetFactory;
+import net.fortytwo.rdfagents.model.RDFAgentsPlatform;
 
 import java.util.Properties;
 
@@ -64,33 +61,8 @@ public class RDFAgentsPlatformImpl extends RDFAgentsPlatform {
         container = rt.createMainContainer(p);
     }
 
-    public RDFAgent createAgent(final String localName,
-                                final String... addresses) throws RDFAgent.RDFAgentException {
-        RDFAgentImpl agent = new RDFAgentImpl(localName, this, addresses);
-
-        MessageFactory messageFactory = new MessageFactory(datasetFactory);
-        RDFJadeAgent.Wrapper w = new RDFJadeAgent.Wrapper(agent.getIdentity(), messageFactory);
-
-        try {
-            CondVar startUpLatch = new CondVar();
-
-            AgentController c = container.createNewAgent(localName, RDFJadeAgent.class.getName(),
-                    new Object[]{startUpLatch, w});
-            c.start();
-
-            // Wait until the agent starts up and notifies the Object
-            startUpLatch.waitOn();
-
-            agent.setController(c);
-        } catch (StaleProxyException e) {
-            throw new RDFAgent.RDFAgentException(e);
-        } catch (InterruptedException e) {
-            throw new RDFAgent.RDFAgentException(e);
-        }
-
-        agent.setJadeAgent(w.getJadeAgent());
-
-        return agent;
+    public AgentContainer getContainer() {
+        return container;
     }
 
     // Simple class behaving as a Condition Variable

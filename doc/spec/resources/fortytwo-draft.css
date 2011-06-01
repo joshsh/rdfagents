@@ -97,6 +97,10 @@ ul.toc, ol.toc {
     font-style: italic;
 }
 
+.normal {
+    font-style: normal;
+}
+
 pre.data {
     border: thin solid #C0C0FF;
     background-color: #F4F4FF;

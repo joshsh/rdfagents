@@ -2,8 +2,10 @@ package net.fortytwo.rdfagents;
 
 import net.fortytwo.rdfagents.data.DatasetFactory;
 import net.fortytwo.rdfagents.jade.QueryClientImpl;
+import net.fortytwo.rdfagents.jade.RDFAgentImpl;
 import net.fortytwo.rdfagents.jade.RDFAgentsPlatformImpl;
 import net.fortytwo.rdfagents.jade.SailBasedQueryServer;
+import net.fortytwo.rdfagents.linkeddata.LinkedDataAgent;
 import net.fortytwo.rdfagents.messaging.LocalFailure;
 import net.fortytwo.rdfagents.messaging.query.QueryClient;
 import net.fortytwo.rdfagents.model.Dataset;
@@ -29,19 +31,25 @@ import java.util.Properties;
  * Time: 7:12 PM
  */
 public class Demo {
+    private static final String NAME_PREFIX = "urn:agent:";
+
     private final Sail sail;
     private final DatasetFactory datasetFactory;
 
     private void run(final Properties config) throws Exception {
-        Value subject = uri("http://example.org/ns#arthur");
 
-        RDFAgentsPlatform p = new RDFAgentsPlatformImpl("agents.example.org", datasetFactory, 8888, config);
+        RDFAgentsPlatform p = new RDFAgentsPlatformImpl("rdfagents.fortytwo.net", datasetFactory, 8888, config);
 
-        RDFAgent a1 = p.createAgent("urn:agent1", "xmpp:patabot.1@fortytwo.net");
-        RDFAgent a2 = p.createAgent("urn:agent2", "xmpp:patabot.1@fortytwo.net");
+        RDFAgent a1 = new RDFAgentImpl(NAME_PREFIX + "agent1", p, "xmpp:patabot.1@fortytwo.net");
+        RDFAgent a2 = new RDFAgentImpl(NAME_PREFIX + "agent2", p, "xmpp:patabot.1@fortytwo.net");
         a2.setQueryServer(new SailBasedQueryServer(a2, sail));
 
+        Sail mem = new MemoryStore();
+        mem.initialize();
+        RDFAgent aLinked = new LinkedDataAgent(mem, NAME_PREFIX + "linked-data", p, "xmpp:patabot.1@fortytwo.net");
+
         QueryClient<Value, Dataset> client = new QueryClientImpl(a1);
+
         QueryClient.QueryCallback<Dataset> callback = new QueryClient.QueryCallback<Dataset>() {
             public void success(final Dataset answer) {
                 System.out.println("query has been successfully answered.  Answer follows:");
@@ -69,7 +77,9 @@ public class Demo {
             }
         };
 
-        client.submit(subject, a2.getIdentity(), callback);
+      //  client.submit(new URIImpl("http://example.org/ns#arthur"), a2.getIdentity(), callback);
+//        client.submit(new URIImpl("http://identi.ca/user/114"), aLinked.getIdentity(), callback);
+        client.submit(new URIImpl("http://xmlns.com/foaf/0.1/Person"), aLinked.getIdentity(), callback);
     }
 
     private URI uri(final String s) {

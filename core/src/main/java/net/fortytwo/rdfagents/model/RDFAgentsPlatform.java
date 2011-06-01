@@ -1,7 +1,6 @@
 package net.fortytwo.rdfagents.model;
 
 import net.fortytwo.rdfagents.data.DatasetFactory;
-import net.fortytwo.rdfagents.model.RDFAgent;
 
 /**
  * User: josh
@@ -25,7 +24,4 @@ public abstract class RDFAgentsPlatform {
     public DatasetFactory getDatasetFactory() {
         return datasetFactory;
     }
-
-    public abstract RDFAgent createAgent(final String localName,
-                                         final String... addresses) throws RDFAgent.RDFAgentException;
 }

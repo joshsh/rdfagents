@@ -22,8 +22,7 @@ public class RDFAgents {
             // TODO
             BASE_URI = "http://example.org/",
             RDFAGENTS_ONTOLOGY_NAME = "rdfagents",
-            RDFAGENTS_ACCEPT_PARAMETER = "X-rdfagents-accept",
-            RANDOM_URN_PREFIX = "urn:random:";
+            RDFAGENTS_ACCEPT_PARAMETER = "X-rdfagents-accept";
 
     public enum Protocol {
         Query("fipa-query"), Subscribe("fipa-subscribe");

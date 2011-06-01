@@ -69,13 +69,14 @@ public class MessageFactory {
         rdfAgentsOntology = RDFAgentsOntology.getInstance();
         contentManager.registerOntology(rdfAgentsOntology, RDFAgents.RDFAGENTS_ONTOLOGY_NAME);
 
-        LOGGER.info("created new content manager");
+        /*
+        LOGGER.info("created new message factory");
         for (String s : contentManager.getLanguageNames()) {
             LOGGER.info("\tlanguage: " + s);
         }
         for (String s : contentManager.getOntologyNames()) {
             LOGGER.info("\tontology: " + s);
-        }
+        }*/
     }
 
     public Value extractDescribeQuery(final ACLMessage message) throws MessageNotUnderstoodException, LocalFailure {

@@ -613,7 +613,7 @@ SELECT ?agent ?address WHERE {
     A corresponding receiver's dataset (of agent <code>ex:syndicator</code>):
 </p>
 <pre class="data">
-ex:f93bbef965 {
+&lt;urn:uuid:be0c72c6-2b8f-4134-b309-690039f8c419&gt; {
     ex:article137 a sioc:Post ;
         dc:title "1st Beijing International Film Festival kicked off on Saturday" ;
         dc:created "2011-04-25T10:43:35.000Z"^^xsd:dateTime ;
@@ -621,8 +621,8 @@ ex:f93bbef965 {
 }
 
 {
-    ex:f93bbef965 a rdfg:Graph ;
-        swp:assertedBy ex:f93bbef965 ;
+    &lt;urn:uuid:be0c72c6-2b8f-4134-b309-690039f8c419&gt; a rdfg:Graph ;
+        swp:assertedBy &lt;urn:uuid:be0c72c6-2b8f-4134-b309-690039f8c419&gt; ;
         swp:authority ex:rdfnews .
 
     ex:rdfnews a foaf:Agent ;
@@ -633,16 +633,16 @@ ex:f93bbef965 {
     A second-degree receiver's dataset (of agent <code>ex:consumer</code>):
 </p>
 <pre class="data">
-ex:f93bbef965 {
+&lt;urn:uuid:be0c72c6-2b8f-4134-b309-690039f8c419&gt; {
     ex:article137 a sioc:Post ;
         dc:title "1st Beijing International Film Festival kicked off on Saturday" ;
         dc:created "2011-04-25T10:43:35.000Z"^^xsd:dateTime ;
         sioc:topic &lt;http://dbpedia.org/resource/Beijing&gt; .
 }
 
-ex:4cbf3b9acd {
-    ex:f93bbef965 a rdfg:Graph ;
-        swp:assertedBy ex:f93bbef965 ;
+&lt;urn:uuid:3e9abe24-7dad-42ae-9a2a-a2502e1385f3&gt; {
+    &lt;urn:uuid:be0c72c6-2b8f-4134-b309-690039f8c419&gt; a rdfg:Graph ;
+        swp:assertedBy &lt;urn:uuid:be0c72c6-2b8f-4134-b309-690039f8c419&gt; ;
         swp:authority ex:rdfnews .
 
     ex:rdfnews a foaf:Agent ;
@@ -650,8 +650,8 @@ ex:4cbf3b9acd {
 }
 
 {
-    ex:4cbf3b9acd a rdfg:Graph ;
-        swp:assertedBy ex:4cbf3b9acd ;
+    &lt;urn:uuid:3e9abe24-7dad-42ae-9a2a-a2502e1385f3&gt; a rdfg:Graph ;
+        swp:assertedBy &lt;urn:uuid:3e9abe24-7dad-42ae-9a2a-a2502e1385f3&gt; ;
         swp:authority ex:syndicator .
 
     ex:syndicator a foaf:Agent ;
@@ -1322,6 +1322,7 @@ SELECT ?graph ?agent ?address WHERE {
     It should not encode any actual properties of the agent itself,
     nor should it disclose related information such as agent transport-description or location.
     It should also not be used as a form of authentication of the agent.
+    <span class="normal">[<a href="#FIPASC00001L">FIPA SC00001L</a>]</span>
 </p>
 
 <p>

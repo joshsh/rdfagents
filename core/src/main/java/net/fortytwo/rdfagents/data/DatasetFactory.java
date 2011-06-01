@@ -35,6 +35,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * User: josh
@@ -53,6 +54,8 @@ public class DatasetFactory {
             RDFG_GRAPH = new URIImpl(RDFG_NS + "Graph"),
             SWP_ASSERTEDBY = new URIImpl(SWP_NS + "assertedBy"),
             SWP_AUTHORITY = new URIImpl(SWP_NS + "authority");
+
+    private static final String UUID_URN_PREFIX = "urn:uuid:";
 
     private final ValueFactory valueFactory;
     private final Random random = new Random();
@@ -267,20 +270,7 @@ public class DatasetFactory {
     }
 
     private URI createGraphURI() {
-        // Local name will be a UUID (without the dashes).
-        byte[] bytes = new byte[32];
-
-        // Artificially constrain the fist character to be a letter, so the
-        // local part of the URI is N3-friendly.
-        bytes[0] = (byte) ('a' + random.nextInt(5));
-
-        // Remaining characters are hexadecimal digits.
-        for (int i = 1; i < 32; i++) {
-            int c = random.nextInt(16);
-            bytes[i] = (byte) ((c > 9) ? c - 10 + 'a' : c + '0');
-        }
-
-        return valueFactory.createURI(RDFAgents.RANDOM_URN_PREFIX + new String(bytes));
+        return valueFactory.createURI(UUID_URN_PREFIX + UUID.randomUUID());
     }
 
     private class DatasetCreator implements RDFHandler {
