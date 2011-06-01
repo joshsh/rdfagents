@@ -2,7 +2,7 @@ package net.fortytwo.rdfagents.jade;
 
 import jade.wrapper.AgentController;
 import jade.wrapper.StaleProxyException;
-import net.fortytwo.rdfagents.RDFAgent;
+import net.fortytwo.rdfagents.model.RDFAgent;
 import net.fortytwo.rdfagents.messaging.query.QueryClient;
 import net.fortytwo.rdfagents.messaging.query.QueryServer;
 import net.fortytwo.rdfagents.model.AgentReference;

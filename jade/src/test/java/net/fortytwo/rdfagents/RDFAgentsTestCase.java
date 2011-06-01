@@ -2,7 +2,7 @@ package net.fortytwo.rdfagents;
 
 import junit.framework.TestCase;
 import net.fortytwo.rdfagents.data.DatasetFactory;
-import net.fortytwo.rdfagents.data.RDFContentLanguage;
+import net.fortytwo.rdfagents.model.RDFContentLanguage;
 import net.fortytwo.rdfagents.jade.MessageFactory;
 import net.fortytwo.rdfagents.model.AgentReference;
 import net.fortytwo.rdfagents.model.Dataset;

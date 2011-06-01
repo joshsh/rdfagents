@@ -2,10 +2,11 @@ package net.fortytwo.rdfagents.jade;
 
 import net.fortytwo.rdfagents.data.DatasetQuery;
 import net.fortytwo.rdfagents.data.RecursiveDescribeQuery;
-import net.fortytwo.rdfagents.messaging.FailureException;
+import net.fortytwo.rdfagents.messaging.LocalFailure;
 import net.fortytwo.rdfagents.messaging.query.QueryServer;
 import net.fortytwo.rdfagents.model.AgentReference;
 import net.fortytwo.rdfagents.model.Dataset;
+import net.fortytwo.rdfagents.model.RDFAgent;
 import org.openrdf.model.Value;
 import org.openrdf.sail.Sail;
 
@@ -17,7 +18,7 @@ import org.openrdf.sail.Sail;
 public class SailBasedQueryServer extends QueryServer<Value, Dataset> {
     private final Sail sail;
 
-    public SailBasedQueryServer(final AgentReference agent,
+    public SailBasedQueryServer(final RDFAgent agent,
                                 final Sail sail) {
         super(agent);
 
@@ -31,11 +32,11 @@ public class SailBasedQueryServer extends QueryServer<Value, Dataset> {
     }
 
     @Override
-    public Dataset answer(final Value query) throws FailureException {
+    public Dataset answer(final Value query) throws LocalFailure {
         try {
             return new RecursiveDescribeQuery(query, sail).evaluate();
         } catch (DatasetQuery.DatasetQueryException e) {
-            throw new FailureException(e);
+            throw new LocalFailure(e);
         }
     }
 }

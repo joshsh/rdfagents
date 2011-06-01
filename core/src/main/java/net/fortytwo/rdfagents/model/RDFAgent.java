@@ -1,8 +1,6 @@
-package net.fortytwo.rdfagents;
+package net.fortytwo.rdfagents.model;
 
 import net.fortytwo.rdfagents.messaging.query.QueryServer;
-import net.fortytwo.rdfagents.model.AgentReference;
-import net.fortytwo.rdfagents.model.Dataset;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.impl.URIImpl;

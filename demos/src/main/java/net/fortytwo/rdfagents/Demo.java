@@ -1,14 +1,16 @@
 package net.fortytwo.rdfagents;
 
 import net.fortytwo.rdfagents.data.DatasetFactory;
-import net.fortytwo.rdfagents.data.RDFContentLanguage;
 import net.fortytwo.rdfagents.jade.QueryClientImpl;
 import net.fortytwo.rdfagents.jade.RDFAgentsPlatformImpl;
 import net.fortytwo.rdfagents.jade.SailBasedQueryServer;
-import net.fortytwo.rdfagents.messaging.FailureException;
+import net.fortytwo.rdfagents.messaging.LocalFailure;
 import net.fortytwo.rdfagents.messaging.query.QueryClient;
 import net.fortytwo.rdfagents.model.Dataset;
 import net.fortytwo.rdfagents.model.ErrorExplanation;
+import net.fortytwo.rdfagents.model.RDFAgent;
+import net.fortytwo.rdfagents.model.RDFAgentsPlatform;
+import net.fortytwo.rdfagents.model.RDFContentLanguage;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.impl.URIImpl;
@@ -37,7 +39,7 @@ public class Demo {
 
         RDFAgent a1 = p.createAgent("urn:agent1", "xmpp:patabot.1@fortytwo.net");
         RDFAgent a2 = p.createAgent("urn:agent2", "xmpp:patabot.1@fortytwo.net");
-        a2.setQueryServer(new SailBasedQueryServer(a2.getIdentity(), sail));
+        a2.setQueryServer(new SailBasedQueryServer(a2, sail));
 
         QueryClient<Value, Dataset> client = new QueryClientImpl(a1);
         QueryClient.QueryCallback<Dataset> callback = new QueryClient.QueryCallback<Dataset>() {
@@ -45,7 +47,7 @@ public class Demo {
                 System.out.println("query has been successfully answered.  Answer follows:");
                 try {
                     datasetFactory.write(System.out, answer, RDFContentLanguage.RDF_TRIG);
-                } catch (FailureException e) {
+                } catch (LocalFailure e) {
                     e.printStackTrace(System.err);
                 }
             }
@@ -62,7 +64,7 @@ public class Demo {
                 System.out.println("remote failure: " + explanation);
             }
 
-            public void localFailure(final Exception e) {
+            public void localFailure(final LocalFailure e) {
                 System.out.println("local failure: " + e + "\n" + RDFAgents.stackTraceToString(e));
             }
         };

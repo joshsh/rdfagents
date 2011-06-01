@@ -1,6 +1,6 @@
 package net.fortytwo.rdfagents.messaging;
 
-import net.fortytwo.rdfagents.model.AgentReference;
+import net.fortytwo.rdfagents.model.RDFAgent;
 
 /**
  * User: josh
@@ -8,13 +8,13 @@ import net.fortytwo.rdfagents.model.AgentReference;
  * Time: 3:37 PM
  */
 public abstract class Role {
-    private final AgentReference agent;
+    private final RDFAgent agent;
 
-    public Role(AgentReference agent) {
+    public Role(final RDFAgent agent) {
         this.agent = agent;
     }
 
-    public AgentReference getAgent() {
+    public RDFAgent getAgent() {
         return agent;
     }
 }

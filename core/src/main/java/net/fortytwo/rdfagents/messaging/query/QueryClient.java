@@ -1,9 +1,10 @@
 package net.fortytwo.rdfagents.messaging.query;
 
-import net.fortytwo.rdfagents.messaging.FailureException;
+import net.fortytwo.rdfagents.messaging.LocalFailure;
 import net.fortytwo.rdfagents.messaging.Role;
 import net.fortytwo.rdfagents.model.AgentReference;
 import net.fortytwo.rdfagents.model.ErrorExplanation;
+import net.fortytwo.rdfagents.model.RDFAgent;
 
 /**
  * An agent role for making query requests to other agents and handling responses.
@@ -13,7 +14,7 @@ import net.fortytwo.rdfagents.model.ErrorExplanation;
  * @author Joshua Shinavier (http://fortytwo.net).
  */
 public abstract class QueryClient<Q, A> extends Role {
-    public QueryClient(final AgentReference agent) {
+    public QueryClient(final RDFAgent agent) {
         super(agent);
     }
 
@@ -25,11 +26,11 @@ public abstract class QueryClient<Q, A> extends Role {
      * @param callback          a handler for all possible outcomes of the query request.
      *                          Note: its methods typically execute in a thread other than the calling thread.
      * @return the conversation ID, with which the interaction can later be cancelled
-     * @throws FailureException if the query can't be submitted
+     * @throws net.fortytwo.rdfagents.messaging.MessageRejectedException if the query can't be submitted
      */
     public abstract String submit(Q query,
                                   AgentReference remoteParticipant,
-                                  QueryCallback<A> callback) throws FailureException;
+                                  QueryCallback<A> callback) throws LocalFailure;
 
     /**
      * Submits a cancellation request for a previously submitted query.
@@ -38,10 +39,11 @@ public abstract class QueryClient<Q, A> extends Role {
      * @param remoteParticipant the remote query server
      * @param callback a handler for all possible outcomes of the cancellation request.
      *                 Note: its methods typically execute in a thread other than the calling thread.
+     * @throws net.fortytwo.rdfagents.messaging.MessageRejectedException if query cancellation fails locally
      */
     public abstract void cancel(String conversationId,
                                 AgentReference remoteParticipant,
-                                CancellationCallback callback) throws FailureException;
+                                CancellationCallback callback) throws LocalFailure;
 
     /**
      * A handler for all possible outcomes of a query request.
@@ -80,7 +82,7 @@ public abstract class QueryClient<Q, A> extends Role {
          *
          * @param e the local exception which has occurred
          */
-        void localFailure(Exception e);
+        void localFailure(LocalFailure e);
     }
 
     /**
@@ -104,6 +106,6 @@ public abstract class QueryClient<Q, A> extends Role {
          *
          * @param e the local exception which has occurred
          */
-        void localFailure(Exception e);
+        void localFailure(LocalFailure e);
     }
 }

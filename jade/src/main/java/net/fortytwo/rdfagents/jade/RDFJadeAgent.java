@@ -2,17 +2,18 @@ package net.fortytwo.rdfagents.jade;
 
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
-import jade.domain.FIPAAgentManagement.NotUnderstoodException;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import net.fortytwo.rdfagents.RDFAgents;
-import net.fortytwo.rdfagents.data.RDFContentLanguage;
-import net.fortytwo.rdfagents.messaging.FailureException;
+import net.fortytwo.rdfagents.messaging.LocalFailure;
+import net.fortytwo.rdfagents.messaging.MessageNotUnderstoodException;
+import net.fortytwo.rdfagents.messaging.MessageRejectedException;
 import net.fortytwo.rdfagents.messaging.query.QueryClient;
 import net.fortytwo.rdfagents.messaging.query.QueryServer;
 import net.fortytwo.rdfagents.model.AgentReference;
 import net.fortytwo.rdfagents.model.Dataset;
 import net.fortytwo.rdfagents.model.ErrorExplanation;
+import net.fortytwo.rdfagents.model.RDFContentLanguage;
 import org.openrdf.model.Value;
 
 import java.util.HashMap;
@@ -58,24 +59,29 @@ public class RDFJadeAgent extends Agent {
                             final QueryClient.QueryCallback<Dataset> callback) {
         return new Task() {
             public void execute() {
-                ACLMessage m;
+                String conversationId = null;
 
                 try {
+                    ACLMessage m;
+
                     m = messageFactory.poseQuery(self, server, resource);
-                } catch (FailureException e) {
+
+                    conversationId = m.getConversationId();
+                    setConversationId(conversationId);
+
+                    System.out.println("issuing a query for " + resource);
+                    System.out.println("--> " + m);
+
+                    queryCallbacks.put(conversationId, callback);
+
+                    send(m);
+                } catch (LocalFailure e) {
+                    forgetConversation(conversationId);
                     callback.localFailure(e);
-                    return;
+                } catch (Throwable e) {
+                    forgetConversation(conversationId);
+                    callback.localFailure(new LocalFailure(e));
                 }
-
-                //this.conversationId = m.getConversationId();
-                setConversationId(m.getConversationId());
-
-                System.out.println("issuing a query for " + resource);
-                System.out.println("--> " + m);
-
-                queryCallbacks.put(m.getConversationId(), callback);
-
-                send(m);
             }
         };
     }
@@ -85,28 +91,26 @@ public class RDFJadeAgent extends Agent {
                             final QueryClient.CancellationCallback callback) {
         return new Task() {
             public void execute() {
-                QueryClient.QueryCallback<Dataset> qc = queryCallbacks.get(conversationId);
+                try {
+                    QueryClient.QueryCallback<Dataset> qc = queryCallbacks.get(conversationId);
 
-                if (null == qc) {
-                    LOGGER.info("attempted to cancel query conversation "
-                            + conversationId + ", which has already concluded or does not exist");
-                } else {
-                    queryCallbacks.remove(conversationId);
+                    if (null == qc) {
+                        LOGGER.info("attempted to cancel query conversation "
+                                + conversationId + ", which has already concluded or does not exist");
+                    } else {
+                        queryCallbacks.remove(conversationId);
 
-                    ACLMessage m;
+                        ACLMessage m = messageFactory.requestQueryCancellation(self, server, conversationId);
 
-                    try {
-                        m = messageFactory.requestQueryCancellation(self, server, conversationId);
-                    } catch (FailureException e) {
-                        callback.localFailure(e);
-                        return;
+                        setConversationId(m.getConversationId());
+
+                        cancellationCallbacks.put(m.getConversationId(), callback);
+
+                        send(m);
                     }
-
-                    setConversationId(m.getConversationId());
-
-                    cancellationCallbacks.put(m.getConversationId(), callback);
-
-                    send(m);
+                } catch (Throwable e) {
+                    forgetConversation(conversationId);
+                    callback.localFailure(new LocalFailure(e));
                 }
             }
         };
@@ -168,7 +172,7 @@ public class RDFJadeAgent extends Agent {
                     try {
                         handleMessage(m);
                     } catch (Throwable t) {
-                        forgetConversation(m);
+                        forgetConversation(m.getConversationId());
                         LOGGER.severe("error while sending message: " + t + "\n" + RDFAgents.stackTraceToString(t));
                     }
                 } else {
@@ -196,8 +200,7 @@ public class RDFJadeAgent extends Agent {
         });
     }
 
-    private void forgetConversation(final ACLMessage m) {
-        String id = m.getConversationId();
+    private void forgetConversation(final String id) {
         if (null != id) {
             queryCallbacks.remove(id);
             cancellationCallbacks.remove(id);
@@ -231,19 +234,26 @@ public class RDFJadeAgent extends Agent {
         }
     }
 
-    private void handleMessage(final ACLMessage m) throws NotUnderstoodException {
-        AgentReference sender = messageFactory.fromAID(m.getSender());
+    private void handleMessage(final ACLMessage m) {
+        AgentReference sender = null;
+        try {
+            sender = messageFactory.fromAID(m.getSender());
+        } catch (MessageNotUnderstoodException e) {
+            // Since it may not be possible to contact the sender, just swallow the error.
+            LOGGER.warning("could not reply to unacceptable message: " + e.getMessage());
+            return;
+        }
 
         try {
             if (null == m.getConversationId()) {
-                throw new NotUnderstoodException("missing conversation ID");
+                throw new MessageNotUnderstoodException("missing conversation ID");
             }
 
             int performative = m.getPerformative();
             String protocol = m.getProtocol();
 
             if (null == protocol || 0 == protocol.length()) {
-                throw new NotUnderstoodException("missing protocol");
+                throw new MessageNotUnderstoodException("missing protocol");
             }
 
             if (protocol.equals(FIPANames.InteractionProtocol.FIPA_QUERY)) {
@@ -270,143 +280,134 @@ public class RDFJadeAgent extends Agent {
                         handleFailure(m);
                         break;
                     default:
-                        throw new NotUnderstoodException("unexpected performative (code): " + performative);
+                        throw new MessageNotUnderstoodException("unexpected performative (code): " + performative);
                 }
             } else if (protocol.equals(FIPANames.InteractionProtocol.FIPA_SUBSCRIBE)) {
                 // TODO
                 throw new IllegalStateException("not yet implemented...");
             } else {
-                throw new NotUnderstoodException("unexpected protocol: " + protocol);
+                throw new MessageNotUnderstoodException("unexpected protocol: " + protocol);
             }
-        } catch (NotUnderstoodException e) {
+        } catch (MessageNotUnderstoodException e) {
             ErrorExplanation exp = new ErrorExplanation(ErrorExplanation.Type.ExternalError, e.getMessage());
             send(messageFactory.notUnderstood(m, self, sender, exp));
-            forgetConversation(m);
+            forgetConversation(m.getConversationId());
+        } catch (MessageRejectedException e) {
+            send(messageFactory.failure(self, sender, m, e.getExplanation()));
+            forgetConversation(m.getConversationId());
+        } catch (LocalFailure e) {
+            ErrorExplanation exp = new ErrorExplanation(ErrorExplanation.Type.InternalError, e.getMessage());
+            send(messageFactory.notUnderstood(m, self, sender, exp));
+            forgetConversation(m.getConversationId());
         }
     }
 
-    private void handleFailure(final ACLMessage m) throws NotUnderstoodException {
+    private void handleFailure(final ACLMessage m) {
+        QueryClient.QueryCallback<Dataset> qc = queryCallbacks.get(m.getConversationId());
+        QueryClient.CancellationCallback cc = cancellationCallbacks.get(m.getConversationId());
+
         try {
-            ErrorExplanation exp = null;
             try {
-                exp = messageFactory.extractErrorExplanation(m);
-            } catch (FailureException e) {
-                LOGGER.severe("exception while extracting error explanation: " + e + "\n" + RDFAgents.stackTraceToString(e));
-                return;
+                ErrorExplanation exp = messageFactory.extractErrorExplanation(m);
+
+                // TODO: if there are both query and cancellation callbacks, then this is a little strange
+
+                if (null != qc) {
+                    qc.remoteFailure(exp);
+                }
+
+                if (null != cc) {
+                    cc.remoteFailure(exp);
+                }
+            } catch (MessageNotUnderstoodException e) {
+                // No need to send a message back to the offending agent (and possibly get in a exception war)
+                LOGGER.warning("failure message not understood: " + e.getMessage());
+            } catch (LocalFailure e) {
+                // TODO: again, pushing the error to both callbacks is strange (although sure to get the message across)
+
+                if (null != qc) {
+                    qc.localFailure(e);
+                }
+
+                if (null != cc) {
+                    cc.localFailure(e);
+                }
             }
-
-            QueryClient.QueryCallback<Dataset> qc = queryCallbacks.get(m.getConversationId());
-            QueryClient.CancellationCallback cc = cancellationCallbacks.get(m.getConversationId());
-
-            // TODO: if there are both query and cancellation callbacks, then this is a little strange
-
-            if (null != qc) {
-                qc.remoteFailure(exp);
-            }
-
-            if (null != cc) {
-                cc.remoteFailure(exp);
-            }
-
         } finally {
-            forgetConversation(m);
+            forgetConversation(m.getConversationId());
         }
     }
 
     private void handleQueryRequest(final ACLMessage m,
-                                    final AgentReference sender) throws NotUnderstoodException {
-        try {
-            assertRDFAgentsOntologyContent(m);
-            Value v = messageFactory.extractDescribeQuery(m);
+                                    final AgentReference sender) throws MessageNotUnderstoodException, LocalFailure, MessageRejectedException {
+        assertRDFAgentsOntologyContent(m);
+        Value v = messageFactory.extractDescribeQuery(m);
 
-            QueryServer.Commitment c = queryServer.considerQueryRequest(v, sender);
+        QueryServer.Commitment c = queryServer.considerQueryRequest(v, sender);
 
-            switch (c.decision) {
-                case ANSWER_WITH_CONFIRMATION:
-                    send(messageFactory.agreeToAnswerQuery(self, sender, m));
-                    send(messageFactory.informOfQueryResult(self, sender, m, queryServer.answer(v), RDFContentLanguage.RDF_NQUADS));
-                    break;
-                case ANSWER_WITHOUT_CONFIRMATION:
-                    send(messageFactory.informOfQueryResult(self, sender, m, queryServer.answer(v), RDFContentLanguage.RDF_NQUADS));
-                    break;
-                case REFUSE:
-                    send(messageFactory.refuseToAnswerQuery(self, sender, m, c.explanation));
-                    break;
-            }
-        } catch (FailureException e) {
-            send(messageFactory.failToInformOfQueryResult(self, sender, m, e.getExplanation()));
-            forgetConversation(m);
+        switch (c.decision) {
+            case ANSWER_WITH_CONFIRMATION:
+                send(messageFactory.agreeToAnswerQuery(self, sender, m));
+                send(messageFactory.informOfQueryResult(self, sender, m, queryServer.answer(v), RDFContentLanguage.RDF_NQUADS));
+                break;
+            case ANSWER_WITHOUT_CONFIRMATION:
+                send(messageFactory.informOfQueryResult(self, sender, m, queryServer.answer(v), RDFContentLanguage.RDF_NQUADS));
+                break;
+            case REFUSE:
+                send(messageFactory.refuseToAnswerQuery(self, sender, m, c.explanation));
+                break;
         }
     }
 
-    private void handleQueryResult(final ACLMessage m) throws NotUnderstoodException {
+    private void handleQueryResult(final ACLMessage m) throws MessageRejectedException, MessageNotUnderstoodException, LocalFailure {
+        QueryClient.QueryCallback<Dataset> callback = getQueryCallback(m);
+
         try {
             Dataset answer = messageFactory.extractDataset(m);
-            getQueryCallback(m).success(answer);
-            removeQueryCallback(m);
-        } catch (FailureException e) {
-            try {
-                getQueryCallback(m).localFailure(e);
-                forgetConversation(m);
-            } catch (FailureException e1) {
-                LOGGER.severe("error while generating failure message: " + e1);
-            }
+            callback.success(answer);
+        } finally {
+            forgetConversation(m.getConversationId());
         }
     }
 
-    private void handleQueryAccepted(final ACLMessage m) {
-        try {
-            getQueryCallback(m).agreed();
-        } catch (FailureException e) {
-            try {
-                getQueryCallback(m).localFailure(e);
-                forgetConversation(m);
-            } catch (FailureException e1) {
-                LOGGER.severe("error while generating failure message: " + e1);
-            }
-        }
+    private void handleQueryAccepted(final ACLMessage m) throws MessageRejectedException {
+        getQueryCallback(m).agreed();
     }
 
-    private void handleQueryRefused(final ACLMessage m) throws NotUnderstoodException {
+    private void handleQueryRefused(final ACLMessage m) throws MessageNotUnderstoodException, LocalFailure, MessageRejectedException {
         try {
             ErrorExplanation exp = messageFactory.extractErrorExplanation(m);
             getQueryCallback(m).refused(exp);
             removeQueryCallback(m);
-        } catch (FailureException e) {
-            try {
-                getQueryCallback(m).localFailure(e);
-                forgetConversation(m);
-            } catch (FailureException e1) {
-                LOGGER.severe("error while generating failure message: " + e1);
-            }
+        } finally {
+            forgetConversation(m.getConversationId());
         }
     }
 
     private void handleCancelQuery(final ACLMessage m,
-                                   final AgentReference sender) throws NotUnderstoodException {
-        ErrorExplanation exp = new ErrorExplanation(ErrorExplanation.Type.NotImplemented, "cancellation of queries is not yet supported");
-        send(messageFactory.failToCancelQuery(self, sender, m, exp));
-    }
-
-    private void handleQueryCancellationConfirmed(final ACLMessage m) {
+                                   final AgentReference sender) throws MessageNotUnderstoodException {
         try {
-            getQueryCancellationCallback(m).success();
-            removeQueryCancellationCallback(m);
-        } catch (FailureException e) {
-            try {
-                getQueryCallback(m).localFailure(e);
-                forgetConversation(m);
-            } catch (FailureException e1) {
-                LOGGER.severe("error while generating failure message: " + e1);
-            }
+            ErrorExplanation exp = new ErrorExplanation(ErrorExplanation.Type.NotImplemented, "cancellation of queries is not yet supported");
+            send(messageFactory.failToCancelQuery(self, sender, m, exp));
+        } finally {
+            forgetConversation(m.getConversationId());
         }
     }
 
-    private QueryClient.QueryCallback<Dataset> getQueryCallback(ACLMessage m) throws FailureException {
+    private void handleQueryCancellationConfirmed(final ACLMessage m) throws MessageRejectedException {
+        try {
+            getQueryCancellationCallback(m).success();
+            removeQueryCancellationCallback(m);
+        } finally {
+            forgetConversation(m.getConversationId());
+        }
+    }
+
+    private QueryClient.QueryCallback<Dataset> getQueryCallback(ACLMessage m) throws MessageRejectedException {
         QueryClient.QueryCallback<Dataset> callback = queryCallbacks.get(m.getConversationId());
 
         if (null == callback) {
-            throw new FailureException(
+            throw new MessageRejectedException(
                     new ErrorExplanation(
                             ErrorExplanation.Type.InteractionExplired,
                             "no such conversation: " + m.getConversationId()));
@@ -419,11 +420,11 @@ public class RDFJadeAgent extends Agent {
         queryCallbacks.remove(m.getConversationId());
     }
 
-    private QueryClient.CancellationCallback getQueryCancellationCallback(ACLMessage m) throws FailureException {
+    private QueryClient.CancellationCallback getQueryCancellationCallback(ACLMessage m) throws MessageRejectedException {
         QueryClient.CancellationCallback callback = cancellationCallbacks.get(m.getConversationId());
 
         if (null == callback) {
-            throw new FailureException(
+            throw new MessageRejectedException(
                     new ErrorExplanation(
                             ErrorExplanation.Type.InteractionExplired,
                             "no such conversation: " + m.getConversationId()));
@@ -436,10 +437,10 @@ public class RDFJadeAgent extends Agent {
         cancellationCallbacks.remove(m.getConversationId());
     }
 
-    private void assertRDFAgentsOntologyContent(final ACLMessage m) throws NotUnderstoodException {
+    private void assertRDFAgentsOntologyContent(final ACLMessage m) throws MessageNotUnderstoodException {
         String ontology = m.getOntology();
         if (null == ontology) {
-            throw new NotUnderstoodException("missing ontology parameter");
+            throw new MessageNotUnderstoodException("missing ontology parameter");
         }
     }
 }

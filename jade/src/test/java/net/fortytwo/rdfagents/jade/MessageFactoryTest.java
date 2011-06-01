@@ -5,7 +5,7 @@ import jade.lang.acl.ACLMessage;
 import net.fortytwo.rdfagents.model.ErrorExplanation;
 import net.fortytwo.rdfagents.RDFAgents;
 import net.fortytwo.rdfagents.RDFAgentsTestCase;
-import net.fortytwo.rdfagents.data.RDFContentLanguage;
+import net.fortytwo.rdfagents.model.RDFContentLanguage;
 import net.fortytwo.rdfagents.data.RecursiveDescribeQuery;
 import net.fortytwo.rdfagents.model.AgentReference;
 import net.fortytwo.rdfagents.data.DatasetQuery;

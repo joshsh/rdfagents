@@ -1,9 +1,10 @@
 package net.fortytwo.rdfagents.data;
 
 import net.fortytwo.rdfagents.RDFAgents;
-import net.fortytwo.rdfagents.messaging.FailureException;
+import net.fortytwo.rdfagents.messaging.LocalFailure;
 import net.fortytwo.rdfagents.model.AgentReference;
 import net.fortytwo.rdfagents.model.Dataset;
+import net.fortytwo.rdfagents.model.RDFContentLanguage;
 import net.fortytwo.sesametools.nquads.NQuadsParser;
 import net.fortytwo.sesametools.nquads.NQuadsWriter;
 import org.openrdf.model.Resource;
@@ -156,9 +157,9 @@ public class DatasetFactory {
     }
 
     public Dataset parse(final InputStream in,
-                         final RDFContentLanguage language) throws InvalidRDFContentException, FailureException {
+                         final RDFContentLanguage language) throws InvalidRDFContentException, LocalFailure {
         if (!supportedLanguages.contains(language)) {
-            throw new FailureException("unsupported RDF content language: " + language);
+            throw new LocalFailure("unsupported RDF content language: " + language);
         }
 
         RDFParser p;
@@ -185,7 +186,7 @@ public class DatasetFactory {
                 p = Rio.createParser(language.getFormat());
                 break;
             default:
-                throw new FailureException("unexpected content language: " + language);
+                throw new LocalFailure("unexpected content language: " + language);
         }
 
         DatasetCreator d = new DatasetCreator();
@@ -193,7 +194,7 @@ public class DatasetFactory {
         try {
             p.parse(in, RDFAgents.BASE_URI);
         } catch (IOException e) {
-            throw new FailureException(e);
+            throw new LocalFailure(e);
         } catch (RDFParseException e) {
             throw new InvalidRDFContentException(e);
         } catch (RDFHandlerException e) {
@@ -209,11 +210,11 @@ public class DatasetFactory {
      * @param out      the output stream to which to write the dataset
      * @param dataset  the dataset to write
      * @param language the language in which to encode the dataset
-     * @throws FailureException if writing fails
+     * @throws LocalFailure if writing fails
      */
     public void write(final OutputStream out,
                       final Dataset dataset,
-                      final RDFContentLanguage language) throws FailureException {
+                      final RDFContentLanguage language) throws LocalFailure {
         RDFWriter w;
 
         switch (language) {
@@ -239,7 +240,7 @@ public class DatasetFactory {
                 w = Rio.createWriter(language.getFormat(), out);
                 break;
             default:
-                throw new FailureException("unexpected content language: " + language);
+                throw new LocalFailure("unexpected content language: " + language);
         }
 
         try {
@@ -251,7 +252,7 @@ public class DatasetFactory {
 
             w.endRDF();
         } catch (RDFHandlerException e) {
-            throw new FailureException(e);
+            throw new LocalFailure(e);
         }
     }
 

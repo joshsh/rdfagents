@@ -1,9 +1,10 @@
 package net.fortytwo.rdfagents.messaging.query;
 
-import net.fortytwo.rdfagents.messaging.FailureException;
+import net.fortytwo.rdfagents.messaging.LocalFailure;
 import net.fortytwo.rdfagents.messaging.Role;
 import net.fortytwo.rdfagents.model.AgentReference;
 import net.fortytwo.rdfagents.model.ErrorExplanation;
+import net.fortytwo.rdfagents.model.RDFAgent;
 
 /**
  * The agent role of answering queries posed by other agents.
@@ -18,7 +19,7 @@ public abstract class QueryServer<Q, A> extends Role {
 
     public enum Decision {ANSWER_WITH_CONFIRMATION, ANSWER_WITHOUT_CONFIRMATION, REFUSE}
 
-    public QueryServer(final AgentReference agent) {
+    public QueryServer(final RDFAgent agent) {
         super(agent);
     }
 
@@ -31,8 +32,9 @@ public abstract class QueryServer<Q, A> extends Role {
      *
      * @param query the query to answer
      * @return the answer to the query
+     * @throws net.fortytwo.rdfagents.messaging.MessageRejectedException if query answering fails
      */
-    public abstract A answer(Q query) throws FailureException;
+    public abstract A answer(Q query) throws LocalFailure;
 
     /**
      * A commitment (or lack thereof) to answer a query.

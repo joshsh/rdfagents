@@ -1,4 +1,4 @@
-package net.fortytwo.rdfagents.data;
+package net.fortytwo.rdfagents.model;
 
 import net.fortytwo.sesametools.nquads.NQuadsFormat;
 import org.openrdf.rio.RDFFormat;

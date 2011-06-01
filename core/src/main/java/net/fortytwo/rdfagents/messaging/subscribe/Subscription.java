@@ -1,6 +1,6 @@
 package net.fortytwo.rdfagents.messaging.subscribe;
 
-import net.fortytwo.rdfagents.model.Agent;
+import net.fortytwo.rdfagents.model.RDFAgent;
 
 import java.util.Date;
 
@@ -30,7 +30,7 @@ public abstract class Subscription<N, T> {
         ACTIVE
     }
 
-    private final Agent publisher;
+    private final RDFAgent publisher;
     private final T topic;
     private final NotificationHandler<N> noteHandler;
     private final EndOfStreamHandler eosHandler;
@@ -48,7 +48,7 @@ public abstract class Subscription<N, T> {
      * @param topic       a topic descriptor for the subscription, defining the notifications in which the client is interested
      * @param noteHandler a callback to handle notifications received from the publisher matching the given topic
      */
-    public Subscription(final Agent publisher,
+    public Subscription(final RDFAgent publisher,
                         final T topic,
                         final NotificationHandler<N> noteHandler) {
         this.publisher = publisher;
@@ -65,7 +65,7 @@ public abstract class Subscription<N, T> {
      * @param topic       a topic descriptor for the subscription, defining the notifications in which the client is interested
      * @param noteHandler a callback to handle notifications received from the publisher matching the given topic
      */
-    public Subscription(final Agent publisher,
+    public Subscription(final RDFAgent publisher,
                         final T topic,
                         final NotificationHandler<N> noteHandler,
                         final EndOfStreamHandler eosHandler) {
@@ -97,7 +97,7 @@ public abstract class Subscription<N, T> {
     /**
      * @return the agent from which the client would like to receive notifications
      */
-    public Agent getPublisher() {
+    public RDFAgent getPublisher() {
         return publisher;
     }
 

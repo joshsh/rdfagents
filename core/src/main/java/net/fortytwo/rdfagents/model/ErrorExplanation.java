@@ -44,6 +44,18 @@ public class ErrorExplanation {
                             final String message) {
         this.type = type;
         this.message = message;
+
+        if (null == type) {
+            throw new IllegalArgumentException("null type");
+        }
+
+        if (null == message) {
+            throw new IllegalArgumentException("null message");
+        }
+
+        if (0 == message.length()) {
+            throw new IllegalArgumentException("empty message");
+        }
     }
 
     public Type getType() {

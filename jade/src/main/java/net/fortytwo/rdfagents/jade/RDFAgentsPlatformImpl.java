@@ -9,8 +9,8 @@ import jade.util.leap.List;
 import jade.wrapper.AgentContainer;
 import jade.wrapper.AgentController;
 import jade.wrapper.StaleProxyException;
-import net.fortytwo.rdfagents.RDFAgent;
-import net.fortytwo.rdfagents.RDFAgentsPlatform;
+import net.fortytwo.rdfagents.model.RDFAgent;
+import net.fortytwo.rdfagents.model.RDFAgentsPlatform;
 import net.fortytwo.rdfagents.data.DatasetFactory;
 
 import java.util.Properties;
