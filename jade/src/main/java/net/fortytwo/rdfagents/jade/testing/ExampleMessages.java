@@ -1,4 +1,4 @@
-package net.fortytwo.rdfagents.jade.sesame.testing;
+package net.fortytwo.rdfagents.jade.testing;
 
 import jade.content.ContentManager;
 import jade.content.lang.Codec;

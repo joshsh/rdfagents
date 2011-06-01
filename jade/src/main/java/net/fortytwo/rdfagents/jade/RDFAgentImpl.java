@@ -1,8 +1,11 @@
 package net.fortytwo.rdfagents.jade;
 
 import jade.wrapper.AgentController;
+import jade.wrapper.StaleProxyException;
 import net.fortytwo.rdfagents.RDFAgent;
+import net.fortytwo.rdfagents.messaging.query.QueryClient;
 import net.fortytwo.rdfagents.messaging.query.QueryServer;
+import net.fortytwo.rdfagents.model.AgentReference;
 import net.fortytwo.rdfagents.model.Dataset;
 import org.openrdf.model.Value;
 
@@ -13,7 +16,7 @@ import org.openrdf.model.Value;
  */
 public class RDFAgentImpl extends RDFAgent {
 
-    private RDFAgentJade agentJade;
+    private RDFJadeAgent jadeAgent;
     private AgentController controller;
 
     public RDFAgentImpl(final String localName,
@@ -23,22 +26,30 @@ public class RDFAgentImpl extends RDFAgent {
     }
 
     public void setQueryServer(final QueryServer<Value, Dataset> queryServer) {
-        agentJade.setQueryServer(queryServer);
+        jadeAgent.setQueryServer(queryServer);
     }
 
-    public RDFAgentJade getAgentJade() {
-        return agentJade;
-    }
-
-    public void setAgentJade(RDFAgentJade agentJade) {
-        this.agentJade = agentJade;
-    }
-
-    public AgentController getController() {
-        return controller;
+    public void setJadeAgent(RDFJadeAgent jadeAgent) {
+        this.jadeAgent = jadeAgent;
     }
 
     public void setController(AgentController controller) {
         this.controller = controller;
+    }
+
+    public void putObject(final Object obj) throws StaleProxyException {
+        controller.putO2AObject(obj, AgentController.ASYNC);
+    }
+
+    public RDFJadeAgent.Task submitQuery(final Value resource,
+                                         final AgentReference server,
+                                         final QueryClient.QueryCallback<Dataset> callback) {
+        return jadeAgent.submitQuery(resource, server, callback);
+    }
+
+    public RDFJadeAgent.Task cancelQuery(final String conversationId,
+                                         final AgentReference server,
+                                         final QueryClient.CancellationCallback callback) {
+        return jadeAgent.cancelQuery(conversationId, server, callback);
     }
 }

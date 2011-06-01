@@ -24,8 +24,8 @@ import java.util.logging.Logger;
  * Date: 5/27/11
  * Time: 10:18 PM
  */
-public class RDFAgentJade extends Agent {
-    private static final Logger LOGGER = Logger.getLogger(RDFAgentJade.class.getName());
+public class RDFJadeAgent extends Agent {
+    private static final Logger LOGGER = Logger.getLogger(RDFJadeAgent.class.getName());
 
     private final Map<String, QueryClient.QueryCallback<Dataset>> queryCallbacks
             = new HashMap<String, QueryClient.QueryCallback<Dataset>>();
@@ -151,7 +151,7 @@ public class RDFAgentJade extends Agent {
             latch.signal();
 
             Wrapper w = (Wrapper) args[1];
-            w.setAgentJade(this);
+            w.setJadeAgent(this);
             messageFactory = w.messageFactory;
             self = w.self;
         } else {
@@ -220,14 +220,14 @@ public class RDFAgentJade extends Agent {
             this.messageFactory = messageFactory;
         }
 
-        private RDFAgentJade agentJade;
+        private RDFJadeAgent jadeAgent;
 
-        public RDFAgentJade getAgentJade() {
-            return agentJade;
+        public RDFJadeAgent getJadeAgent() {
+            return jadeAgent;
         }
 
-        public void setAgentJade(final RDFAgentJade agentJade) {
-            this.agentJade = agentJade;
+        public void setJadeAgent(final RDFJadeAgent jadeAgent) {
+            this.jadeAgent = jadeAgent;
         }
     }
 

@@ -69,12 +69,12 @@ public class RDFAgentsPlatformImpl extends RDFAgentsPlatform {
         RDFAgentImpl agent = new RDFAgentImpl(localName, this, addresses);
 
         MessageFactory messageFactory = new MessageFactory(datasetFactory);
-        RDFAgentJade.Wrapper w = new RDFAgentJade.Wrapper(agent.getIdentity(), messageFactory);
+        RDFJadeAgent.Wrapper w = new RDFJadeAgent.Wrapper(agent.getIdentity(), messageFactory);
 
         try {
             CondVar startUpLatch = new CondVar();
 
-            AgentController c = container.createNewAgent(localName, RDFAgentJade.class.getName(),
+            AgentController c = container.createNewAgent(localName, RDFJadeAgent.class.getName(),
                     new Object[]{startUpLatch, w});
             c.start();
 
@@ -88,7 +88,7 @@ public class RDFAgentsPlatformImpl extends RDFAgentsPlatform {
             throw new RDFAgent.RDFAgentException(e);
         }
 
-        agent.setAgentJade(w.getAgentJade());
+        agent.setJadeAgent(w.getJadeAgent());
 
         return agent;
     }
