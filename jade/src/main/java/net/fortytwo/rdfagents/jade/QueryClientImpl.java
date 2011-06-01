@@ -2,6 +2,7 @@ package net.fortytwo.rdfagents.jade;
 
 import jade.wrapper.AgentController;
 import jade.wrapper.StaleProxyException;
+import net.fortytwo.rdfagents.RDFAgent;
 import net.fortytwo.rdfagents.messaging.FailureException;
 import net.fortytwo.rdfagents.messaging.query.QueryClient;
 import net.fortytwo.rdfagents.model.AgentReference;
@@ -14,11 +15,17 @@ import org.openrdf.model.Value;
  * Time: 9:36 AM
  */
 public class QueryClientImpl extends QueryClient<Value, Dataset> {
-    private final RDFAgent wrapper;
+    private final RDFAgentImpl wrapper;
 
-    public QueryClientImpl(final RDFAgent wrapper) {
-        super(wrapper.getIdentity());
-        this.wrapper = wrapper;
+    public QueryClientImpl(final RDFAgent agent) {
+        super(agent.getIdentity());
+
+        if (agent instanceof RDFAgentImpl) {
+            this.wrapper = (RDFAgentImpl) agent;
+        } else {
+            throw new IllegalArgumentException("expected RDFAgent implementation " + RDFAgentImpl.class.getName()
+                    + ", found " + agent.getClass().getName());
+        }
     }
 
     @Override

@@ -1,7 +1,5 @@
-package net.fortytwo.rdfagents.jade;
+package net.fortytwo.rdfagents;
 
-import jade.wrapper.AgentController;
-import jade.wrapper.StaleProxyException;
 import net.fortytwo.rdfagents.messaging.query.QueryServer;
 import net.fortytwo.rdfagents.model.AgentReference;
 import net.fortytwo.rdfagents.model.Dataset;
@@ -11,14 +9,11 @@ import org.openrdf.model.impl.URIImpl;
 
 /**
  * User: josh
- * Date: 5/31/11
- * Time: 3:40 PM
+ * Date: 6/1/11
+ * Time: 1:59 AM
  */
-public class RDFAgent {
-
-    private final RDFAgentJade agentJade;
-    private final AgentController controller;
-    private final AgentReference identity;
+public abstract class RDFAgent {
+    protected final AgentReference identity;
 
     public RDFAgent(final String localName,
                     final RDFAgentsPlatform platform,
@@ -48,46 +43,23 @@ public class RDFAgent {
         }
 
         identity = new AgentReference(nameUri, addressUris);
-
-        MessageFactory messageFactory = new MessageFactory(platform.getDatasetFactory());
-        RDFAgentJade.Wrapper w = new RDFAgentJade.Wrapper(identity, messageFactory);
-
-        try {
-            controller = platform.addAgent(localName, w);
-        } catch (StaleProxyException e) {
-            throw new RDFAgentException(e);
-        } catch (InterruptedException e) {
-            throw new RDFAgentException(e);
-        }
-
-        agentJade = w.getAgentJade();
-    }
-
-    public void setQueryServer(final QueryServer<Value, Dataset> queryServer) {
-        agentJade.setQueryServer(queryServer);
-    }
-
-    // TODO: remove/shutdown method
-
-    private URI uri(final String s) {
-        return new URIImpl(s);
     }
 
     public AgentReference getIdentity() {
         return identity;
     }
 
-    public RDFAgentJade getAgentJade() {
-        return agentJade;
-    }
-
-    public AgentController getController() {
-        return controller;
-    }
+    public abstract void setQueryServer(QueryServer<Value, Dataset> queryServer);
 
     public static class RDFAgentException extends Exception {
         public RDFAgentException(final Throwable cause) {
             super(cause);
         }
+    }
+
+    // TODO: remove/shutdown method
+
+    private URI uri(final String s) {
+        return new URIImpl(s);
     }
 }

@@ -3,9 +3,8 @@ package net.fortytwo.rdfagents;
 import net.fortytwo.rdfagents.data.DatasetFactory;
 import net.fortytwo.rdfagents.data.RDFContentLanguage;
 import net.fortytwo.rdfagents.jade.QueryClientImpl;
-import net.fortytwo.rdfagents.jade.RDFAgentsPlatform;
+import net.fortytwo.rdfagents.jade.RDFAgentsPlatformImpl;
 import net.fortytwo.rdfagents.jade.SailBasedQueryServer;
-import net.fortytwo.rdfagents.jade.RDFAgent;
 import net.fortytwo.rdfagents.messaging.FailureException;
 import net.fortytwo.rdfagents.messaging.query.QueryClient;
 import net.fortytwo.rdfagents.model.Dataset;
@@ -34,14 +33,13 @@ public class Demo {
     private void run(final Properties config) throws Exception {
         Value subject = uri("http://example.org/ns#arthur");
 
-        RDFAgentsPlatform p = new RDFAgentsPlatform("agents.example.org", 8888, datasetFactory, config);
+        RDFAgentsPlatform p = new RDFAgentsPlatformImpl("agents.example.org", datasetFactory, 8888, config);
 
-        RDFAgent aw1 = new RDFAgent("urn:agent1", p, "xmpp:patabot.1@fortytwo.net");
-        aw1.setQueryServer(new SailBasedQueryServer(aw1.getIdentity(), sail));
-        RDFAgent aw2 = new RDFAgent("urn:agent2", p, "xmpp:patabot.1@fortytwo.net");
-        aw2.setQueryServer(new SailBasedQueryServer(aw2.getIdentity(), sail));
+        RDFAgent a1 = p.createAgent("urn:agent1", "xmpp:patabot.1@fortytwo.net");
+        RDFAgent a2 = p.createAgent("urn:agent2", "xmpp:patabot.1@fortytwo.net");
+        a2.setQueryServer(new SailBasedQueryServer(a2.getIdentity(), sail));
 
-        QueryClient<Value, Dataset> client = new QueryClientImpl(aw1);
+        QueryClient<Value, Dataset> client = new QueryClientImpl(a1);
         QueryClient.QueryCallback<Dataset> callback = new QueryClient.QueryCallback<Dataset>() {
             public void success(final Dataset answer) {
                 System.out.println("query has been successfully answered.  Answer follows:");
@@ -69,7 +67,7 @@ public class Demo {
             }
         };
 
-        client.submit(subject, aw2.getIdentity(), callback);
+        client.submit(subject, a2.getIdentity(), callback);
     }
 
     private URI uri(final String s) {

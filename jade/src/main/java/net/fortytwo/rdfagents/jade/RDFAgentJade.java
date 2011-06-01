@@ -147,7 +147,7 @@ public class RDFAgentJade extends Agent {
         // object-to-agent communication is enabled
         Object[] args = getArguments();
         if (args.length == 2) {
-            RDFAgentsPlatform.CondVar latch = (RDFAgentsPlatform.CondVar) args[0];
+            RDFAgentsPlatformImpl.CondVar latch = (RDFAgentsPlatformImpl.CondVar) args[0];
             latch.signal();
 
             Wrapper w = (Wrapper) args[1];
