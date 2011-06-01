@@ -14,15 +14,11 @@ import org.openrdf.model.Value;
  * Time: 9:36 AM
  */
 public class QueryClientImpl extends QueryClient<Value, Dataset> {
-    private final RDFAgent agent;
-    private final AgentController controller;
+    private final RDFAgent wrapper;
 
-    public QueryClientImpl(final AgentReference client,
-                           final RDFAgent agent,
-                           final AgentController controller) {
-        super(client);
-        this.agent = agent;
-        this.controller = controller;
+    public QueryClientImpl(final RDFAgent wrapper) {
+        super(wrapper.getIdentity());
+        this.wrapper = wrapper;
     }
 
     @Override
@@ -30,8 +26,8 @@ public class QueryClientImpl extends QueryClient<Value, Dataset> {
                          AgentReference remoteParticipant,
                          QueryCallback<Dataset> callback) throws FailureException {
         try {
-            RDFAgent.Task t = agent.submitQuery(query, remoteParticipant, callback);
-            controller.putO2AObject(t, AgentController.ASYNC);
+            RDFAgentJade.Task t = wrapper.getAgentJade().submitQuery(query, remoteParticipant, callback);
+            wrapper.getController().putO2AObject(t, AgentController.ASYNC);
             return t.getConversationId();
         } catch (StaleProxyException e) {
             throw new FailureException(e);
@@ -43,8 +39,8 @@ public class QueryClientImpl extends QueryClient<Value, Dataset> {
                        final AgentReference remoteParticipant,
                        final CancellationCallback callback) throws FailureException {
         try {
-            RDFAgent.Task t = agent.cancelQuery(conversationId, remoteParticipant, callback);
-            controller.putO2AObject(t, AgentController.ASYNC);
+            RDFAgentJade.Task t = wrapper.getAgentJade().cancelQuery(conversationId, remoteParticipant, callback);
+            wrapper.getController().putO2AObject(t, AgentController.ASYNC);
         } catch (StaleProxyException e) {
             throw new FailureException(e);
         }

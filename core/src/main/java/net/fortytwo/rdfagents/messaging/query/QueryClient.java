@@ -13,8 +13,8 @@ import net.fortytwo.rdfagents.model.ErrorExplanation;
  * @author Joshua Shinavier (http://fortytwo.net).
  */
 public abstract class QueryClient<Q, A> extends Role {
-    public QueryClient(final AgentReference client) {
-        super(client);
+    public QueryClient(final AgentReference agent) {
+        super(agent);
     }
 
     /**

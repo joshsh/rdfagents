@@ -1,13 +1,13 @@
-package net.fortytwo.rdfagents.jade;
+package net.fortytwo.rdfagents;
 
-import jade.wrapper.AgentController;
-import net.fortytwo.rdfagents.RDFAgents;
 import net.fortytwo.rdfagents.data.DatasetFactory;
 import net.fortytwo.rdfagents.data.RDFContentLanguage;
+import net.fortytwo.rdfagents.jade.QueryClientImpl;
+import net.fortytwo.rdfagents.jade.RDFAgentsPlatform;
+import net.fortytwo.rdfagents.jade.SailBasedQueryServer;
+import net.fortytwo.rdfagents.jade.RDFAgent;
 import net.fortytwo.rdfagents.messaging.FailureException;
 import net.fortytwo.rdfagents.messaging.query.QueryClient;
-import net.fortytwo.rdfagents.messaging.query.QueryServer;
-import net.fortytwo.rdfagents.model.AgentReference;
 import net.fortytwo.rdfagents.model.Dataset;
 import net.fortytwo.rdfagents.model.ErrorExplanation;
 import org.openrdf.model.URI;
@@ -30,36 +30,18 @@ import java.util.Properties;
 public class Demo {
     private final Sail sail;
     private final DatasetFactory datasetFactory;
-    private final MessageFactory messageFactory;
 
     private void run(final Properties config) throws Exception {
-
-        String agent1Name = config.getProperty("agent1.name");
-        String agent1Address = config.getProperty("agent1.xmpp.address");
-        String agent2Name = config.getProperty("agent2.name");
-        String agent2Address = config.getProperty("agent2.xmpp.address");
-
-        RDFAgentsPlatform p = new RDFAgentsPlatform("agents.example.org", 8888, config);
-        // System.exit(1);
         Value subject = uri("http://example.org/ns#arthur");
 
-        AgentReference r1 = new AgentReference(uri(agent1Name),
-                new URI[]{uri(agent1Address)});
-        AgentReference r2 = new AgentReference(uri(agent2Name),
-                new URI[]{uri(agent2Address)});
+        RDFAgentsPlatform p = new RDFAgentsPlatform("agents.example.org", 8888, datasetFactory, config);
 
-        QueryServer<Value, Dataset> s1 = new SailBasedQueryServer(r1, sail);
-        QueryServer<Value, Dataset> s2 = new SailBasedQueryServer(r2, sail);
+        RDFAgent aw1 = new RDFAgent("urn:agent1", p, "xmpp:patabot.1@fortytwo.net");
+        aw1.setQueryServer(new SailBasedQueryServer(aw1.getIdentity(), sail));
+        RDFAgent aw2 = new RDFAgent("urn:agent2", p, "xmpp:patabot.1@fortytwo.net");
+        aw2.setQueryServer(new SailBasedQueryServer(aw2.getIdentity(), sail));
 
-        RDFAgent.Wrapper w1 = new RDFAgent.Wrapper(r1, messageFactory, s1);
-        RDFAgent.Wrapper w2 = new RDFAgent.Wrapper(r2, messageFactory, s2);
-
-        AgentController a1 = p.addAgent("urn:agent1", w1);
-        AgentController a2 = p.addAgent("urn:agent2", w2);
-
-        System.out.println("a1.getName(): " + a1.getName());
-
-        QueryClient<Value, Dataset> client = new QueryClientImpl(r1, w1.getAgent(), a1);
+        QueryClient<Value, Dataset> client = new QueryClientImpl(aw1);
         QueryClient.QueryCallback<Dataset> callback = new QueryClient.QueryCallback<Dataset>() {
             public void success(final Dataset answer) {
                 System.out.println("query has been successfully answered.  Answer follows:");
@@ -83,14 +65,12 @@ public class Demo {
             }
 
             public void localFailure(final Exception e) {
-                System.out.println("local failure: " + e);
+                System.out.println("local failure: " + e + "\n" + RDFAgents.stackTraceToString(e));
             }
         };
-        client.submit(subject, r2, callback);
 
-
+        client.submit(subject, aw2.getIdentity(), callback);
     }
-
 
     private URI uri(final String s) {
         return new URIImpl(s);
@@ -112,8 +92,6 @@ public class Demo {
         sail = new MemoryStore();
         sail.initialize();
         datasetFactory.addToSail(d, sail);
-
-        messageFactory = new MessageFactory(datasetFactory);
     }
 
     public static void main(final String args[]) {

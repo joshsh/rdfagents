@@ -5,10 +5,11 @@ import jade.core.ProfileImpl;
 import jade.core.Runtime;
 import jade.core.Specifier;
 import jade.util.leap.LinkedList;
+import jade.util.leap.List;
 import jade.wrapper.AgentContainer;
 import jade.wrapper.AgentController;
-
-import jade.util.leap.List;
+import jade.wrapper.StaleProxyException;
+import net.fortytwo.rdfagents.data.DatasetFactory;
 
 import java.util.Properties;
 
@@ -26,11 +27,15 @@ public class RDFAgentsPlatform {
             XMPP_MTP_PASSWORD = "jade_mtp_xmpp_passwd";
 
     private final AgentContainer container;
+    private final DatasetFactory datasetFactory;
 
     // TODO: support attaching RDFAgents to an existing container
     public RDFAgentsPlatform(final String platformId,
                              final int port,
+                             final DatasetFactory datasetFactory,
                              final Properties config) throws Exception {
+        this.datasetFactory = datasetFactory;
+
         // Get a hold on JADE runtime
         jade.core.Runtime rt = Runtime.instance();
 
@@ -58,11 +63,15 @@ public class RDFAgentsPlatform {
         container = rt.createMainContainer(p);
     }
 
+    public String getName() {
+        return container.getName();
+    }
+
     public AgentController addAgent(final String nickname,
-                                    final RDFAgent.Wrapper wrapper) throws Exception {
+                                    final RDFAgentJade.Wrapper wrapper) throws StaleProxyException, InterruptedException {
         CondVar startUpLatch = new CondVar();
 
-        AgentController c = container.createNewAgent(nickname, RDFAgent.class.getName(),
+        AgentController c = container.createNewAgent(nickname, RDFAgentJade.class.getName(),
                 new Object[]{startUpLatch, wrapper});
         c.start();
 
@@ -70,6 +79,10 @@ public class RDFAgentsPlatform {
         startUpLatch.waitOn();
 
         return c;
+    }
+
+    public DatasetFactory getDatasetFactory() {
+        return datasetFactory;
     }
 
     // Simple class behaving as a Condition Variable
@@ -86,6 +99,5 @@ public class RDFAgentsPlatform {
             value = true;
             notifyAll();
         }
-
     }
 }
