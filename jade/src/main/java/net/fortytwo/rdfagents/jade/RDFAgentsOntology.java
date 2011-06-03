@@ -8,8 +8,10 @@ import jade.content.schema.ConceptSchema;
 import jade.content.schema.ObjectSchema;
 import jade.content.schema.PredicateSchema;
 import jade.content.schema.PrimitiveSchema;
-import net.fortytwo.rdfagents.model.ErrorExplanation;
 import net.fortytwo.rdfagents.RDFAgents;
+import net.fortytwo.rdfagents.model.ErrorExplanation;
+
+import java.util.UUID;
 
 /**
  * User: josh
@@ -88,6 +90,10 @@ public class RDFAgentsOntology extends Ontology {
     }
 
     public static void main(final String[] args) throws Exception {
+
+        System.out.println("" + UUID.nameUUIDFromBytes("foo".getBytes()));
+        System.out.println("" + UUID.nameUUIDFromBytes("bar".getBytes()));
+        System.out.println("" + UUID.nameUUIDFromBytes("foo".getBytes()));
 
         //  "((any ?dataset (describes ?dataset (uri http://example.org))))"
 

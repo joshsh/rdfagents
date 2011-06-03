@@ -1,6 +1,7 @@
 package net.fortytwo.rdfagents.model;
 
 import net.fortytwo.rdfagents.messaging.query.QueryServer;
+import net.fortytwo.rdfagents.messaging.subscribe.Publisher;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.impl.URIImpl;
@@ -48,6 +49,8 @@ public abstract class RDFAgent {
     }
 
     public abstract void setQueryServer(QueryServer<Value, Dataset> queryServer);
+
+    public abstract void setPublisher(Publisher<Value, Dataset> publisher);
 
     public static class RDFAgentException extends Exception {
         public RDFAgentException(final Throwable cause) {

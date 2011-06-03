@@ -1,4 +1,4 @@
-package net.fortytwo.rdfagents.messaging.subscribe;
+package net.fortytwo.rdfagents.messaging.subscribe.old;
 
 import net.fortytwo.rdfagents.model.AgentReference;
 
@@ -7,7 +7,7 @@ import net.fortytwo.rdfagents.model.AgentReference;
  * Date: 2/25/11
  * Time: 5:59 PM
  */
-public abstract class SubscribeRequest<Q> {
+public abstract class SubscribeRequestOld<Q> {
     private final Q topic;
     private final AgentReference remoteParticipant;
 
@@ -15,8 +15,8 @@ public abstract class SubscribeRequest<Q> {
      * @param topic       the topic of the desired stream
      * @param remoteParticipant the identity of the remote participant who is requested to provide the stream
      */
-    public SubscribeRequest(final Q topic,
-                            final AgentReference remoteParticipant) {
+    public SubscribeRequestOld(final Q topic,
+                               final AgentReference remoteParticipant) {
         this.topic = topic;
         this.remoteParticipant = remoteParticipant;
     }

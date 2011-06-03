@@ -7,6 +7,7 @@ import net.fortytwo.rdfagents.jade.RDFAgentsPlatformImpl;
 import net.fortytwo.rdfagents.jade.SailBasedQueryServer;
 import net.fortytwo.rdfagents.linkeddata.LinkedDataAgent;
 import net.fortytwo.rdfagents.messaging.LocalFailure;
+import net.fortytwo.rdfagents.messaging.QueryCallback;
 import net.fortytwo.rdfagents.messaging.query.QueryClient;
 import net.fortytwo.rdfagents.model.Dataset;
 import net.fortytwo.rdfagents.model.ErrorExplanation;
@@ -50,7 +51,7 @@ public class Demo {
 
         QueryClient<Value, Dataset> client = new QueryClientImpl(a1);
 
-        QueryClient.QueryCallback<Dataset> callback = new QueryClient.QueryCallback<Dataset>() {
+        QueryCallback<Dataset> callback = new QueryCallback<Dataset>() {
             public void success(final Dataset answer) {
                 System.out.println("query has been successfully answered.  Answer follows:");
                 try {

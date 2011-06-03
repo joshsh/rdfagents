@@ -40,11 +40,4 @@ public class LinkedDataAgent extends RDFAgentImpl {
 
         sail.shutDown();
     }
-
-    /*
-    @Override
-    public void setQueryServer(QueryServer<Value, Dataset> queryServer) {
-        throw new UnsupportedOperationException("this agent's query server is pre-set");
-    }//*/
-
 }

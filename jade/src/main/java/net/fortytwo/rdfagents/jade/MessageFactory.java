@@ -187,6 +187,14 @@ public class MessageFactory {
         try {
             Dataset sendersDataset = datasetFactory.parse(in, language);
 
+            /*
+            System.out.println("sender's dataset:");
+            try {
+                datasetFactory.write(System.out, sendersDataset, RDFContentLanguage.RDF_TRIG);
+            } catch (LocalFailure localFailure) {
+                localFailure.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } //*/
+
             return datasetFactory.receiveDataset(sendersDataset, fromAID(message.getSender()));
         } catch (DatasetFactory.InvalidRDFContentException e) {
             throw new MessageNotUnderstoodException(e.getMessage());
@@ -397,14 +405,14 @@ public class MessageFactory {
 
     public ACLMessage requestSubscriptionCancellation(final AgentReference sender,
                                                       final AgentReference intendedReceiver,
-                                                      final ACLMessage subscribe) throws MessageRejectedException, MessageNotUnderstoodException {
-        validateMessage(subscribe, FIPANames.InteractionProtocol.FIPA_SUBSCRIBE, ACLMessage.SUBSCRIBE);
+                                                      final String conversationId) {
+        //validateMessage(subscribe, FIPANames.InteractionProtocol.FIPA_SUBSCRIBE, ACLMessage.SUBSCRIBE);
 
         ACLMessage message = new ACLMessage(ACLMessage.CANCEL);
         message.setSender(toAID(sender));
         message.addReceiver(toAID(intendedReceiver));
         message.setProtocol(FIPANames.InteractionProtocol.FIPA_SUBSCRIBE);
-        message.setConversationId(subscribe.getConversationId());
+        message.setConversationId(conversationId);
 
         return message;
     }
@@ -585,6 +593,14 @@ public class MessageFactory {
 
         RDFContentLanguage language = chooseRDFContentLanguage(replyTo, defaultLanguage);
         message.setLanguage(language.getFipaName());
+
+        /*
+        System.out.println("original dataset:");
+        try {
+            datasetFactory.write(System.out, dataset, RDFContentLanguage.RDF_TRIG);
+        } catch (LocalFailure localFailure) {
+            localFailure.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }  //*/
 
         Dataset safe = datasetFactory.renameGraphs(dataset);
 

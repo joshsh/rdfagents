@@ -2,8 +2,10 @@ package net.fortytwo.rdfagents.jade;
 
 import jade.wrapper.AgentController;
 import jade.wrapper.StaleProxyException;
-import net.fortytwo.rdfagents.messaging.query.QueryClient;
+import net.fortytwo.rdfagents.messaging.CancellationCallback;
+import net.fortytwo.rdfagents.messaging.QueryCallback;
 import net.fortytwo.rdfagents.messaging.query.QueryServer;
+import net.fortytwo.rdfagents.messaging.subscribe.Publisher;
 import net.fortytwo.rdfagents.model.AgentReference;
 import net.fortytwo.rdfagents.model.Dataset;
 import net.fortytwo.rdfagents.model.RDFAgent;
@@ -58,6 +60,11 @@ public class RDFAgentImpl extends RDFAgent {
         jadeAgent.setQueryServer(queryServer);
     }
 
+    @Override
+    public void setPublisher(Publisher<Value, Dataset> publisher) {
+        throw new UnsupportedOperationException("not yet implemented");
+    }
+
     public void setJadeAgent(RDFJadeAgent jadeAgent) {
         this.jadeAgent = jadeAgent;
     }
@@ -72,13 +79,25 @@ public class RDFAgentImpl extends RDFAgent {
 
     public RDFJadeAgent.Task submitQuery(final Value resource,
                                          final AgentReference server,
-                                         final QueryClient.QueryCallback<Dataset> callback) {
+                                         final QueryCallback<Dataset> callback) {
         return jadeAgent.submitQuery(resource, server, callback);
     }
 
     public RDFJadeAgent.Task cancelQuery(final String conversationId,
                                          final AgentReference server,
-                                         final QueryClient.CancellationCallback callback) {
+                                         final CancellationCallback callback) {
         return jadeAgent.cancelQuery(conversationId, server, callback);
+    }
+
+    public RDFJadeAgent.Task subscribe(final Value topic,
+                                       final AgentReference publisher,
+                                       final QueryCallback<Dataset> callback) {
+        return jadeAgent.subscribe(topic, publisher, callback);
+    }
+
+    public RDFJadeAgent.Task cancelSubscription(final String conversationId,
+                                                final AgentReference publisher,
+                                                final CancellationCallback callback) {
+        return jadeAgent.cancelSubscription(conversationId, publisher, callback);
     }
 }

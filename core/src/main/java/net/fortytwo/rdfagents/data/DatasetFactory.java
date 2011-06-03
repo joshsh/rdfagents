@@ -89,6 +89,15 @@ public class DatasetFactory {
      */
     public Dataset receiveDataset(final Dataset dataset,
                                   final AgentReference sender) {
+        /*
+        System.out.println("sender's dataset:");
+        try {
+            write(System.out, dataset, RDFContentLanguage.RDF_TRIG);
+        } catch (LocalFailure localFailure) {
+            localFailure.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        //*/
+
         URI formerDefaultGraph = createGraphURI();
         Collection<Statement> receiverStatements = new LinkedList<Statement>();
 

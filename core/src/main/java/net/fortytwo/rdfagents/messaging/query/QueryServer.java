@@ -1,9 +1,9 @@
 package net.fortytwo.rdfagents.messaging.query;
 
+import net.fortytwo.rdfagents.messaging.Commitment;
 import net.fortytwo.rdfagents.messaging.LocalFailure;
 import net.fortytwo.rdfagents.messaging.Role;
 import net.fortytwo.rdfagents.model.AgentReference;
-import net.fortytwo.rdfagents.model.ErrorExplanation;
 import net.fortytwo.rdfagents.model.RDFAgent;
 
 /**
@@ -17,13 +17,19 @@ import net.fortytwo.rdfagents.model.RDFAgent;
  */
 public abstract class QueryServer<Q, A> extends Role {
 
-    public enum Decision {ANSWER_WITH_CONFIRMATION, ANSWER_WITHOUT_CONFIRMATION, REFUSE}
-
     public QueryServer(final RDFAgent agent) {
         super(agent);
     }
 
-    public abstract Commitment considerQueryRequest(Q query, AgentReference initiator);
+    /**
+     * @param conversationId the conversation of the query
+     * @param query          the query to be answered
+     * @param initiator      the requester of the query
+     * @return the commitment of this server towards answering the query
+     */
+    public abstract Commitment considerQueryRequest(String conversationId,
+                                                    Q query,
+                                                    AgentReference initiator);
 
     /**
      * Evaluate a query to produce a result.
@@ -32,25 +38,15 @@ public abstract class QueryServer<Q, A> extends Role {
      *
      * @param query the query to answer
      * @return the answer to the query
-     * @throws net.fortytwo.rdfagents.messaging.MessageRejectedException if query answering fails
+     * @throws LocalFailure if query answering fails
      */
     public abstract A answer(Q query) throws LocalFailure;
 
     /**
-     * A commitment (or lack thereof) to answer a query.
-     * The query may either be answered immediately (in which case the response to the initiator consists of the query result),
-     * or at some later point in time (in which case an "agree" message is first sent to the initiator, to be followed by
-     * another message with the query result).
+     * Cancel a previously submitted query.
+     *
+     * @param conversationId the conversation of the query
+     * @throws LocalFailure if cancellation fails
      */
-    public class Commitment {
-        public final Decision decision;
-        public final ErrorExplanation explanation;
-
-        public Commitment(final Decision decision,
-                          final ErrorExplanation explanation) {
-            this.decision = decision;
-            this.explanation = explanation;
-        }
-    }
-
+    public abstract void cancel(String conversationId) throws LocalFailure;
 }

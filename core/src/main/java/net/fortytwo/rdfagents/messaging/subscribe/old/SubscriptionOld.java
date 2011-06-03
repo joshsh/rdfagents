@@ -1,4 +1,4 @@
-package net.fortytwo.rdfagents.messaging.subscribe;
+package net.fortytwo.rdfagents.messaging.subscribe.old;
 
 import net.fortytwo.rdfagents.model.RDFAgent;
 
@@ -23,7 +23,7 @@ import java.util.Date;
  * @param <N> a class of notifications
  * @param <T> a class of topic descriptors
  */
-public abstract class Subscription<N, T> {
+public abstract class SubscriptionOld<N, T> {
     public enum Status {
         INACTIVE,
         PENDING,
@@ -48,9 +48,9 @@ public abstract class Subscription<N, T> {
      * @param topic       a topic descriptor for the subscription, defining the notifications in which the client is interested
      * @param noteHandler a callback to handle notifications received from the publisher matching the given topic
      */
-    public Subscription(final RDFAgent publisher,
-                        final T topic,
-                        final NotificationHandler<N> noteHandler) {
+    public SubscriptionOld(final RDFAgent publisher,
+                           final T topic,
+                           final NotificationHandler<N> noteHandler) {
         this.publisher = publisher;
         this.topic = topic;
         this.noteHandler = noteHandler;
@@ -65,10 +65,10 @@ public abstract class Subscription<N, T> {
      * @param topic       a topic descriptor for the subscription, defining the notifications in which the client is interested
      * @param noteHandler a callback to handle notifications received from the publisher matching the given topic
      */
-    public Subscription(final RDFAgent publisher,
-                        final T topic,
-                        final NotificationHandler<N> noteHandler,
-                        final EndOfStreamHandler eosHandler) {
+    public SubscriptionOld(final RDFAgent publisher,
+                           final T topic,
+                           final NotificationHandler<N> noteHandler,
+                           final EndOfStreamHandler eosHandler) {
         this.publisher = publisher;
         this.topic = topic;
         this.noteHandler = noteHandler;

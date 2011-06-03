@@ -2,6 +2,7 @@ package net.fortytwo.rdfagents.jade;
 
 import net.fortytwo.rdfagents.data.DatasetQuery;
 import net.fortytwo.rdfagents.data.RecursiveDescribeQuery;
+import net.fortytwo.rdfagents.messaging.Commitment;
 import net.fortytwo.rdfagents.messaging.LocalFailure;
 import net.fortytwo.rdfagents.messaging.query.QueryServer;
 import net.fortytwo.rdfagents.model.AgentReference;
@@ -26,9 +27,10 @@ public class SailBasedQueryServer extends QueryServer<Value, Dataset> {
     }
 
     @Override
-    public Commitment considerQueryRequest(final Value query,
-                                              final AgentReference initiator) {
-        return new Commitment(Decision.ANSWER_WITHOUT_CONFIRMATION, null);
+    public Commitment considerQueryRequest(final String conversationId,
+                                           final Value query,
+                                           final AgentReference initiator) {
+        return new Commitment(Commitment.Decision.AGREE_WITHOUT_CONFIRMATION, null);
     }
 
     @Override
@@ -38,5 +40,11 @@ public class SailBasedQueryServer extends QueryServer<Value, Dataset> {
         } catch (DatasetQuery.DatasetQueryException e) {
             throw new LocalFailure(e);
         }
+    }
+
+    @Override
+    public void cancel(final String conversationId) throws LocalFailure {
+        // Do nothing.  A reasonable timeout policy is assumed,
+        // so that it is not the responsibility of the client to cancel queries which run too long.
     }
 }

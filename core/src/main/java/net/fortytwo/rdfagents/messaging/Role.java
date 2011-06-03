@@ -8,13 +8,9 @@ import net.fortytwo.rdfagents.model.RDFAgent;
  * Time: 3:37 PM
  */
 public abstract class Role {
-    private final RDFAgent agent;
+    protected final RDFAgent agent;
 
     public Role(final RDFAgent agent) {
         this.agent = agent;
-    }
-
-    public RDFAgent getAgent() {
-        return agent;
     }
 }

@@ -14,7 +14,7 @@
         <module>core</module>
         <module>jade</module>
         <module>sail</module>
-	<module>demos</module>
+        <module>demos</module>
     </modules>
 
     <build>

@@ -256,7 +256,7 @@ public class MessageFactoryTest extends RDFAgentsTestCase {
 
     public void testRequestSubscriptionCancellation() throws Exception {
         ACLMessage request = messageFactory.requestSubscription(sender, receiver, resourceX);
-        ACLMessage c = messageFactory.requestSubscriptionCancellation(sender, receiver, request);
+        ACLMessage c = messageFactory.requestSubscriptionCancellation(sender, receiver, request.getConversationId());
 
         assertIsCancellationRequest(c, request);
         assertEquals("fipa-subscribe", c.getProtocol());
@@ -264,7 +264,7 @@ public class MessageFactoryTest extends RDFAgentsTestCase {
 
     public void testConfirmSubscriptionCancellation() throws Exception {
         ACLMessage request = messageFactory.requestSubscription(sender, receiver, resourceX);
-        ACLMessage c = messageFactory.requestSubscriptionCancellation(sender, receiver, request);
+        ACLMessage c = messageFactory.requestSubscriptionCancellation(sender, receiver, request.getConversationId());
         ACLMessage confirm = messageFactory.confirmSubscriptionCancellation(receiver, sender, c);
 
         assertIsReply(confirm, c);
@@ -274,7 +274,7 @@ public class MessageFactoryTest extends RDFAgentsTestCase {
 
     public void testFailToCancelSubscription() throws Exception {
         ACLMessage request = messageFactory.requestSubscription(sender, receiver, resourceX);
-        ACLMessage c = messageFactory.requestSubscriptionCancellation(sender, receiver, request);
+        ACLMessage c = messageFactory.requestSubscriptionCancellation(sender, receiver, request.getConversationId());
         ErrorExplanation ex = new ErrorExplanation(ErrorExplanation.Type.InteractionExplired, "I don't remember you.");
         ACLMessage fail = messageFactory.failToCancelSubscription(receiver, sender, c, ex);
 

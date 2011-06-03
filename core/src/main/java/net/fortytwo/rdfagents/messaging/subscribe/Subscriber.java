@@ -1,7 +1,10 @@
 package net.fortytwo.rdfagents.messaging.subscribe;
 
+import net.fortytwo.rdfagents.messaging.CancellationCallback;
+import net.fortytwo.rdfagents.messaging.LocalFailure;
+import net.fortytwo.rdfagents.messaging.QueryCallback;
 import net.fortytwo.rdfagents.messaging.Role;
-import net.fortytwo.rdfagents.model.ErrorExplanation;
+import net.fortytwo.rdfagents.model.AgentReference;
 import net.fortytwo.rdfagents.model.RDFAgent;
 
 /**
@@ -11,92 +14,37 @@ import net.fortytwo.rdfagents.model.RDFAgent;
  *
  * @author Joshua Shinavier (http://fortytwo.net).
  */
-public abstract class Subscriber<Q, A> extends Role {
-    public Subscriber(final RDFAgent client) {
-        super(client);
+public abstract class Subscriber<T, U> extends Role {
+    public Subscriber(final RDFAgent agent) {
+        super(agent);
     }
 
     /**
-     * Submits a query to a remote agent, initiating a new query interaction.
+     * Submits a subscription request to a remote agent, initiating a new Subscribe interaction.
      *
-     * @param request  the query request the be submitted
-     * @param callback a handler for all possible outcomes of the query request.
-     *                 Note: its methods typically execute in a thread other than the calling thread.
+     * @param topic             the topic of the desired stream
+     * @param remoteParticipant the remote publisher
+     * @param callback          a handler for all possible outcomes of the subscription request.
+     *                          Note: its methods typically execute in a thread other than the calling thread.
+     * @return the conversation ID, with which the interaction can be tracked and cancelled
+     * @throws LocalFailure if the subscription request can't be submitted
      */
-    public abstract void submit(SubscribeRequest<Q> request,
-                                QueryCallback<A> callback);
+    public abstract String submit(T topic,
+                                  AgentReference remoteParticipant,
+                                  QueryCallback<U> callback) throws LocalFailure;
 
     /**
-     * Submits a cancellation request for a previously submitted query.
+     * Submits a cancellation request for a previously submitted subscription request.
+     * Active and pending subscriptions may be cancelled.
      *
-     * @param request  the previously submitted query request to be cancelled
-     * @param callback a handler for all possible outcomes of the cancellation request.
-     *                 Note: its methods typically execute in a thread other than the calling thread.
+     * @param conversationId    the conversation ID of the Subscribe interaction to be cancelled
+     * @param remoteParticipant the remote publisher
+     * @param callback          a handler for all possible outcomes of the cancellation request.
+     *                          Note: its methods typically execute in a thread other than the calling thread.
+     * @throws LocalFailure if cancellation fails locally
      */
-    public abstract void cancel(SubscribeRequest<Q> request,
-                                CancellationCallback callback);
+    public abstract void cancel(String conversationId,
+                                AgentReference remoteParticipant,
+                                CancellationCallback callback) throws LocalFailure;
 
-    /**
-     * A handler for all possible outcomes of a query request.
-     *
-     * @param <A> a class of query answers
-     */
-    public interface QueryCallback<A> {
-        /**
-         * Indicates success of the query request and provides the query answer.
-         *
-         * @param answer the answer to the submitted query
-         */
-        void success(A answer);
-
-        /**
-         * Indicates that the remote participant has agreed to answer the query.
-         */
-        void agreed();
-
-        /**
-         * Indicates that the remote participant has refused to answer the query.
-         *
-         * @param explanation an explanation of the refusal, provided by the remote participant
-         */
-        void refused(ErrorExplanation explanation);
-
-        /**
-         * Indicates that the remote participant has failed to answer the query.
-         *
-         * @param explanation an explanation of failure, provided by the remote participant
-         */
-        void remoteFailure(ErrorExplanation explanation);
-
-        /**
-         * Indicates that a local exception has caused this interaction to fail.
-         *
-         * @param e the local exception which has occurred
-         */
-        void localFailure(Exception e);
-    }
-
-    /**
-     * A handler for all possible outcomes of a query cancellation request.
-     */
-    public interface CancellationCallback {
-        /**
-         * Indicates success of the cancellation request.
-         */
-        void success();
-
-        /**
-         * Indicates failure of the cancellation request.
-         *
-         * @param explanation an explanation of failure, provided by the remote participant
-         */
-        void remoteFailure(ErrorExplanation explanation);
-
-        /**
-         * Indicates that a local exception has caused this interaction to fail.
-         *
-         * @param e the local exception which has occurred
-         */
-        void localFailure(Exception e);
-    }
 }
