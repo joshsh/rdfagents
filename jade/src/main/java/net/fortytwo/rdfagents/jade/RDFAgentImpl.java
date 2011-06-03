@@ -62,7 +62,7 @@ public class RDFAgentImpl extends RDFAgent {
 
     @Override
     public void setPublisher(Publisher<Value, Dataset> publisher) {
-        throw new UnsupportedOperationException("not yet implemented");
+        jadeAgent.setPublisher(publisher);
     }
 
     public void setJadeAgent(RDFJadeAgent jadeAgent) {

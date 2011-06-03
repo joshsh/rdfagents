@@ -32,7 +32,6 @@ import java.util.Properties;
  * Time: 7:12 PM
  */
 public class Demo {
-    private static final String NAME_PREFIX = "urn:agent:";
 
     private final Sail sail;
     private final DatasetFactory datasetFactory;
@@ -41,13 +40,13 @@ public class Demo {
 
         RDFAgentsPlatform p = new RDFAgentsPlatformImpl("rdfagents.fortytwo.net", datasetFactory, 8888, config);
 
-        RDFAgent a1 = new RDFAgentImpl(NAME_PREFIX + "agent1", p, "xmpp:patabot.1@fortytwo.net");
-        RDFAgent a2 = new RDFAgentImpl(NAME_PREFIX + "agent2", p, "xmpp:patabot.1@fortytwo.net");
+        RDFAgent a1 = new RDFAgentImpl(RDFAgents.NAME_PREFIX + "agent1", p, "xmpp:patabot.1@fortytwo.net");
+        RDFAgent a2 = new RDFAgentImpl(RDFAgents.NAME_PREFIX + "agent2", p, "xmpp:patabot.1@fortytwo.net");
         a2.setQueryServer(new SailBasedQueryServer(a2, sail));
 
         Sail mem = new MemoryStore();
         mem.initialize();
-        RDFAgent aLinked = new LinkedDataAgent(mem, NAME_PREFIX + "linked-data", p, "xmpp:patabot.1@fortytwo.net");
+        RDFAgent aLinked = new LinkedDataAgent(mem, RDFAgents.NAME_PREFIX + "linked-data", p, "xmpp:patabot.1@fortytwo.net");
 
         QueryClient<Value, Dataset> client = new QueryClientImpl(a1);
 

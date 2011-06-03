@@ -24,6 +24,8 @@ public class RDFAgents {
             RDFAGENTS_ONTOLOGY_NAME = "rdfagents",
             RDFAGENTS_ACCEPT_PARAMETER = "X-rdfagents-accept";
 
+    public static final String NAME_PREFIX = "urn:agent:";
+
     public enum Protocol {
         Query("fipa-query"), Subscribe("fipa-subscribe");
 

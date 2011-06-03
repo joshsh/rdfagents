@@ -259,6 +259,17 @@ public class RDFJadeAgent extends Agent {
             queryCancellationCallbacks.remove(id);
             subscriptionCallbacks.remove(id);
             subscriptionCancellationCallbacks.remove(id);
+
+            try {
+                if (null != queryServer) {
+                    queryServer.cancel(id);
+                }
+                if (null != publisher) {
+                    publisher.cancel(id);
+                }
+            } catch (LocalFailure e) {
+                LOGGER.severe("failed to cancel expired conversations (stack trace follows)\n" + RDFAgents.stackTraceToString(e));
+            }
         }
     }
 
@@ -295,7 +306,7 @@ public class RDFJadeAgent extends Agent {
             sender = messageFactory.fromAID(m.getSender());
         } catch (MessageNotUnderstoodException e) {
             // Since it may not be possible to contact the sender, just swallow the error.
-            LOGGER.warning("could not reply to unacceptable message: " + e.getMessage());
+            LOGGER.warning("message is invalid, cannot reply: " + e.getMessage());
             return;
         }
 
@@ -459,12 +470,8 @@ public class RDFJadeAgent extends Agent {
     private void handleUpdate(final ACLMessage m) throws MessageRejectedException, MessageNotUnderstoodException, LocalFailure {
         QueryCallback<Dataset> callback = getSubscriptionCallback(m);
 
-        try {
-            Dataset answer = messageFactory.extractDataset(m);
-            callback.success(answer);
-        } finally {
-            forgetConversation(m.getConversationId());
-        }
+        Dataset answer = messageFactory.extractDataset(m);
+        callback.success(answer);
     }
 
     private void handleQueryAccepted(final ACLMessage m) throws MessageRejectedException {
@@ -479,7 +486,6 @@ public class RDFJadeAgent extends Agent {
         try {
             ErrorExplanation exp = messageFactory.extractErrorExplanation(m);
             getQueryCallback(m).refused(exp);
-            removeQueryCallback(m);
         } finally {
             forgetConversation(m.getConversationId());
         }
@@ -489,7 +495,6 @@ public class RDFJadeAgent extends Agent {
         try {
             ErrorExplanation exp = messageFactory.extractErrorExplanation(m);
             getSubscriptionCallback(m).refused(exp);
-            removeQueryCallback(m);
         } finally {
             forgetConversation(m.getConversationId());
         }
@@ -567,7 +572,7 @@ public class RDFJadeAgent extends Agent {
             case AGREE_WITH_CONFIRMATION:
                 send(messageFactory.agreeToSubcriptionRequest(self, sender, m));
 
-                send(messageFactory.informOfQueryResult(self, sender, m, queryServer.answer(v), RDFContentLanguage.RDF_NQUADS));
+                //send(messageFactory.informOfQueryResult(self, sender, m, queryServer.answer(v), RDFContentLanguage.RDF_NQUADS));
 
                 break;
             case REFUSE:
