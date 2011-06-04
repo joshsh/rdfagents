@@ -113,12 +113,14 @@ pre.data {
     background-color: #E8F0E8;
     padding: 0.5em ;
     margin: 1em 4em 1em 2em ;
- }
+}
 
+/*
 hr {
     color: #FF0000;
     background-color: #FF0000;
 }
+*/
 
 .figure {
     text-align: center;

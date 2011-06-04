@@ -13,12 +13,6 @@
 
 <body>
 
-<div>
-    <span style="color: #f00;"><b>Note:</b> this is a pre-release version of the RDFAgents spec.
-You haven't actually seen this yet &lt;subtle hand gesture&gt;.</span>
-    <br/><br/>
-</div>
-
 <div class="head">
     <p>
         <a href="http://fipa.org">
@@ -26,18 +20,17 @@ You haven't actually seen this yet &lt;subtle hand gesture&gt;.</span>
         </a>
         &nbsp;&nbsp;&nbsp;&nbsp;
         <a href="http://www.w3.org/2001/sw/">
-            <!--<img alt="Semantic Web" src="http://www.w3.org/Icons/SW/sw-horz" style="border:0" width="156" height="48"/>-->
             <img alt="Semantic Web" src="resources/semanticweb-logo.png" style="border:0" width="156" height="53"/>
         </a>
     </p>
 
     <h1 id="main">RDFAgents</h1>
 
-    <h2><a id="w3c-doctype">Draft <span property="dc:modified" content="2011-05-03">3 May 2011</span></a></h2>
+    <h2><a id="w3c-doctype">Draft <span property="dc:modified" content="2011-05-03">3 June 2011</span></a></h2>
     <dl>
         <dt>This version:</dt>
         <dd>
-            <a href="http://fortytwo.net/2011/rdfagents/spec-20110503">http://fortytwo.net/2011/rdfagents/spec-20110503</a>
+            <a href="http://fortytwo.net/2011/rdfagents/spec-20110603">http://fortytwo.net/2011/rdfagents/spec-20110603</a>
         </dd>
         <dt>Latest version:</dt>
         <dd><a href="http://fortytwo.net/2011/rdfagents/spec">http://fortytwo.net/2011/rdfagents/spec</a></dd>
@@ -142,7 +135,7 @@ You haven't actually seen this yet &lt;subtle hand gesture&gt;.</span>
             <ul class="toc">
                 <li class="tocline2">4.1 <a href="#query">Query</a>
                     <ul class="toc">
-                        <li class="tocline3">4.1.1 <a href="#describe-query">The <code>describe</code> query form</a>
+                        <li class="tocline3">4.1.1 <a href="#describe-query">The <code>describes</code> query form</a>
                         </li>
                         <li class="tocline3">4.1.2 <a href="#query-results">Interpretation of query results</a></li>
                         <li class="tocline3">4.1.3 <a href="#query-exceptions">Exceptions</a></li>
@@ -352,12 +345,12 @@ You haven't actually seen this yet &lt;subtle hand gesture&gt;.</span>
 <h4>RDF Datasets</h4>
 
 <p>
-    All examples of RDF Datasets (i.e. collections of Named Graphs) in this document use
+    All examples of RDF Datasets (i.e. collections of named graphs) in this document use
     <a class="inform" href="http://www4.wiwiss.fu-berlin.de/bizer/TriG/">TriG</a>,
     a particularly human-readable RDF serialization format supporting Named Graphs.
 
     For simplicity, namespace declarations are omitted from the beginning of each example;
-    all namespaces are assumed to be defined as <a href="#doc-namespaces">above</a>.
+    all namespaces are assumed to be defined as above.
 
     For example, the following:
 </p>
@@ -381,7 +374,8 @@ You haven't actually seen this yet &lt;subtle hand gesture&gt;.</span>
 <h4>SPARQL queries</h4>
 
 <p>
-    Examples of SPARQL queries (see [<a href="#SPARQL">SPARQL</a>]) also omit namespace declarations. For example:
+    Examples of <a href="http://www.w3.org/TR/rdf-sparql-query/">SPARQL</a> also omit namespace declarations. For
+    example:
 </p>
 <pre class="data">
 SELECT ?agent ?address WHERE {
@@ -404,8 +398,8 @@ SELECT ?agent ?address WHERE {
         :name http://example.org/rdfnews
         :addresses (sequence xmpp:rdfnews@example.org))
     :receiver (set (agent-identifier
-        :name http://fortytwo.net/agents/smith
-        :addresses (sequence xmpp:smith@fortytwo.net)))
+        :name http://example.org/consumer
+        :addresses (sequence xmpp:consumer@example.org)))
     :protocol fipa-subscribe
     :conversation-id 089f5b468e)
 </pre>
@@ -449,7 +443,7 @@ SELECT ?agent ?address WHERE {
     propositional attitude of the message.
 
     Statements included in the default graph of an assertional message
-    (see <a href="#messages">below</a>)
+    (see <a href="#asserting-graphs">below</a>)
     are thereby asserted to be true by the sender of the message,
     while the attitude of the sender towards any graph apart from the default graph
     is a matter of vocabulary, community convention, and interpretation by the receiver,
@@ -464,7 +458,7 @@ SELECT ?agent ?address WHERE {
     and is to be interpreted as a claim of absolute truth.
 
     On the other hand, provenance metadata may be attached to the information asserted in a <i>previous</i> message
-    through the mechanism of graph renaming described <a href="#messages">below</a>.
+    through the mechanism of graph renaming described <a href="#messaging">below</a>.
 </p>
 
 <h3>2.2 <a id="agents">Agents</a></h3>
@@ -529,8 +523,9 @@ SELECT ?agent ?address WHERE {
     although some are suitable for implementation-specific extensions.
 
     For example, there is no built-in method of digitally signing named graphs,
-    and SWP's notion of the <i>validity period</i> of a warrant is not used:
-    like the RDF/XML documents of the Web of Data,
+    and SWP's notion of the <i>validity period</i> of a warrant is not used.
+
+    Like the RDF/XML documents of the Web of Data,
     the information asserted in messages has no temporal or contextual qualifications.
 </p>
 
@@ -544,8 +539,8 @@ SELECT ?agent ?address WHERE {
 </p>
 
 <p>
-    Each assertional message sent or received by an agent carries an RDF Dataset
-    in which there are two distinguished resources:
+    Each assertional message sent by an agent carries an RDF Dataset
+    for which there are two distinguished resources:
 </p>
 
 <ul>
@@ -564,7 +559,8 @@ SELECT ?agent ?address WHERE {
 <ol>
     <li>name the otherwise unnamed default graph with a newly minted IRI,
         give it the type <a href="http://www.w3.org/2004/03/trix/rdfg-1/Graph"><code>rdfg:Graph</code></a>,
-        and add a <a href="http://www.w3.org/2004/03/trix/swp-2/assertedBy"><code>swp:assertedBy</code></a> self-link
+        and add a <a href="http://www.w3.org/2004/03/trix/swp-2/assertedBy"><code>swp:assertedBy</code></a>
+        link from the graph to itself
     </li>
     <li>give the sender the type <a href="http://xmlns.com/foaf/spec/#term_Agent"><code>foaf:Agent</code></a>
         and add a <a href="http://xmlns.com/foaf/spec/#term_mbox"><code>foaf:mbox</code></a> link
@@ -572,7 +568,7 @@ SELECT ?agent ?address WHERE {
         (see <a href="#fipa-transport-addresses">below</a>)
     </li>
     <li>add an <a href="http://www.w3.org/2004/03/trix/swp-2/authority"><code>swp:authority</code></a> link
-        from the (previously) default graph to the sender
+        from the previously-default graph to the sender
     </li>
     <!--<li>optionally, attach additional metadata to the graph, such as a timestamp or a certificate,
         and/or to the sender, such as contact information
@@ -589,11 +585,11 @@ SELECT ?agent ?address WHERE {
     is independent of the communicative act itself,
     yet captures the informational content and assertional intent of the message.
 
-    It also serves to record a provenance trail which gives due credit to information providers
-    while supporting information consumers in deciding which information to accept
+    It also serves to record a provenance trail which gives credit to information providers
+    while supporting information consumers in deciding which information to accept,
     and in discovering further information.
 
-    In a real-world application, the receiver's dataset can be added to a local RDF store for query answering,
+    In an application, the receiver's dataset can be added to a local RDF store for query answering,
     or sent verbatim to other agents,
     who may either trust to its accuracy or verify it by contacting the sender directly.
 </p>
@@ -673,10 +669,10 @@ SELECT ?agent ?address WHERE {
 </p>
 
 <p>
-    Briefly, agents operate within an RDFAgents <i>platform</i>,
+    Agents operate within an RDFAgents <i>platform</i>,
     which is a concrete implementation of this specification and the underlying FIPA standards.
 
-    Generally, an RDFAgents implementation is expected to be realized as a lightweight extension of
+    An RDFAgents platform can be realized as a lightweight extension of
     an existing FIPA implementation such as <a href="http://jade.tilab.com/">JADE</a>
     or <a href="http://sourceforge.net/projects/fipa-os/">FIPA-OS</a>.
 
@@ -684,7 +680,8 @@ SELECT ?agent ?address WHERE {
     possibly obeying one or more well-defined <i>interaction protocols</i>.
 
     Agents communicate by exchanging <i>messages</i> which represent speech acts,
-    and which are encoded in an <i>agent communication language</i>.
+    encoded in the FIPA <i>agent communication language</i>
+    (FIPA ACL).
 </p>
 
 <p>
@@ -713,10 +710,11 @@ SELECT ?agent ?address WHERE {
     The performatives used within RDFAgents include:
 </p>
 <ul>
+    <li><code>agree</code>: agrees to a subscription request</li>
     <li><code>cancel</code>: requests the cancellation of a subscription</li>
     <li><code>failure</code>: indicates an error in query answering or stream processing</li>
     <li><code>inform-done</code>: acknowledges cancellation of a subscription</li>
-    <li><code>inform-result</code>: informs an agent of an update or the result of a query</li>
+    <li><code>inform-ref</code>: informs an agent of an update or the result of a query</li>
     <li><code>not-understood</code>: indicates a communication error</li>
     <li><code>query-ref</code>: poses a query</li>
     <li><code>refuse</code>: refuses a query or a subscription request</li>
@@ -744,7 +742,7 @@ SELECT ?agent ?address WHERE {
     In order to <i>initiate</i> an interaction, however,
     an agent needs to have acquired the identity of the recipient from some other source.
 
-    The most basic way to do so in RDFAgents is to issue a SPARQL query over all accepted statements,
+    A simple way to find other agents is to issue a SPARQL query over all accepted statements,
     e.g. in order to contact the authority responsible for a previously asserted graph:
 </p>
 
@@ -759,7 +757,7 @@ SELECT ?graph ?agent ?address WHERE {
 <p>
     This gives the agent enough information to send a message,
     provided that graph metadata was recorded in the manner specified
-    <a href="#messages">above</a> and at least one of the relevant transport protocols is supported.
+    <a href="#messaging">above</a> and at least one of the relevant transport protocols is supported.
 </p>
 
 <p>
@@ -853,7 +851,7 @@ SELECT ?graph ?agent ?address WHERE {
 <p>
     An RDFAgents platform must support at least one of the above languages,
     where supporting a language means that the platform can both parse and write the full range of valid
-    expressions in the language (to and from the corresponding RDF Datasets).
+    expressions in the language, to and from the corresponding RDF Datasets.
 
     However, an RDFAgents platform need not support all of the above.
 
@@ -868,7 +866,7 @@ SELECT ?graph ?agent ?address WHERE {
 
     For example, an agent which receives a request for query results in "<code>rdf-json</code>"
     may choose to respond with a content expression in the
-    <a href="http://docs.api.talis.com/platform-api/output-types/rdf-json">Talis RDF/JSON format</a>.
+    Talis <a href="http://docs.api.talis.com/platform-api/output-types/rdf-json">RDF/JSON</a> format.
 
     However, it is up to the requester to validate the response against the expected format.
 </p>
@@ -884,33 +882,33 @@ SELECT ?graph ?agent ?address WHERE {
     four of them cannot express named graphs at all,
     while <code>rdf-nquads</code> cannot express an <i>empty</i> named graph or default graph.
 
-    The following rules compensate for these differences.
+    The following rules address these differences.
 </p>
 
 <p>
-    When mapping a (sender's) RDF Dataset into the RDF content of a message:
+    When mapping an RDF Dataset into the RDF content of a message:
 </p>
 <ol>
-    <li>omit empty named graphs.
-        This will in some cases result in the receiver seeing a slightly different sender's dataset than the sender,
+    <li>Omit empty named graphs.
+        This will in some cases result in a sender's dataset which is slightly different than the one intended by the
+        sender,
         but one whose meaning is the same, insofar as metadata about an empty graph is useless.
         Note that a default graph is required in every RDF Dataset, even if it is empty.
     </li>
-    <li>if the RDF content language does not support Named Graphs,
+    <li>If the RDF content language does not support Named Graphs,
         omit all graphs apart from the default graph.
         This may result in a significant loss of information,
         so the use of a Named Graph format is strongly recommended
         (and also necessary in any application requiring the communication of provenance metadata).
-        However, this loss will not invalidate the remaining information,
-        thanks to the Open World Assumption.
+        However, the Open World Assumption guarantees that this loss will not invalidate the remaining information.
     </li>
 </ol>
 <p>
     When mapping the RDF content of a message into an RDF Dataset:
 </p>
 <ol>
-    <li>if the sender included any empty named graphs in the serialization, omit them</li>
-    <li>if there are no statements which map into the default graph
+    <li>If there are any empty named graphs (which there should not be), omit them</li>
+    <li>If there are no statements which map into the default graph
         (e.g. in <code>rdf-nquads</code> content in which every statement is a quad),
         let there be an empty default graph
     </li>
@@ -939,7 +937,7 @@ SELECT ?graph ?agent ?address WHERE {
     interchangeably.
 
     However, an agent's function in a given role may be minimal,
-    e.g. as a Publish-Subscribe publisher which simply refuses all subscription requests.
+    e.g. as a Publish-Subscribe provider which simply refuses all subscription requests.
 </p>
 
 <p>
@@ -965,50 +963,59 @@ SELECT ?graph ?agent ?address WHERE {
 </p>
 
 <p>
-    The Query protocol involves two otherwise equal participants which assume the roles of a <i>client</i>
-    requesting information from a <i>server</i>.
+    The Query protocol involves two otherwise equal participants which assume the roles of a <i>consumer</i>
+    requesting information from a <i>provider</i>.
 
-    The client initiates a Query interaction by posing a query to the server in the form of a FIPA
+    The consumer initiates a Query interaction by posing a query to the provider in the form of a FIPA
     <code>query-ref</code> message,
     where the query is expressed using an RDFAgents query form (see <a href="#describe-query">below</a>)
     in the <code>fipa-sl2</code> content language.
 </p>
 
 <p>
-    Upon receipt of the query, the server either agrees or refuses to evaluate it.
+    Upon receipt of the query, the provider either agrees or refuses to evaluate it.
 
-    If the server refuses, it sends a <code>refuse</code> message to the client
+    If the provider refuses, it sends a <code>refuse</code> message to the consumer
     whose content is an explanation in the <code>fipa-sl2</code> content language, completing the interaction.
 
-    If the server agrees, it chooses whether to send an <code>agree</code> notification to the client
+    If the provider agrees, it chooses whether to send an <code>agree</code> notification to the consumer
     or to proceed directly to the evaluation of the query.
 </p>
 
 <p>
     After the answer to the query (an RDF Dataset) has been determined,
-    the server completes the interaction with an <code>inform-result</code> message
+    the provider completes the interaction with an <code>inform-ref</code> message
     carrying the dataset in one of the RDF content languages.
 </p>
 
-<h4>4.1.1 <a id="describe-query">The <code>describe</code> query form</a></h4>
+<h4>4.1.1 <a id="describe-query">The <code>describes</code> query form</a></h4>
 
 <p>
-    This version of RDFAgents supports exactly one type of query, called <code>describe</code>,
+    This version of RDFAgents supports exactly one type of query, called <code>describes</code>,
     which accepts a single RDF resource and returns an RDF Dataset of information about it.
 
     This is similar to SPARQL's <a href="http://www.w3.org/TR/rdf-sparql-query/#describe">DESCRIBE</a> query form
-    in that the way in which the server selects an appropriate chunk of information describing the given resource is
+    in that the way in which the provider selects an appropriate chunk of information describing the given resource is
     unspecified.
 
-    The relationship of a <code>describe</code> query result to its argument is analogous to the relationship of
+    The relationship of a <code>describes</code> query result to its argument is analogous to the relationship of
     an associated RDF description with a dereferenceable HTTP URI in Linked Data.
+
+    The query form is used in combination with the optional <code>X-rdfagents-accept</code> message parameter, which
+    specifies the desired RDF content language for the message.
 </p>
-
 <p>
-    The client may request the query result to be expressed in a particular RDF format
-    by indicating the corresponding RDF content language with the <code>language</code> parameter.
+    Built-in content languages include
+    <code>rdf-n3</code>,
+    <code>rdf-nquads</code>,
+    <code>rdf-ntriples</code>,
+    <code>rdf-trig</code>,
+    <code>rdf-trix</code>,
+    <code>rdf-turtle</code>, and
+    <code>rdf-xml</code>, as described <a href="#rdf-content-languages">above</a>,
+    but any string is acceptable.
 
-    When this is the case, the server must either return results in the specified language,
+    When the consumer thus specifies a language, the provider must either return results in the specified language,
     or raise an exception in the form of a <code>failure</code> message if that language is not supported
     (see <a href="#query-exceptions">below</a> for more information on exceptions).
 
@@ -1023,8 +1030,8 @@ SELECT ?graph ?agent ?address WHERE {
 <pre class="data">
 (query-ref
     :sender (agent-identifier
-        :name http://fortytwo.net/agents/smith
-	:addresses (sequence xmpp:smith@fortytwo.net))
+        :name http://example.org/consumer
+	:addresses (sequence xmpp:consumer@example.org))
     :receiver (set (agent-identifier
 	:name http://example.org/rdfnews
 	:addresses (sequence xmpp:rdfnews@example.org)))
@@ -1032,7 +1039,8 @@ SELECT ?graph ?agent ?address WHERE {
     :conversation-id c976b710a5
     :language fipa-sl2
     :ontology rdfagents
-    :content "(describe (uri http://dbpedia.org/resource/Beijing) :language rdf-trig)")
+    :X-rdfagents-accept rdf-trig
+    :content "((any ?dataset (describes ?dataset (resource :uri http://dbpedia.org/resource/Beijing))))")
 </pre>
 
 <p>
@@ -1040,13 +1048,13 @@ SELECT ?graph ?agent ?address WHERE {
 </p>
 
 <pre class="data">
-(inform-result
+(inform-ref
     :sender (agent-identifier
         :name http://example.org/rdfnews
 	:addresses (sequence xmpp:rdfnews@example.org))
     :receiver (set (agent-identifier
-        :name http://fortytwo.net/agents/smith
-	:addresses (sequence xmpp:smith@fortytwo.net)))
+        :name http://example.org/consumer
+	:addresses (sequence xmpp:consumer@example.org)))
     :protocol fipa-query
     :conversation-id c976b710a5
     :language rdf-trig
@@ -1067,21 +1075,21 @@ SELECT ?graph ?agent ?address WHERE {
 <h4>4.1.2 <a id="query-results">Interpretation of query results</a></h4>
 
 <p>
-    In RDFAgents, the <code>inform-result</code> message which supplies the query result
+    In RDFAgents, the <code>inform-ref</code> message which supplies the query result
     has the same propositional force as an <code>inform</code> message
     (see [<a href="#FIPASC00037J">FIPA SC00037J</a>]):
-    it is an assertion by the server that the content of the message is a true proposition,
+    it is an assertion by the provider that the content of the message is a true proposition,
     or in RDFAgents terms,
     that all statements in the default graph of the sender's dataset are true.
 
-    Furthermore, it is an assertion not only to the client which issued the query,
+    Furthermore, it is an assertion not only to the consumer which issued the query,
     but to all potential information consumers,
     making the act of sending such a message analogous to that of publishing a document on the Semantic Web.
 </p>
 
 <p>
     After constructing the receiver's dataset for the query result,
-    the client may pass it on to any other agent, at any time,
+    the consumer may pass it on to any other agent, at any time,
     simply by including it in the sender's dataset of another message.
 </p>
 
@@ -1089,7 +1097,7 @@ SELECT ?graph ?agent ?address WHERE {
 
 <p>
     At any point in a Query interaction,
-    the client or server can inform the other party that it did not understand what was communicated,
+    the consumer or provider can inform the other party that it did not understand what was communicated,
     possibly ending the interaction.
 
     This is accomplished with a <code>not-understood</code> message which optionally contains an error explanation
@@ -1097,15 +1105,15 @@ SELECT ?graph ?agent ?address WHERE {
 </p>
 
 <p>
-    If the server understands the query but fails to produce a query result,
-    it must send a <code>failure</code> message to the client with an explanation in the
+    If the provider understands the query but fails to produce a query result,
+    it must send a <code>failure</code> message to the consumer with an explanation in the
     <code>rdfagents</code> domain ontology, ending the interaction.
 
     See <a href="#errors">below</a> for more information on error explanations.
 </p>
 
 <p>
-    In addition, a Query interaction may be cancelled by the client at any time
+    In addition, a Query interaction may be cancelled by the consumer at any time
     (i.e. after issuing the query and before receiving a query result) by initiating the FIPA Cancel meta-protocol
     using a <code>cancel</code> message.
 </p>
@@ -1130,32 +1138,33 @@ SELECT ?graph ?agent ?address WHERE {
 
 <p>
     The Publish-Subscribe protocol involves two otherwise equal participants
-    which assume the roles of a <i>subscriber</i> requesting a stream of informative updates from a <i>publisher</i>.
+    which assume the roles of a <i>consumer</i> or subscriber requesting a stream of informative updates from a <i>provider</i>
+    or publisher.
 
-    A Publish-Subscribe interaction begins with the subscriber issuing a subscription request
+    A Publish-Subscribe interaction begins with the consumer issuing a subscription request
     in the form of a FIPA <code>subscribe</code> message.
 
     The language, ontology and content of this message
     are subject to the same constraints as a query in the Query protocol,
     the only difference being the performative and the <code>protocol</code> field of the message.
 
-    In particular, the subscription request must contain a <code>describe</code> functional term
+    In particular, the subscription request must contain a <code>describes</code> functional term
     in the <code>fipa-sl2</code> content language whose argument is the topic of the desired stream.
 </p>
 
 <p>
-    Upon receipt of the subscription request, the publisher either agrees or refuses to
+    Upon receipt of the subscription request, the provider either agrees or refuses to
     register a corresponding subscription.
 
-    If the publisher refuses, it sends a <code>refuse</code> message to the client
+    If the provider refuses, it sends a <code>refuse</code> message to the consumer
     whose content is an explanation in the <code>fipa-sl2</code> content language, completing the interaction.
 
-    If the publisher agrees, it must send an <code>agree</code> notification as its first message to the
-    subscriber in the current interaction (i.e. before it sends any updates).
+    If the provider agrees, it must send an <code>agree</code> notification as its first message to the
+    consumer in the current interaction (i.e. before it sends any updates).
 </p>
 
 <p>
-    <i>Updates</i> are communicated by the publisher to the subscriber in the same manner as Query results,
+    <i>Updates</i> are communicated by the provider to the consumer in the same manner as Query results,
     using <code>inform-ref</code> messages carrying RDF Datasets.
 
     The only difference between Query results and Publish-Subscribe updates
@@ -1165,8 +1174,8 @@ SELECT ?graph ?agent ?address WHERE {
 
 <p>
     Unless an exception occurs (see <a href="#pubsub-exceptions">below</a>),
-    the subscription remains active until it is cancelled by the subscriber with a <code>cancel</code> message,
-    which the publisher acknowledges with an <code>inform-done</code> message before terminating the subscription
+    the subscription remains active until it is cancelled by the consumer with a <code>cancel</code> message,
+    which the provider acknowledges with an <code>inform-done</code> message before terminating the subscription
     and thereby completing the interaction.
 
     At that point, no further updates should be sent.
@@ -1179,8 +1188,8 @@ SELECT ?graph ?agent ?address WHERE {
 <pre class="data">
 (subscribe
     :sender (agent-identifier
-        :name http://fortytwo.net/agents/smith
-        :addresses (sequence xmpp:smith@fortytwo.net))
+        :name http://example.org/consumer
+        :addresses (sequence xmpp:consumer@example.org))
     :receiver (set (agent-identifier
         :name http://example.org/rdfnews
         :addresses (sequence xmpp:rdfnews@example.org)))
@@ -1188,7 +1197,8 @@ SELECT ?graph ?agent ?address WHERE {
     :conversation-id  089f5b468e
     :language fipa-sl2
     :ontology rdfagents
-    :content "(describe (uri http://dbpedia.org/resource/Beijing) :language rdf-trig)")
+    :X-rdfagents-accept rdf-trig
+    :content "((any ?dataset (describes ?dataset (resource :uri http://dbpedia.org/resource/Beijing))))")
 </pre>
 <p>
     Subscription confirmation:
@@ -1200,8 +1210,8 @@ SELECT ?graph ?agent ?address WHERE {
         :name http://example.org/rdfnews
         :addresses (sequence xmpp:rdfnews@example.org))
     :receiver (set (agent-identifier
-        :name http://fortytwo.net/agents/smith
-        :addresses (sequence xmpp:smith@fortytwo.net)))
+        :name http://example.org/consumer
+        :addresses (sequence xmpp:consumer@example.org)))
     :protocol fipa-subscribe
     :conversation-id 089f5b468e)
 </pre>
@@ -1211,13 +1221,13 @@ SELECT ?graph ?agent ?address WHERE {
 </p>
 
 <pre class="data">
-(inform-result
+(inform-ref
     :sender (agent-identifier
         :name http://example.org/rdfnews
 	:addresses (sequence xmpp:rdfnews@example.org))
     :receiver (set (agent-identifier
-        :name http://fortytwo.net/agents/smith
-	:addresses (sequence xmpp:smith@fortytwo.net)))
+        :name http://example.org/consumer
+	:addresses (sequence xmpp:consumer@example.org)))
     :protocol fipa-subscribe
     :conversation-id 089f5b468e
     :language rdf-trig
@@ -1238,9 +1248,9 @@ SELECT ?graph ?agent ?address WHERE {
 <h4>4.2.1 <a id="pubsub-updates">Interpretation of updates</a></h4>
 
 <p>
-    As in the Query protocol, an <code>inform-result</code> message containing an update
+    As in the Query protocol, an <code>inform-ref</code> message containing an update
     has the same propositional force as an <code>inform</code> message:
-    it is an assertion by the publisher, to all potential information consumers,
+    it is an assertion by the provider, to all potential consumers,
     that all statements in the default graph of the sender's dataset are true.
 
     This provides a method of publishing data streams on the Semantic Web which is analogous to the publishing of
@@ -1249,7 +1259,7 @@ SELECT ?graph ?agent ?address WHERE {
 
 <p>
     After constructing the receiver's dataset for the update,
-    the client may pass it on to any other agent, at any time,
+    the consumer may pass it on to any other agent, at any time,
     simply by including it in the sender's dataset of another message.
 </p>
 
@@ -1327,10 +1337,10 @@ SELECT ?graph ?agent ?address WHERE {
 
 <p>
     To facilitate the RDF description of agents,
-    the name of an RDFAgents agent must be a Semantic Web URI which should be drawn from a URI space controlled by its
-    owner.
+    the name of an RDFAgents agent must be a valid absolute URI,
+    preferably (but not necessarily) a Semantic Web URI which is drawn from a URI space controlled by its owner.
 
-    As such, it should be an HTTP URI associated with an RDF
+    For example, the name may be an HTTP URI associated with an RDF
     description of the agent which can be obtained by dereferencing the URI, in the manner of Linked Data.
 </p>
 
@@ -1367,7 +1377,7 @@ SELECT ?graph ?agent ?address WHERE {
     A given agent may support multiple methods of communication and therefore may have multiple transport addresses.
 
     Since an agent's transport addresses are used as authoritative contact information in RDF
-    descriptions of the agent (see <a href="#messages">above</a>),
+    descriptions of the agent (see <a href="#messaging">above</a>),
     they are required to be compatible with such use.
 </p>
 
@@ -1476,7 +1486,7 @@ through the Internet without the assistance of specialized intermediary services
 
 <p>
     RDFAgents does not make use of FIPA's experimental RDF content language [<a href="#FIPAXC00011B">FIPA XC00011B</a>].
-    This language predates Named Graphs (using RDF reification for statement metadata instead)
+    This language predates Named Graphs (using RDF reification for statement metadata, instead)
     and differs in intent from RDFAgents,
     which separates the representation of <i>knowledge</i> in RDF with Named Graphs
     from the representation of <i>actions</i> in FIPA's built-in Semantic Language.
@@ -1514,7 +1524,7 @@ through the Internet without the assistance of specialized intermediary services
     and the one used by most applications which consume heterogeneous Semantic Web data.
 
     In the absence of a clear set of conventions for expressing provenance metadata,
-    all you can do is to accept information arbitrarily and hope for the best.
+    all one can do is to accept information arbitrarily and hope for the best.
 
     This strategy ignores not only the variable trustworthiness of information providers,
     but also the fact that graphs may be provided (or <i>quoted</i>) in a message without necessarily
@@ -1566,7 +1576,7 @@ SELECT ?graph ?agent WHERE {
 <h3>6.2 <a id="information-discovery">Information discovery</a></h3>
 
 <p>
-    The <code>describe</code> query operation supported by RDFAgents is purposely similar to
+    The <code>describes</code> query operation supported by RDFAgents is purposely similar to
     the convention of dereferencing HTTP URIs on the Web of Data.
 
     This is a particularly simple way of interacting with Semantic Web datasets which has nonetheless proven effective.
@@ -1601,12 +1611,12 @@ SELECT ?graph ?agent WHERE {
     about the thing named <code>http://dbpedia.org/resource/Beijing</code>,
     that agent should respond with an RDF Dataset about the city of Beijing.
 
-    The description should include links to related things such as China,
+    The description may include links to related things such as China,
     Beijing universities and historical landmarks, and so on.
 
     Furthermore, if the agent has information about Beijing from other sources,
     such as a news service <code>http://foo.com/news</code> or a weather service <code>http://bar.net/weather</code>,
-    some of that information should be included in the dataset along with appropriate attribution metadata.
+    some of that information may be included in the dataset along with appropriate attribution metadata.
 
     This gives the information consumer the option of contacting those sources directly
     in order to get more detailed or more up-to-date news or weather information about Beijing.
@@ -1657,23 +1667,23 @@ SELECT ?graph ?agent WHERE {
 
 <p>
     A <a href="http://www.w3.org/TR/rdf-concepts/#dfn-URI-reference">URI reference</a>
-    is constructed with the <code>uri</code> function,
-    whose only parameter expects a Unicode string encoded as in
-    [<a href="#RDFCONCEPTS">RDF Concepts</a>].
+    is constructed with the <code>resource</code> function,
+    whose only parameter, <code>uri</code>, expects a URI in the form of a Unicode string (encoded as in
+    [<a href="#RDFCONCEPTS">RDF Concepts</a>]).
 </p>
 
 <p>
-    Example of a URI:
+    Example of a URI reference:
 </p>
 <pre class="data">
-(uri http://example.org/ArthurDent)
+(resource :uri http://example.org/ArthurDent)
 </pre>
 <p>
     <a href="http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal">Literals</a>
-    are constructed with the function <code>literal</code> with one required parameter,
+    are constructed with the function <code>literal</code> using one required parameter, <code>label</code>,
     which expects the label of the literal as the quoted form of a string encoded in Unicode Normal Form C
     (as described in [<a href="#RDFCONCEPTS">RDF Concepts</a>]),
-    and optional named parameters <code>language</code> and <code>datatype</code>,
+    and optional parameters <code>language</code> and <code>datatype</code>,
     which expect a language tag (see [<a href="#RFC3066">RFC 3066</a>]) and a URI reference, respectively.
 </p>
 
@@ -1681,7 +1691,7 @@ SELECT ?graph ?agent WHERE {
     Example of a literal:
 </p>
 <pre class="data">
-(literal "42" :datatype (uri http://www.w3.org/2001/XMLSchema#integer))
+(literal :label 42 :datatype (resource :uri http://www.w3.org/2001/XMLSchema#integer))
 </pre>
 <p>
     <a href="http://www.w3.org/TR/rdf-concepts/#section-blank-nodes">Blank nodes</a> cannot be referred to directly.
@@ -1690,46 +1700,48 @@ SELECT ?graph ?agent WHERE {
 <h3>A.2 <a id="queries">Queries</a></h3>
 
 <p>
-    The <code>describe</code> query form constructs a referential expression for an RDF Dataset
-    describing some resource (see <a href="#describe-query">above</a>).
+    The <code>describes</code> query form completes an Identifying Reference Expression
+    (IRE, as in [<a href="#FIPASC00008I">FIPA SC00008I</a>]) for an RDF Dataset
+    describing some resource.
 
-    Its one position-dependent parameter expects the RDF resource (URI reference or literal) to be described,
-    while an optional <code>language</code> parameter expects an RDF content language.
+    For details on usage, see <a href="#describe-query">above</a>.
 
-    Built-in content languages include
-    <code>rdf-n3</code>,
-    <code>rdf-nquads</code>,
-    <code>rdf-ntriples</code>,
-    <code>rdf-trig</code>,
-    <code>rdf-trix</code>,
-    <code>rdf-turtle</code>, and
-    <code>rdf-xml</code>, as described <a href="#rdf-content-languages">above</a>,
-    but any string is acceptable.
+    Its two parameters are the variable of the IRE and a functional term for the resource (URI reference or literal) to
+    be described.
 </p>
 
 <p>
     Example of a query:
 </p>
 <pre class="data">
-(describe (uri http://example.org/ArthurDent) :language rdf-trix)
+((any ?dataset (describes ?dataset (resource :uri http://example.org/ArthurDent))))
 </pre>
 
 <h3>A.3 <a id="errors">Errors</a></h3>
 
 <p>
-    An <i>error</i> may be defined loosely as any event or circumstance which departs from the ordinary flow of
+    An <i>error</i> is any event or circumstance which departs from the ordinary flow of
     an interaction and requires explanation.
 
-    Error explanations in the <code>rdfagents</code> ontology may (and in some cases, must) be used as the content of a
-    <code>not-understood</code>, <code>failure</code>, or <code>refuse</code> message.
+    Any <code>not-understood</code>, <code>failure</code>, or <code>refuse</code> message which is sent
+    in the course of an RDFAgents interaction represents an error condition,
+    and should contain an error explanation in the <code>rdfagents</code> ontology.
+
+    This is not a firm requirement, as such messages may occur in the lower levels of a FIPA implementation,
+    beneath the RDFAgents implementation.
 </p>
 
 <p>
-    An error explanation is constructed as an <code>error</code> functional term
-    containing a type-specific error message.
+    With all three of these performatives, the content of the message is a tuple containing an action expression
+    (for example, the content of a previous message which was not understood)
+    and an error explanation giving a reason for the failure.
+</p>
 
-    The latter must apply one of the following functions to a quoted string with a natural-language
-    description of the error:
+<p>
+    An error explanation in the <code>rdfagents</code> ontology consists of a functional term identifying the type of error
+    which has occurred, as well as a single argument providing a natural-language description of the error.
+
+    The following error types are supported:
 </p>
 
 <ul>
@@ -1764,7 +1776,7 @@ SELECT ?graph ?agent WHERE {
     Example error explanation:
 </p>
 <pre class="data">
-(error (invalid-content "function 'describ' is not defined"))
+(invalid-content "function 'descrbies' is not defined")
 </pre>
 
 <hr/>
@@ -1820,10 +1832,10 @@ SELECT ?graph ?agent WHERE {
 
     <dt><a id="FOAF">[FOAF]</a></dt>
     <dd><cite>
-        <a href="http://xmlns.com/foaf/spec/">FOAF Vocabulary Specification</a>,
+        <a href="http://xmlns.com/foaf/spec/20100809.html">FOAF Vocabulary Specification</a>,
         D. Brickley and L. Miller,
         namespace document,
-        <a href="http://xmlns.com/foaf/spec/20100809.html">latest version</a>
+        <a href="http://xmlns.com/foaf/spec/">latest version</a>
         August 9, 2010.
     </cite></dd>
 
@@ -1838,9 +1850,9 @@ SELECT ?graph ?agent WHERE {
 
     <dt><a id="NTriples">[N-Triples]</a></dt>
     <dd><cite>
-        <a href="http://www.w3.org/2001/sw/RDFCore/ntriples/">N-Triples</a>,
+        <a href="http://www.w3.org/TR/rdf-testcases/#ntriples">N-Triples</a>,
         W3C RDF Core WG internal working draft,
-        <a href="http://www.w3.org/TR/rdf-testcases/#ntriples">latest version</a>
+        <a href="http://www.w3.org/2001/sw/RDFCore/ntriples/">latest version</a>
         February 10, 2004.
     </cite></dd>
 
@@ -1853,10 +1865,10 @@ SELECT ?graph ?agent WHERE {
 
     <dt><a id="Notation3">[Notation3]</a></dt>
     <dd><cite>
-        <a href="http://www.w3.org/TeamSubmission/n3/">Notation3 (N3): A readable RDF syntax</a>
+        <a href="http://www.w3.org/TeamSubmission/2011/SUBM-n3-20110328/">Notation3 (N3): A readable RDF syntax</a>
         T. Berners-Lee and D. Connolly,
         W3C Team Submission,
-        <a href="http://www.w3.org/TeamSubmission/2011/SUBM-n3-20110328/">latest version</a>
+        <a href="http://www.w3.org/TeamSubmission/n3/">latest version</a>
         March 28, 2011.
     </cite></dd>
 
@@ -1866,16 +1878,16 @@ SELECT ?graph ?agent WHERE {
             and Abstract Syntax</a>,
         G. Klyne, J. J. Carroll, editors,
         W3C Recommendation,
-        <a href="http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/">latest version</a>
+        <a href="http://www.w3.org/TR/rdf-concepts/">latest version</a>
         10 February 2004.
     </cite></dd>
 
     <dt><a id="RDFXML">[RDF/XML]</a></dt>
     <dd><cite>
-        <a href="http://www.w3.org/TR/REC-rdf-syntax/">RDF/XML Syntax Specification (Revised)</a>,
+        <a href="http://www.w3.org/TR/2004/REC-rdf-syntax-grammar-20040210/">RDF/XML Syntax Specification (Revised)</a>,
         D. Beckett, editor,
         W3C Recommendation,
-        <a href="http://www.w3.org/TR/2004/REC-rdf-syntax-grammar-20040210/">latest version</a>
+        <a href="http://www.w3.org/TR/REC-rdf-syntax/">latest version</a>
         February 10, 2004.
     </cite></dd>
 
@@ -1897,10 +1909,10 @@ SELECT ?graph ?agent WHERE {
 
     <dt><a id="SPARQL">[SPARQL]</a></dt>
     <dd><cite>
-        <a href="http://www.w3.org/TR/rdf-sparql-query/">SPARQL Query Language for RDF</a>,
+        <a href="http://www.w3.org/TR/2008/REC-rdf-sparql-query-20080115/">SPARQL Query Language for RDF</a>,
         E. Prud'hommeaux and A. Seaborne, editors,
         W3C Recommendation,
-        <a href="http://www.w3.org/TR/2008/REC-rdf-sparql-query-20080115/">latest version</a>
+        <a href="http://www.w3.org/TR/rdf-sparql-query/">latest version</a>
         January 15, 2008.
     </cite></dd>
 
@@ -1913,9 +1925,9 @@ SELECT ?graph ?agent WHERE {
 
     <dt><a id="TriG">[TriG]</a></dt>
     <dd><cite>
-        <a href="http://www4.wiwiss.fu-berlin.de/bizer/TriG/">The TriG Syntax</a>,
+        <a href="http://www4.wiwiss.fu-berlin.de/bizer/TriG/Spec/TriG-20070730/">The TriG Syntax</a>,
         C. Bizer and R. Cyganiak,
-        <a href="http://www4.wiwiss.fu-berlin.de/bizer/TriG/Spec/TriG-20070730/">latest version</a>
+        <a href="http://www4.wiwiss.fu-berlin.de/bizer/TriG/">latest version</a>
         July 30, 2007.
     </cite></dd>
 
@@ -1929,10 +1941,10 @@ SELECT ?graph ?agent WHERE {
 
     <dt><a id="Turtle">[Turtle]</a></dt>
     <dd><cite>
-        <a href="http://www.w3.org/TeamSubmission/turtle/">Turtle - Terse RDF Triple Language</a>,
+        <a href="http://www.w3.org/TeamSubmission/2011/SUBM-turtle-20110328/">Turtle - Terse RDF Triple Language</a>,
         D. Beckett and T. Berners-Lee,
         W3C Team Submission,
-        <a href="http://www.w3.org/TeamSubmission/2011/SUBM-turtle-20110328/">latest version</a>
+        <a href="http://www.w3.org/TeamSubmission/turtle/">latest version</a>
         March 28, 2011.
     </cite></dd>
 
@@ -1976,15 +1988,13 @@ SELECT ?graph ?agent WHERE {
 <h2>C. <a id="acknowledgements">Acknowledgements</a> (informative)</h2>
 
 <p>
-    This work has been supported in various stages by the
+    This work has been supported by the
     <a href="http://tw.rpi.edu/">Tetherless World Constellation</a> and <a href="http://franz.com/">Franz Inc.</a>
     in collaboration with the
     <a href="http://english.ia.cas.cn/au/bi/">Institute of Automation</a>, Chinese Academy of Sciences.
+    Special thanks go to Jim Hendler, Deborah L. McGuinness, Peter Fox, Yanwu Yang, Daniel Zeng, and Jans Aasman
+    for their valuable feedback.
 </p>
-
-<!--<p>
-    Contributors of feedback, code, etc.
-</p>-->
 
 <p>
     The format of this document is based on
@@ -1997,7 +2007,7 @@ SELECT ?graph ?agent WHERE {
 
 <h2>D. <a id="changes">Changes</a> (informative)</h2>
 <dl>
-    <dt>3 May 2011</dt>
+    <dt>3 June 2011</dt>
     <dd>Initial version</dd>
 </dl>
 
