@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.fortytwo.rdfagents</groupId>
     <artifactId>rdfagents-jade</artifactId>
-    <version>0.1</version>
+    <version>0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>RDFAgents JADE</name>
     <description>JADE (Java Agent Development Framework) implementation of RDFAgents</description>
@@ -14,7 +14,7 @@
     <parent>
         <groupId>net.fortytwo.rdfagents</groupId>
         <artifactId>rdfagents-all</artifactId>
-        <version>0.1</version>
+        <version>0.2-SNAPSHOT</version>
     </parent>
 
     <repositories>
@@ -34,7 +34,7 @@
         <dependency>
             <groupId>net.fortytwo.rdfagents</groupId>
             <artifactId>rdfagents-core</artifactId>
-            <version>0.1</version>
+            <version>0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.tilab.jade</groupId>
