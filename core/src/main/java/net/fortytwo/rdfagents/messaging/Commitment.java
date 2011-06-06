@@ -12,9 +12,9 @@ import net.fortytwo.rdfagents.model.ErrorExplanation;
 public class Commitment {
 
     public enum Decision {
-        AGREE_WITH_CONFIRMATION,     // Query and Subscribe
-        AGREE_WITHOUT_CONFIRMATION,  // Query only
-        REFUSE                       // Query and Subscribe
+        AGREE_AND_NOTIFY,  // Query and Subscribe
+        AGREE_SILENTLY,    // Query only
+        REFUSE             // Query and Subscribe
     }
 
     private final Decision decision;

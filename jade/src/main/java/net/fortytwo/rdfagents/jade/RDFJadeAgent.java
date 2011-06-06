@@ -7,17 +7,18 @@ import jade.lang.acl.ACLMessage;
 import net.fortytwo.rdfagents.RDFAgents;
 import net.fortytwo.rdfagents.messaging.CancellationCallback;
 import net.fortytwo.rdfagents.messaging.Commitment;
+import net.fortytwo.rdfagents.messaging.ConsumerCallback;
 import net.fortytwo.rdfagents.messaging.LocalFailure;
 import net.fortytwo.rdfagents.messaging.MessageNotUnderstoodException;
 import net.fortytwo.rdfagents.messaging.MessageRejectedException;
-import net.fortytwo.rdfagents.messaging.QueryCallback;
-import net.fortytwo.rdfagents.messaging.query.QueryServer;
-import net.fortytwo.rdfagents.messaging.subscribe.Publisher;
+import net.fortytwo.rdfagents.messaging.query.QueryProvider;
+import net.fortytwo.rdfagents.messaging.subscribe.PubsubProvider;
 import net.fortytwo.rdfagents.messaging.subscribe.UpdateHandler;
-import net.fortytwo.rdfagents.model.AgentReference;
+import net.fortytwo.rdfagents.model.AgentId;
 import net.fortytwo.rdfagents.model.Dataset;
 import net.fortytwo.rdfagents.model.ErrorExplanation;
 import net.fortytwo.rdfagents.model.RDFContentLanguage;
+import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 
 import java.util.HashMap;
@@ -32,19 +33,19 @@ import java.util.logging.Logger;
 public class RDFJadeAgent extends Agent {
     private static final Logger LOGGER = Logger.getLogger(RDFJadeAgent.class.getName());
 
-    private final Map<String, QueryCallback<Dataset>> queryCallbacks
-            = new HashMap<String, QueryCallback<Dataset>>();
+    private final Map<String, ConsumerCallback<Dataset>> queryCallbacks
+            = new HashMap<String, ConsumerCallback<Dataset>>();
     private final Map<String, CancellationCallback> queryCancellationCallbacks
             = new HashMap<String, CancellationCallback>();
-    private final Map<String, QueryCallback<Dataset>> subscriptionCallbacks
-            = new HashMap<String, QueryCallback<Dataset>>();
+    private final Map<String, ConsumerCallback<Dataset>> subscriptionCallbacks
+            = new HashMap<String, ConsumerCallback<Dataset>>();
     private final Map<String, CancellationCallback> subscriptionCancellationCallbacks
             = new HashMap<String, CancellationCallback>();
 
-    private AgentReference self;
+    private AgentId self;
     private MessageFactory messageFactory;
-    private QueryServer<Value, Dataset> queryServer;
-    private Publisher<Value, Dataset> publisher;
+    private QueryProvider<Value, Dataset> queryProvider;
+    private PubsubProvider<Value, Dataset> pubsubProvider;
 
     public abstract class Task {
         private String conversationId;
@@ -64,8 +65,8 @@ public class RDFJadeAgent extends Agent {
     }
 
     public Task submitQuery(final Value resource,
-                            final AgentReference server,
-                            final QueryCallback<Dataset> callback) {
+                            final AgentId server,
+                            final ConsumerCallback<Dataset> callback) {
         return new Task() {
             public void execute() {
                 String conversationId = null;
@@ -83,7 +84,7 @@ public class RDFJadeAgent extends Agent {
 
                     queryCallbacks.put(conversationId, callback);
 
-                    send(m);
+                    sendMessage(m);
                 } catch (LocalFailure e) {
                     forgetConversation(conversationId);
                     callback.localFailure(e);
@@ -96,12 +97,12 @@ public class RDFJadeAgent extends Agent {
     }
 
     public Task cancelQuery(final String conversationId,
-                            final AgentReference server,
+                            final AgentId server,
                             final CancellationCallback callback) {
         return new Task() {
             public void execute() {
                 try {
-                    QueryCallback<Dataset> qc = queryCallbacks.get(conversationId);
+                    ConsumerCallback<Dataset> qc = queryCallbacks.get(conversationId);
 
                     if (null == qc) {
                         LOGGER.info("attempted to cancel Query conversation "
@@ -115,7 +116,7 @@ public class RDFJadeAgent extends Agent {
 
                         queryCancellationCallbacks.put(m.getConversationId(), callback);
 
-                        send(m);
+                        sendMessage(m);
                     }
                 } catch (Throwable e) {
                     forgetConversation(conversationId);
@@ -126,8 +127,8 @@ public class RDFJadeAgent extends Agent {
     }
 
     public Task subscribe(final Value topic,
-                          final AgentReference publisher,
-                          final QueryCallback<Dataset> callback) {
+                          final AgentId publisher,
+                          final ConsumerCallback<Dataset> callback) {
         return new Task() {
             public void execute() {
                 String conversationId = null;
@@ -145,7 +146,7 @@ public class RDFJadeAgent extends Agent {
 
                     subscriptionCallbacks.put(conversationId, callback);
 
-                    send(m);
+                    sendMessage(m);
                 } catch (LocalFailure e) {
                     forgetConversation(conversationId);
                     callback.localFailure(e);
@@ -158,12 +159,12 @@ public class RDFJadeAgent extends Agent {
     }
 
     public Task cancelSubscription(final String conversationId,
-                                   final AgentReference server,
+                                   final AgentId server,
                                    final CancellationCallback callback) {
         return new Task() {
             public void execute() {
                 try {
-                    QueryCallback<Dataset> qc = subscriptionCallbacks.get(conversationId);
+                    ConsumerCallback<Dataset> qc = subscriptionCallbacks.get(conversationId);
 
                     if (null == qc) {
                         LOGGER.info("attempted to cancel Subscribe conversation "
@@ -177,7 +178,7 @@ public class RDFJadeAgent extends Agent {
 
                         subscriptionCancellationCallbacks.put(m.getConversationId(), callback);
 
-                        send(m);
+                        sendMessage(m);
                     }
                 } catch (Throwable e) {
                     forgetConversation(conversationId);
@@ -187,12 +188,12 @@ public class RDFJadeAgent extends Agent {
         };
     }
 
-    public void setQueryServer(final QueryServer<Value, Dataset> queryServer) {
-        this.queryServer = queryServer;
+    public void setQueryProvider(final QueryProvider<Value, Dataset> queryProvider) {
+        this.queryProvider = queryProvider;
     }
 
-    public void setPublisher(final Publisher<Value, Dataset> publisher) {
-        this.publisher = publisher;
+    public void setPubsubProvider(final PubsubProvider<Value, Dataset> pubsubProvider) {
+        this.pubsubProvider = pubsubProvider;
     }
 
     public void setup() {
@@ -220,7 +221,8 @@ public class RDFJadeAgent extends Agent {
             public void action() {
                 ACLMessage m = myAgent.receive();
                 if (null != m) {
-                    System.out.println("I (" + self.getName() + ") have received this message: " + m);
+                    receiveMessage(m);
+                    //System.out.println("I (" + self.getName() + ") have received this message: " + m);
 
                     try {
                         handleMessage(m);
@@ -251,6 +253,41 @@ public class RDFJadeAgent extends Agent {
                     block();
             }
         });
+
+        StringBuilder sb = new StringBuilder("initialized agent <").append(self.getName()).append("> with address(s) ");
+        boolean first = true;
+        for (URI s : self.getTransportAddresses()) {
+            if (first) {
+                first = false;
+            } else {
+                sb.append(", ");
+            }
+
+            sb.append("<").append(s).append(">");
+        }
+        System.out.println(sb.toString());
+
+        /*
+        ACLMessage m = new ACLMessage(ACLMessage.INFORM);
+        AID receiver = new AID();
+        receiver.setName("urn:agent:twitlogic@twitlogic.fortytwo.net");
+        // Note: no /acc here (the message doesn't even reach the server that way)
+        receiver.addAddresses("xmpp://patabot.2@jabber.org");
+        m.setSender(messageFactory.toAID(self));
+        m.addReceiver(receiver);
+        m.setContent("test message #1");
+        sendMessage(m);
+
+        m = new ACLMessage(ACLMessage.INFORM);
+        receiver = new AID();
+        receiver.setName("urn:agent:agent1@rdfagents.fortytwo.net");
+        // Note: no /acc here (the message doesn't even reach the server that way)
+        receiver.addAddresses("xmpp://patabot.1@jabber.org");
+        m.setSender(messageFactory.toAID(self));
+        m.addReceiver(receiver);
+        m.setContent("test message #2");
+        sendMessage(m);
+        //*/
     }
 
     private void forgetConversation(final String id) {
@@ -261,11 +298,11 @@ public class RDFJadeAgent extends Agent {
             subscriptionCancellationCallbacks.remove(id);
 
             try {
-                if (null != queryServer) {
-                    queryServer.cancel(id);
+                if (null != queryProvider) {
+                    queryProvider.cancel(id);
                 }
-                if (null != publisher) {
-                    publisher.cancel(id);
+                if (null != pubsubProvider) {
+                    pubsubProvider.cancel(id);
                 }
             } catch (LocalFailure e) {
                 LOGGER.severe("failed to cancel expired conversations (stack trace follows)\n" + RDFAgents.stackTraceToString(e));
@@ -280,10 +317,10 @@ public class RDFJadeAgent extends Agent {
     }
 
     public static class Wrapper {
-        private final AgentReference self;
+        private final AgentId self;
         private final MessageFactory messageFactory;
 
-        public Wrapper(final AgentReference self,
+        public Wrapper(final AgentId self,
                        final MessageFactory messageFactory) {
             this.self = self;
             this.messageFactory = messageFactory;
@@ -301,98 +338,100 @@ public class RDFJadeAgent extends Agent {
     }
 
     private void handleMessage(final ACLMessage m) {
-        AgentReference sender = null;
-        try {
-            sender = messageFactory.fromAID(m.getSender());
-        } catch (MessageNotUnderstoodException e) {
-            // Since it may not be possible to contact the sender, just swallow the error.
-            LOGGER.warning("message is invalid, cannot reply: " + e.getMessage());
-            return;
-        }
+        // Failure and not-understood messages are exempt from validity checks (so as to avoid feedback loops).
+        if (ACLMessage.FAILURE == m.getPerformative()) {
+            handleFailure(m);
+        } else if (ACLMessage.NOT_UNDERSTOOD == m.getPerformative()) {
+            handleNotUnderstood(m);
+        } else {
 
-        try {
-            if (null == m.getConversationId()) {
-                throw new MessageNotUnderstoodException("missing conversation ID");
+            AgentId sender;
+            try {
+                sender = messageFactory.fromAID(m.getSender());
+            } catch (MessageNotUnderstoodException e) {
+                // Since it may not be possible to contact the sender, just swallow the error.
+                LOGGER.warning("message is invalid, cannot reply: " + e.getMessage());
+                return;
             }
 
-            int performative = m.getPerformative();
-            String protocol = m.getProtocol();
-
-            if (null == protocol || 0 == protocol.length()) {
-                throw new MessageNotUnderstoodException("missing protocol");
-            }
-
-            if (protocol.equals(FIPANames.InteractionProtocol.FIPA_QUERY)) {
-                switch (performative) {
-                    case ACLMessage.QUERY_REF:
-                        handleQueryRequest(m, sender);
-                        break;
-                    case ACLMessage.INFORM_REF:
-                        handleQueryResult(m);
-                        break;
-                    case ACLMessage.REFUSE:
-                        handleQueryRefused(m);
-                        break;
-                    case ACLMessage.AGREE:
-                        handleQueryAccepted(m);
-                        break;
-                    case ACLMessage.CANCEL:
-                        handleCancelQuery(m, sender);
-                        break;
-                    case ACLMessage.CONFIRM:
-                        handleQueryCancellationConfirmed(m);
-                        break;
-                    case ACLMessage.FAILURE:
-                        handleFailure(m);
-                        break;
-                    default:
-                        throw new MessageNotUnderstoodException("unexpected performative (code): " + performative);
+            try {
+                if (null == m.getConversationId()) {
+                    throw new MessageNotUnderstoodException("missing conversation ID");
                 }
-            } else if (protocol.equals(FIPANames.InteractionProtocol.FIPA_SUBSCRIBE)) {
-                switch (performative) {
-                    case ACLMessage.SUBSCRIBE:
-                        handleSubscriptionRequest(m, sender);
-                        break;
-                    case ACLMessage.INFORM_REF:
-                        handleUpdate(m);
-                        break;
-                    case ACLMessage.REFUSE:
-                        handleSubscriptionRefused(m);
-                        break;
-                    case ACLMessage.AGREE:
-                        handleSubscriptionAccepted(m);
-                        break;
-                    case ACLMessage.CANCEL:
-                        handleCancelSubscription(m, sender);
-                        break;
-                    case ACLMessage.CONFIRM:
-                        handleSubscriptionCancellationConfirmed(m);
-                        break;
-                    case ACLMessage.FAILURE:
-                        handleFailure(m);
-                        break;
-                    default:
-                        throw new MessageNotUnderstoodException("unexpected performative (code): " + performative);
+
+                int performative = m.getPerformative();
+                String protocol = m.getProtocol();
+
+                if (null == protocol || 0 == protocol.length()) {
+                    throw new MessageNotUnderstoodException("missing protocol");
                 }
-            } else {
-                throw new MessageNotUnderstoodException("unexpected protocol: " + protocol);
+
+                if (protocol.equals(FIPANames.InteractionProtocol.FIPA_QUERY)) {
+                    switch (performative) {
+                        case ACLMessage.QUERY_REF:
+                            handleQueryRequest(m, sender);
+                            break;
+                        case ACLMessage.INFORM_REF:
+                            handleQueryResult(m);
+                            break;
+                        case ACLMessage.REFUSE:
+                            handleQueryRefused(m);
+                            break;
+                        case ACLMessage.AGREE:
+                            handleQueryAccepted(m);
+                            break;
+                        case ACLMessage.CANCEL:
+                            handleCancelQuery(m, sender);
+                            break;
+                        case ACLMessage.CONFIRM:
+                            handleQueryCancellationConfirmed(m);
+                            break;
+                        default:
+                            throw new MessageNotUnderstoodException("unexpected performative (code): " + performative);
+                    }
+                } else if (protocol.equals(FIPANames.InteractionProtocol.FIPA_SUBSCRIBE)) {
+                    switch (performative) {
+                        case ACLMessage.SUBSCRIBE:
+                            handleSubscriptionRequest(m, sender);
+                            break;
+                        case ACLMessage.INFORM_REF:
+                            handleUpdate(m);
+                            break;
+                        case ACLMessage.REFUSE:
+                            handleSubscriptionRefused(m);
+                            break;
+                        case ACLMessage.AGREE:
+                            handleSubscriptionAccepted(m);
+                            break;
+                        case ACLMessage.CANCEL:
+                            handleCancelSubscription(m, sender);
+                            break;
+                        case ACLMessage.CONFIRM:
+                            handleSubscriptionCancellationConfirmed(m);
+                            break;
+                        default:
+                            throw new MessageNotUnderstoodException("unexpected performative (code): " + performative);
+                    }
+                } else {
+                    throw new MessageNotUnderstoodException("unexpected protocol: " + protocol);
+                }
+            } catch (MessageNotUnderstoodException e) {
+                ErrorExplanation exp = new ErrorExplanation(ErrorExplanation.Type.ExternalError, e.getMessage());
+                sendMessage(messageFactory.notUnderstood(m, self, sender, exp));
+                forgetConversation(m.getConversationId());
+            } catch (MessageRejectedException e) {
+                sendMessage(messageFactory.failure(self, sender, m, e.getExplanation()));
+                forgetConversation(m.getConversationId());
+            } catch (LocalFailure e) {
+                ErrorExplanation exp = new ErrorExplanation(ErrorExplanation.Type.InternalError, e.getMessage());
+                sendMessage(messageFactory.notUnderstood(m, self, sender, exp));
+                forgetConversation(m.getConversationId());
             }
-        } catch (MessageNotUnderstoodException e) {
-            ErrorExplanation exp = new ErrorExplanation(ErrorExplanation.Type.ExternalError, e.getMessage());
-            send(messageFactory.notUnderstood(m, self, sender, exp));
-            forgetConversation(m.getConversationId());
-        } catch (MessageRejectedException e) {
-            send(messageFactory.failure(self, sender, m, e.getExplanation()));
-            forgetConversation(m.getConversationId());
-        } catch (LocalFailure e) {
-            ErrorExplanation exp = new ErrorExplanation(ErrorExplanation.Type.InternalError, e.getMessage());
-            send(messageFactory.notUnderstood(m, self, sender, exp));
-            forgetConversation(m.getConversationId());
         }
     }
 
     private void handleFailure(final ACLMessage m) {
-        QueryCallback<Dataset> qc = queryCallbacks.get(m.getConversationId());
+        ConsumerCallback<Dataset> qc = queryCallbacks.get(m.getConversationId());
         CancellationCallback cc = queryCancellationCallbacks.get(m.getConversationId());
 
         try {
@@ -427,29 +466,37 @@ public class RDFJadeAgent extends Agent {
         }
     }
 
+    private void handleNotUnderstood(final ACLMessage m) {
+        try {
+            LOGGER.warning("received a not-understood message: " + m);
+        } finally {
+            forgetConversation(m.getConversationId());
+        }
+    }
+
     private void handleQueryRequest(final ACLMessage m,
-                                    final AgentReference sender) throws MessageNotUnderstoodException, LocalFailure, MessageRejectedException {
+                                    final AgentId sender) throws MessageNotUnderstoodException, LocalFailure, MessageRejectedException {
         assertRDFAgentsOntologyContent(m);
 
-        if (null == queryServer) {
+        if (null == queryProvider) {
             throw new MessageRejectedException(new ErrorExplanation(
                     ErrorExplanation.Type.NotImplemented, "this agent does not implement the query server role"));
         }
 
         Value v = messageFactory.extractDescribeQuery(m);
 
-        Commitment c = queryServer.considerQueryRequest(m.getConversationId(), v, sender);
+        Commitment c = queryProvider.considerQueryRequest(m.getConversationId(), v, sender);
 
         switch (c.getDecision()) {
-            case AGREE_WITH_CONFIRMATION:
-                send(messageFactory.agreeToAnswerQuery(self, sender, m));
-                send(messageFactory.informOfQueryResult(self, sender, m, queryServer.answer(v), RDFContentLanguage.RDF_NQUADS));
+            case AGREE_AND_NOTIFY:
+                sendMessage(messageFactory.agreeToAnswerQuery(self, sender, m));
+                sendMessage(messageFactory.informOfQueryResult(self, sender, m, queryProvider.answer(v), RDFContentLanguage.RDF_NQUADS));
                 break;
-            case AGREE_WITHOUT_CONFIRMATION:
-                send(messageFactory.informOfQueryResult(self, sender, m, queryServer.answer(v), RDFContentLanguage.RDF_NQUADS));
+            case AGREE_SILENTLY:
+                sendMessage(messageFactory.informOfQueryResult(self, sender, m, queryProvider.answer(v), RDFContentLanguage.RDF_NQUADS));
                 break;
             case REFUSE:
-                send(messageFactory.refuseToAnswerQuery(self, sender, m, c.getExplanation()));
+                sendMessage(messageFactory.refuseToAnswerQuery(self, sender, m, c.getExplanation()));
                 break;
             default:
                 throw new LocalFailure("unexpected decision: " + c.getDecision());
@@ -457,7 +504,7 @@ public class RDFJadeAgent extends Agent {
     }
 
     private void handleQueryResult(final ACLMessage m) throws MessageRejectedException, MessageNotUnderstoodException, LocalFailure {
-        QueryCallback<Dataset> callback = getQueryCallback(m);
+        ConsumerCallback<Dataset> callback = getQueryCallback(m);
 
         try {
             Dataset answer = messageFactory.extractDataset(m);
@@ -468,7 +515,7 @@ public class RDFJadeAgent extends Agent {
     }
 
     private void handleUpdate(final ACLMessage m) throws MessageRejectedException, MessageNotUnderstoodException, LocalFailure {
-        QueryCallback<Dataset> callback = getSubscriptionCallback(m);
+        ConsumerCallback<Dataset> callback = getSubscriptionCallback(m);
 
         Dataset answer = messageFactory.extractDataset(m);
         callback.success(answer);
@@ -501,20 +548,20 @@ public class RDFJadeAgent extends Agent {
     }
 
     private void handleCancelQuery(final ACLMessage m,
-                                   final AgentReference sender) throws MessageNotUnderstoodException {
+                                   final AgentId sender) throws MessageNotUnderstoodException {
         try {
             ErrorExplanation exp = new ErrorExplanation(ErrorExplanation.Type.NotImplemented, "cancellation of queries is not yet supported");
-            send(messageFactory.failToCancelQuery(self, sender, m, exp));
+            sendMessage(messageFactory.failToCancelQuery(self, sender, m, exp));
         } finally {
             forgetConversation(m.getConversationId());
         }
     }
 
     private void handleCancelSubscription(final ACLMessage m,
-                                          final AgentReference sender) throws MessageNotUnderstoodException {
+                                          final AgentId sender) throws MessageNotUnderstoodException {
         try {
             ErrorExplanation exp = new ErrorExplanation(ErrorExplanation.Type.NotImplemented, "cancellation of subscriptions is not yet supported");
-            send(messageFactory.failToCancelSubscription(self, sender, m, exp));
+            sendMessage(messageFactory.failToCancelSubscription(self, sender, m, exp));
         } finally {
             forgetConversation(m.getConversationId());
         }
@@ -539,10 +586,10 @@ public class RDFJadeAgent extends Agent {
     }
 
     private void handleSubscriptionRequest(final ACLMessage m,
-                                           final AgentReference sender) throws MessageNotUnderstoodException, LocalFailure, MessageRejectedException {
+                                           final AgentId sender) throws MessageNotUnderstoodException, LocalFailure, MessageRejectedException {
         assertRDFAgentsOntologyContent(m);
 
-        if (null == publisher) {
+        if (null == pubsubProvider) {
             throw new MessageRejectedException(new ErrorExplanation(
                     ErrorExplanation.Type.NotImplemented, "this agent does not implement the publisher role"));
         }
@@ -554,37 +601,37 @@ public class RDFJadeAgent extends Agent {
             public void handle(final Dataset result) throws LocalFailure {
 
                 try {
-                    send(messageFactory.informOfSubscriptionUpdate(self, sender, m, result, RDFContentLanguage.RDF_NQUADS));
+                    sendMessage(messageFactory.informOfSubscriptionUpdate(self, sender, m, result, RDFContentLanguage.RDF_NQUADS));
                 } catch (MessageRejectedException e) {
                     LOGGER.severe("message rejected after update already produced (this shouldn't happen)");
                     forgetConversation(m.getConversationId());
-                    publisher.cancel(m.getConversationId());
+                    pubsubProvider.cancel(m.getConversationId());
                 } catch (MessageNotUnderstoodException e) {
                     LOGGER.severe("message not understood after update already produced (this shouldn't happen)");
                     forgetConversation(m.getConversationId());
-                    publisher.cancel(m.getConversationId());
+                    pubsubProvider.cancel(m.getConversationId());
                 }
             }
         };
-        Commitment c = publisher.considerSubscriptionRequest(m.getConversationId(), v, sender, handler);
+        Commitment c = pubsubProvider.considerSubscriptionRequest(m.getConversationId(), v, sender, handler);
 
         switch (c.getDecision()) {
-            case AGREE_WITH_CONFIRMATION:
-                send(messageFactory.agreeToSubcriptionRequest(self, sender, m));
+            case AGREE_AND_NOTIFY:
+                sendMessage(messageFactory.agreeToSubcriptionRequest(self, sender, m));
 
-                //send(messageFactory.informOfQueryResult(self, sender, m, queryServer.answer(v), RDFContentLanguage.RDF_NQUADS));
+                //sendMessage(messageFactory.informOfQueryResult(self, sender, m, queryServer.answer(v), RDFContentLanguage.RDF_NQUADS));
 
                 break;
             case REFUSE:
-                send(messageFactory.refuseSubscriptionRequest(self, sender, m, c.getExplanation()));
+                sendMessage(messageFactory.refuseSubscriptionRequest(self, sender, m, c.getExplanation()));
                 break;
             default:
                 throw new LocalFailure("unexpected decision: " + c.getDecision());
         }
     }
 
-    private QueryCallback<Dataset> getQueryCallback(ACLMessage m) throws MessageRejectedException {
-        QueryCallback<Dataset> callback = queryCallbacks.get(m.getConversationId());
+    private ConsumerCallback<Dataset> getQueryCallback(ACLMessage m) throws MessageRejectedException {
+        ConsumerCallback<Dataset> callback = queryCallbacks.get(m.getConversationId());
 
         if (null == callback) {
             throw new MessageRejectedException(
@@ -596,8 +643,8 @@ public class RDFJadeAgent extends Agent {
         return callback;
     }
 
-    private QueryCallback<Dataset> getSubscriptionCallback(ACLMessage m) throws MessageRejectedException {
-        QueryCallback<Dataset> callback = subscriptionCallbacks.get(m.getConversationId());
+    private ConsumerCallback<Dataset> getSubscriptionCallback(ACLMessage m) throws MessageRejectedException {
+        ConsumerCallback<Dataset> callback = subscriptionCallbacks.get(m.getConversationId());
 
         if (null == callback) {
             throw new MessageRejectedException(
@@ -607,10 +654,6 @@ public class RDFJadeAgent extends Agent {
         }
 
         return callback;
-    }
-
-    private void removeQueryCallback(final ACLMessage m) {
-        queryCallbacks.remove(m.getConversationId());
     }
 
     private CancellationCallback getQueryCancellationCallback(final ACLMessage m,
@@ -638,5 +681,32 @@ public class RDFJadeAgent extends Agent {
         if (null == ontology) {
             throw new MessageNotUnderstoodException("missing ontology parameter");
         }
+    }
+
+    private void receiveMessage(final ACLMessage m) {
+        System.out.println("### Message received ###########################################################\n"
+                + m + "\n################################################################################");
+        /*if (m.getPerformative() != ACLMessage.INFORM) {
+            ACLMessage reply = m.createReply();
+            reply.setPerformative(ACLMessage.INFORM);
+            reply.setContent("just a reply");
+            sendMessage(reply);
+        }*/
+    }
+
+    private void sendMessage(final ACLMessage m) {
+        send(m);
+        System.out.println("### Message sent ###############################################################\n"
+                + m + "\n################################################################################");
+
+        //*
+        if (m.getPerformative() != ACLMessage.INFORM) {
+            ACLMessage reply = new ACLMessage(ACLMessage.INFORM);
+            m.setSender(messageFactory.toAID(self));
+            m.addReceiver(m.getSender());
+            reply.setPerformative(ACLMessage.INFORM);
+            reply.setContent("this, too");
+            sendMessage(reply);
+        } //*/
     }
 }

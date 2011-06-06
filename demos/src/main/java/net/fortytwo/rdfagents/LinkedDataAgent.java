@@ -1,8 +1,9 @@
-package net.fortytwo.rdfagents.linkeddata;
+package net.fortytwo.rdfagents;
 
 import net.fortytwo.linkeddata.sail.LinkedDataSail;
 import net.fortytwo.rdfagents.jade.RDFAgentImpl;
-import net.fortytwo.rdfagents.jade.SailBasedQueryServer;
+import net.fortytwo.rdfagents.jade.SailBasedQueryProvider;
+import net.fortytwo.rdfagents.model.AgentId;
 import net.fortytwo.rdfagents.model.RDFAgentsPlatform;
 import net.fortytwo.ripple.RippleException;
 import org.openrdf.sail.Sail;
@@ -17,10 +18,9 @@ public class LinkedDataAgent extends RDFAgentImpl {
     private final Sail sail;
 
     public LinkedDataAgent(final Sail baseSail,
-                           final String localName,
                            final RDFAgentsPlatform platform,
-                           final String... addresses) throws RDFAgentException {
-        super(localName, platform, addresses);
+                           final AgentId id) throws RDFAgentException {
+        super(platform, id);
 
         try {
             sail = new LinkedDataSail(baseSail);
@@ -31,7 +31,7 @@ public class LinkedDataAgent extends RDFAgentImpl {
             throw new RDFAgentException(e);
         }
 
-        setQueryServer(new SailBasedQueryServer(this, sail));
+        setQueryProvider(new SailBasedQueryProvider(this, sail));
     }
 
     @Override

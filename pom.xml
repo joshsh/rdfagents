@@ -53,4 +53,52 @@
         </plugins>
     </reporting>
 
+    <!--
+    <message id="cluhg-6" to="patabot.2@jabber.org">
+        <body>(SUBSCRIBE
+            :sender ( agent-identifier :name urn:agent:agent1@rdfagents.fortytwo.net :addresses (sequence
+            xmpp://patabot.1@jabber.org ))
+            :receiver (set ( agent-identifier :name urn:agent:twitlogic@twitlogic.fortytwo.net :addresses (sequence
+            xmpp://patabot.2@jabber.org )) )
+            :content &quot;((any ?dataset (describes ?dataset (resource :uri
+            http://rdfs.org/sioc/types#MicroblogPost))))&quot;
+            :language fipa-sl2 :ontology rdfagents :protocol fipa-subscribe
+            :conversation-id fdf70f67ad73f80f01bc57992dd52fd7 )
+        </body>
+        <x xmlns="jabber:x:fipa" content-type="fipa.mts.env.rep.xml.std">
+            <envelope>
+                <params index="1">
+                    <to>
+                        <agent-identifier>
+                            <name>urn:agent:twitlogic@twitlogic.fortytwo.net</name>
+                            <addresses>
+                                <url>xmpp://patabot.2@jabber.org</url>
+                            </addresses>
+                        </agent-identifier>
+                    </to>
+                    <from>
+                        <agent-identifier>
+                            <name>urn:agent:agent1@rdfagents.fortytwo.net</name>
+                            <addresses>
+                                <url>xmpp://patabot.1@jabber.org</url>
+                            </addresses>
+                        </agent-identifier>
+                    </from>
+                    <acl-representation>fipa.acl.rep.string.std</acl-representation>
+                    <payload-length>511</payload-length>
+                    <date>20110604Z192500525</date>
+                    <intended-receiver>
+                        <agent-identifier>
+                            <name>urn:agent:twitlogic@twitlogic.fortytwo.net</name>
+                            <addresses>
+                                <url>xmpp://patabot.2@jabber.org</url>
+                            </addresses>
+                        </agent-identifier>
+                    </intended-receiver>
+                </params>
+            </envelope>
+        </x>
+    </message>
+    -->
+
 </project>

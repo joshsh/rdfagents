@@ -4,7 +4,7 @@ import junit.framework.TestCase;
 import net.fortytwo.rdfagents.data.DatasetFactory;
 import net.fortytwo.rdfagents.model.RDFContentLanguage;
 import net.fortytwo.rdfagents.jade.MessageFactory;
-import net.fortytwo.rdfagents.model.AgentReference;
+import net.fortytwo.rdfagents.model.AgentId;
 import net.fortytwo.rdfagents.model.Dataset;
 import org.openrdf.model.Literal;
 import org.openrdf.model.Statement;
@@ -27,7 +27,7 @@ import java.io.InputStream;
  * Time: 3:41 PM
  */
 public abstract class RDFAgentsTestCase extends TestCase {
-    protected AgentReference sender, receiver;
+    protected AgentId sender, receiver;
     protected URI resourceX = new URIImpl("http://example.org/resourceX");
     protected Literal plainLiteralX = new LiteralImpl("Don't panic.");
     protected Literal typedLiteralX = new LiteralImpl("Don't panic.", XMLSchema.STRING);
@@ -47,13 +47,13 @@ public abstract class RDFAgentsTestCase extends TestCase {
         URI[] senderAddresses = new URI[]{
                 new URIImpl("mailto:agentA@example.org"),
                 new URIImpl("xmpp:agentA@example.org")};
-        sender = new AgentReference(senderName, senderAddresses);
+        sender = new AgentId(senderName, senderAddresses);
 
         URI receiverName = new URIImpl("http://example.org/agentB");
         URI[] receiverAddresses = new URI[]{
                 new URIImpl("mailto:agentB@example.org"),
                 new URIImpl("xmpp:agentB@example.org")};
-        receiver = new AgentReference(receiverName, receiverAddresses);
+        receiver = new AgentId(receiverName, receiverAddresses);
 
         datasetFactory = new DatasetFactory(new ValueFactoryImpl());
         for (RDFContentLanguage l : RDFContentLanguage.values()) {

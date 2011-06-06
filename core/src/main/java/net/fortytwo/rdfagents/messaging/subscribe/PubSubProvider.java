@@ -3,7 +3,7 @@ package net.fortytwo.rdfagents.messaging.subscribe;
 import net.fortytwo.rdfagents.messaging.Commitment;
 import net.fortytwo.rdfagents.messaging.LocalFailure;
 import net.fortytwo.rdfagents.messaging.Role;
-import net.fortytwo.rdfagents.model.AgentReference;
+import net.fortytwo.rdfagents.model.AgentId;
 import net.fortytwo.rdfagents.model.RDFAgent;
 
 import java.util.HashMap;
@@ -21,15 +21,15 @@ import java.util.logging.Logger;
  * @param <U> a class of updates
  * @author Joshua Shinavier (http://fortytwo.net).
  */
-public abstract class Publisher<T, U> extends Role {
-    private static final Logger LOGGER = Logger.getLogger(Publisher.class.getName());
+public abstract class PubsubProvider<T, U> extends Role {
+    private static final Logger LOGGER = Logger.getLogger(PubsubProvider.class.getName());
 
     private class Subscription {
-        public final AgentReference subscriber;
+        public final AgentId subscriber;
         public final T topic;
         public final UpdateHandler<U> handler;
 
-        public Subscription(final AgentReference subscriber,
+        public Subscription(final AgentId subscriber,
                             final T topic,
                             final UpdateHandler<U> handler) {
             this.subscriber = subscriber;
@@ -42,7 +42,7 @@ public abstract class Publisher<T, U> extends Role {
     private final Map<String, Subscription> subscriptionsById;
     private final Object mutex = "";
 
-    public Publisher(final RDFAgent agent) {
+    public PubsubProvider(final RDFAgent agent) {
         super(agent);
         this.idsByTopic = new HashMap<T, Set<String>>();
         this.subscriptionsById = new HashMap<String, Subscription>();
@@ -60,12 +60,12 @@ public abstract class Publisher<T, U> extends Role {
      */
     public Commitment considerSubscriptionRequest(final String conversationId,
                                                   final T topic,
-                                                  final AgentReference initiator,
+                                                  final AgentId initiator,
                                                   final UpdateHandler<U> handler) throws LocalFailure {
         Commitment c = considerSubscriptionRequestInternal(topic, initiator);
 
         switch (c.getDecision()) {
-            case AGREE_WITH_CONFIRMATION:
+            case AGREE_AND_NOTIFY:
                 synchronized (mutex) {
                     Set<String> ids = idsByTopic.get(topic);
                     if (null == ids) {
@@ -79,7 +79,7 @@ public abstract class Publisher<T, U> extends Role {
                 }
 
                 return c;
-            case AGREE_WITHOUT_CONFIRMATION:
+            case AGREE_SILENTLY:
                 throw new LocalFailure("agreeing to a subscription without confirmation is not supported");
             case REFUSE:
                 return c;
@@ -96,7 +96,7 @@ public abstract class Publisher<T, U> extends Role {
      * @return the commitment of this server towards handling the subscription
      */
     protected abstract Commitment considerSubscriptionRequestInternal(T topic,
-                                                                      AgentReference initiator);
+                                                                      AgentId initiator);
 
     /**
      * Cancel a subscription.

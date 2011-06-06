@@ -7,7 +7,7 @@ import net.fortytwo.rdfagents.RDFAgents;
 import net.fortytwo.rdfagents.RDFAgentsTestCase;
 import net.fortytwo.rdfagents.model.RDFContentLanguage;
 import net.fortytwo.rdfagents.data.RecursiveDescribeQuery;
-import net.fortytwo.rdfagents.model.AgentReference;
+import net.fortytwo.rdfagents.model.AgentId;
 import net.fortytwo.rdfagents.data.DatasetQuery;
 import org.openrdf.model.Literal;
 import org.openrdf.model.URI;
@@ -288,8 +288,8 @@ public class MessageFactoryTest extends RDFAgentsTestCase {
     }
 
     private void assertFromAndTo(final ACLMessage message,
-                                 final AgentReference sender,
-                                 final AgentReference receiver) {
+                                 final AgentId sender,
+                                 final AgentId receiver) {
         matchAID(sender, message.getSender());
         int c = 0;
         jade.util.leap.Iterator iter = message.getAllIntendedReceiver();
@@ -351,7 +351,7 @@ public class MessageFactoryTest extends RDFAgentsTestCase {
         assertEquals(originalRequest.getConversationId(), message.getConversationId());
     }
 
-    private void matchAID(final AgentReference expected,
+    private void matchAID(final AgentId expected,
                           final AID actual) {
         assertEquals(expected.getName().toString(), actual.getName());
 

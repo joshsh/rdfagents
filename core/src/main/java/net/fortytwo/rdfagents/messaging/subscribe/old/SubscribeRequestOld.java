@@ -1,6 +1,6 @@
 package net.fortytwo.rdfagents.messaging.subscribe.old;
 
-import net.fortytwo.rdfagents.model.AgentReference;
+import net.fortytwo.rdfagents.model.AgentId;
 
 /**
  * User: josh
@@ -9,14 +9,14 @@ import net.fortytwo.rdfagents.model.AgentReference;
  */
 public abstract class SubscribeRequestOld<Q> {
     private final Q topic;
-    private final AgentReference remoteParticipant;
+    private final AgentId remoteParticipant;
 
     /**
      * @param topic       the topic of the desired stream
      * @param remoteParticipant the identity of the remote participant who is requested to provide the stream
      */
     public SubscribeRequestOld(final Q topic,
-                               final AgentReference remoteParticipant) {
+                               final AgentId remoteParticipant) {
         this.topic = topic;
         this.remoteParticipant = remoteParticipant;
     }
@@ -31,7 +31,7 @@ public abstract class SubscribeRequestOld<Q> {
     /**
      * @return the identity of the remote participant who is requested to provide the stream
      */
-    public AgentReference getRemoteParticipant() {
+    public AgentId getRemoteParticipant() {
         return remoteParticipant;
     }
 }

@@ -21,7 +21,7 @@ import net.fortytwo.rdfagents.data.DatasetFactory;
 import net.fortytwo.rdfagents.messaging.LocalFailure;
 import net.fortytwo.rdfagents.messaging.MessageNotUnderstoodException;
 import net.fortytwo.rdfagents.messaging.MessageRejectedException;
-import net.fortytwo.rdfagents.model.AgentReference;
+import net.fortytwo.rdfagents.model.AgentId;
 import net.fortytwo.rdfagents.model.Dataset;
 import net.fortytwo.rdfagents.model.ErrorExplanation;
 import net.fortytwo.rdfagents.model.RDFContentLanguage;
@@ -208,8 +208,8 @@ public class MessageFactory {
     }
 
     public ACLMessage notUnderstood(final ACLMessage replyTo,
-                                    final AgentReference sender,
-                                    final AgentReference intendedReceiver,
+                                    final AgentId sender,
+                                    final AgentId intendedReceiver,
                                     final ErrorExplanation explanation) {
         ACLMessage message = createReplyTo(replyTo, sender, intendedReceiver, ACLMessage.NOT_UNDERSTOOD);
 
@@ -222,8 +222,8 @@ public class MessageFactory {
         return message;
     }
 
-    public ACLMessage failure(final AgentReference sender,
-                              final AgentReference intendedReceiver,
+    public ACLMessage failure(final AgentId sender,
+                              final AgentId intendedReceiver,
                               final ACLMessage request,
                               final ErrorExplanation explanation) {
 
@@ -238,8 +238,8 @@ public class MessageFactory {
         return message;
     }
 
-    public ACLMessage poseQuery(final AgentReference sender,
-                                final AgentReference intendedReceiver,
+    public ACLMessage poseQuery(final AgentId sender,
+                                final AgentId intendedReceiver,
                                 final Value subject,
                                 final RDFContentLanguage... acceptLanguages) throws LocalFailure {
         return requestForInfo(
@@ -251,8 +251,8 @@ public class MessageFactory {
                 acceptLanguages);
     }
 
-    public ACLMessage refuseToAnswerQuery(final AgentReference sender,
-                                          final AgentReference intendedReceiver,
+    public ACLMessage refuseToAnswerQuery(final AgentId sender,
+                                          final AgentId intendedReceiver,
                                           final ACLMessage replyTo,
                                           final ErrorExplanation explanation) throws MessageNotUnderstoodException, LocalFailure {
         validateMessage(replyTo, FIPANames.InteractionProtocol.FIPA_QUERY, ACLMessage.QUERY_REF);
@@ -264,8 +264,8 @@ public class MessageFactory {
         return message;
     }
 
-    public ACLMessage agreeToAnswerQuery(final AgentReference sender,
-                                         final AgentReference intendedReceiver,
+    public ACLMessage agreeToAnswerQuery(final AgentId sender,
+                                         final AgentId intendedReceiver,
                                          final ACLMessage replyTo) throws MessageNotUnderstoodException {
         validateMessage(replyTo, FIPANames.InteractionProtocol.FIPA_QUERY, ACLMessage.QUERY_REF);
 
@@ -274,8 +274,8 @@ public class MessageFactory {
         return createReplyTo(replyTo, sender, intendedReceiver, ACLMessage.AGREE);
     }
 
-    public ACLMessage informOfQueryResult(final AgentReference sender,
-                                          final AgentReference intendedReceiver,
+    public ACLMessage informOfQueryResult(final AgentId sender,
+                                          final AgentId intendedReceiver,
                                           final ACLMessage replyTo,
                                           final Dataset dataset,
                                           final RDFContentLanguage defaultLanguage) throws MessageNotUnderstoodException, LocalFailure, MessageRejectedException {
@@ -284,8 +284,8 @@ public class MessageFactory {
         return createAssertionalMessage(sender, intendedReceiver, dataset, defaultLanguage, replyTo);
     }
 
-    public ACLMessage failToInformOfQueryResult(final AgentReference sender,
-                                                final AgentReference intendedReceiver,
+    public ACLMessage failToInformOfQueryResult(final AgentId sender,
+                                                final AgentId intendedReceiver,
                                                 final ACLMessage request,
                                                 final ErrorExplanation explanation) throws MessageNotUnderstoodException {
         validateMessage(request, FIPANames.InteractionProtocol.FIPA_QUERY, ACLMessage.QUERY_REF);
@@ -301,8 +301,8 @@ public class MessageFactory {
         return message;
     }
 
-    public ACLMessage requestQueryCancellation(final AgentReference sender,
-                                               final AgentReference intendedReceiver,
+    public ACLMessage requestQueryCancellation(final AgentId sender,
+                                               final AgentId intendedReceiver,
                                                final String conversationId) {
         //validateMessage(query, FIPANames.InteractionProtocol.FIPA_QUERY, ACLMessage.QUERY_REF);
 
@@ -315,16 +315,16 @@ public class MessageFactory {
         return message;
     }
 
-    public ACLMessage confirmQueryCancellation(final AgentReference sender,
-                                               final AgentReference intendedReceiver,
+    public ACLMessage confirmQueryCancellation(final AgentId sender,
+                                               final AgentId intendedReceiver,
                                                final ACLMessage request) throws MessageRejectedException, MessageNotUnderstoodException {
         validateMessage(request, FIPANames.InteractionProtocol.FIPA_QUERY, ACLMessage.CANCEL);
 
         return createReplyTo(request, sender, intendedReceiver, ACLMessage.CONFIRM);
     }
 
-    public ACLMessage failToCancelQuery(final AgentReference sender,
-                                        final AgentReference intendedReceiver,
+    public ACLMessage failToCancelQuery(final AgentId sender,
+                                        final AgentId intendedReceiver,
                                         final ACLMessage request,
                                         final ErrorExplanation explanation) throws MessageNotUnderstoodException {
         validateMessage(request, FIPANames.InteractionProtocol.FIPA_QUERY, ACLMessage.CANCEL);
@@ -340,8 +340,8 @@ public class MessageFactory {
         return message;
     }
 
-    public ACLMessage requestSubscription(final AgentReference sender,
-                                          final AgentReference intendedReceiver,
+    public ACLMessage requestSubscription(final AgentId sender,
+                                          final AgentId intendedReceiver,
                                           final Value subject,
                                           final RDFContentLanguage... acceptLanguages) throws LocalFailure {
         return requestForInfo(
@@ -353,8 +353,8 @@ public class MessageFactory {
                 acceptLanguages);
     }
 
-    public ACLMessage refuseSubscriptionRequest(final AgentReference sender,
-                                                final AgentReference intendedReceiver,
+    public ACLMessage refuseSubscriptionRequest(final AgentId sender,
+                                                final AgentId intendedReceiver,
                                                 final ACLMessage replyTo,
                                                 final ErrorExplanation explanation) throws MessageNotUnderstoodException, LocalFailure {
         validateMessage(replyTo, FIPANames.InteractionProtocol.FIPA_SUBSCRIBE, ACLMessage.SUBSCRIBE);
@@ -366,8 +366,8 @@ public class MessageFactory {
         return message;
     }
 
-    public ACLMessage agreeToSubcriptionRequest(final AgentReference sender,
-                                                final AgentReference intendedReceiver,
+    public ACLMessage agreeToSubcriptionRequest(final AgentId sender,
+                                                final AgentId intendedReceiver,
                                                 final ACLMessage replyTo) throws MessageRejectedException, MessageNotUnderstoodException {
         validateMessage(replyTo, FIPANames.InteractionProtocol.FIPA_SUBSCRIBE, ACLMessage.SUBSCRIBE);
 
@@ -376,8 +376,8 @@ public class MessageFactory {
         return createReplyTo(replyTo, sender, intendedReceiver, ACLMessage.AGREE);
     }
 
-    public ACLMessage informOfSubscriptionUpdate(final AgentReference sender,
-                                                 final AgentReference intendedReceiver,
+    public ACLMessage informOfSubscriptionUpdate(final AgentId sender,
+                                                 final AgentId intendedReceiver,
                                                  final ACLMessage replyTo,
                                                  final Dataset dataset,
                                                  final RDFContentLanguage defaultLanguage) throws MessageRejectedException, MessageNotUnderstoodException, LocalFailure {
@@ -386,8 +386,8 @@ public class MessageFactory {
         return createAssertionalMessage(sender, intendedReceiver, dataset, defaultLanguage, replyTo);
     }
 
-    public ACLMessage failToInformOfSubscriptionUpdate(final AgentReference sender,
-                                                       final AgentReference intendedReceiver,
+    public ACLMessage failToInformOfSubscriptionUpdate(final AgentId sender,
+                                                       final AgentId intendedReceiver,
                                                        final ACLMessage request,
                                                        final ErrorExplanation explanation) throws MessageNotUnderstoodException {
         validateMessage(request, FIPANames.InteractionProtocol.FIPA_SUBSCRIBE, ACLMessage.SUBSCRIBE);
@@ -403,8 +403,8 @@ public class MessageFactory {
         return message;
     }
 
-    public ACLMessage requestSubscriptionCancellation(final AgentReference sender,
-                                                      final AgentReference intendedReceiver,
+    public ACLMessage requestSubscriptionCancellation(final AgentId sender,
+                                                      final AgentId intendedReceiver,
                                                       final String conversationId) {
         //validateMessage(subscribe, FIPANames.InteractionProtocol.FIPA_SUBSCRIBE, ACLMessage.SUBSCRIBE);
 
@@ -417,16 +417,16 @@ public class MessageFactory {
         return message;
     }
 
-    public ACLMessage confirmSubscriptionCancellation(final AgentReference sender,
-                                                      final AgentReference intendedReceiver,
+    public ACLMessage confirmSubscriptionCancellation(final AgentId sender,
+                                                      final AgentId intendedReceiver,
                                                       final ACLMessage request) throws MessageRejectedException, MessageNotUnderstoodException {
         validateMessage(request, FIPANames.InteractionProtocol.FIPA_SUBSCRIBE, ACLMessage.CANCEL);
 
         return createReplyTo(request, sender, intendedReceiver, ACLMessage.CONFIRM);
     }
 
-    public ACLMessage failToCancelSubscription(final AgentReference sender,
-                                               final AgentReference intendedReceiver,
+    public ACLMessage failToCancelSubscription(final AgentId sender,
+                                               final AgentId intendedReceiver,
                                                final ACLMessage request,
                                                final ErrorExplanation explanation) throws MessageNotUnderstoodException {
         validateMessage(request, FIPANames.InteractionProtocol.FIPA_SUBSCRIBE, ACLMessage.CANCEL);
@@ -553,8 +553,8 @@ public class MessageFactory {
     }
 
     private ACLMessage createReplyTo(final ACLMessage replyTo,
-                                     final AgentReference sender,
-                                     final AgentReference intendedReceiver,
+                                     final AgentId sender,
+                                     final AgentId intendedReceiver,
                                      final int performative) {
         ACLMessage message = new ACLMessage(performative);
         message.setSender(toAID(sender));
@@ -584,8 +584,8 @@ public class MessageFactory {
         }
     }
 
-    private ACLMessage createAssertionalMessage(final AgentReference sender,
-                                                final AgentReference intendedReceiver,
+    private ACLMessage createAssertionalMessage(final AgentId sender,
+                                                final AgentId intendedReceiver,
                                                 final Dataset dataset,
                                                 final RDFContentLanguage defaultLanguage,
                                                 final ACLMessage replyTo) throws MessageNotUnderstoodException, LocalFailure, MessageRejectedException {
@@ -683,8 +683,8 @@ public class MessageFactory {
         return c;
     }
 
-    private ACLMessage requestForInfo(final AgentReference sender,
-                                      final AgentReference intendedReceiver,
+    private ACLMessage requestForInfo(final AgentId sender,
+                                      final AgentId intendedReceiver,
                                       final Value subject,
                                       final String protocol,
                                       final int performative,
@@ -752,7 +752,7 @@ public class MessageFactory {
         return new String(bytes);
     }
 
-    private AID toAID(final AgentReference ref) {
+    public AID toAID(final AgentId ref) {
         AID a = new AID();
         a.setName(ref.getName().toString());
         for (URI u : ref.getTransportAddresses()) {
@@ -762,7 +762,7 @@ public class MessageFactory {
         return a;
     }
 
-    public AgentReference fromAID(final AID s) throws MessageNotUnderstoodException {
+    public AgentId fromAID(final AID s) throws MessageNotUnderstoodException {
         if (null == s.getName()) {
             throw new MessageNotUnderstoodException("missing agent name in message");
         }
@@ -791,6 +791,6 @@ public class MessageFactory {
         for (URI u : addresses) {
             uris[i++] = u;
         }
-        return new AgentReference(name, uris);
+        return new AgentId(name, uris);
     }
 }

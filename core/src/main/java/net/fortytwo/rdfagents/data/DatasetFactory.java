@@ -2,7 +2,7 @@ package net.fortytwo.rdfagents.data;
 
 import net.fortytwo.rdfagents.RDFAgents;
 import net.fortytwo.rdfagents.messaging.LocalFailure;
-import net.fortytwo.rdfagents.model.AgentReference;
+import net.fortytwo.rdfagents.model.AgentId;
 import net.fortytwo.rdfagents.model.Dataset;
 import net.fortytwo.rdfagents.model.RDFContentLanguage;
 import net.fortytwo.sesametools.nquads.NQuadsParser;
@@ -13,6 +13,7 @@ import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.URIImpl;
+import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.rio.RDFHandler;
 import org.openrdf.rio.RDFHandlerException;
@@ -66,6 +67,14 @@ public class DatasetFactory {
         supportedLanguages = new HashSet<RDFContentLanguage>();
     }
 
+    public DatasetFactory() {
+        this(new ValueFactoryImpl());
+
+        for (RDFContentLanguage l : RDFContentLanguage.values()) {
+            addLanguage(l);
+        }
+    }
+
     public void addLanguage(final RDFContentLanguage language) {
         supportedLanguages.add(language);
     }
@@ -88,7 +97,7 @@ public class DatasetFactory {
      * @return the corresponding receiver's dataset
      */
     public Dataset receiveDataset(final Dataset dataset,
-                                  final AgentReference sender) {
+                                  final AgentId sender) {
         /*
         System.out.println("sender's dataset:");
         try {

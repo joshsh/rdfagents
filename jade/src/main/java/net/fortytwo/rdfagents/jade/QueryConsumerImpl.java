@@ -3,21 +3,21 @@ package net.fortytwo.rdfagents.jade;
 import jade.wrapper.StaleProxyException;
 import net.fortytwo.rdfagents.messaging.CancellationCallback;
 import net.fortytwo.rdfagents.messaging.LocalFailure;
-import net.fortytwo.rdfagents.messaging.QueryCallback;
-import net.fortytwo.rdfagents.messaging.subscribe.Subscriber;
-import net.fortytwo.rdfagents.model.AgentReference;
+import net.fortytwo.rdfagents.messaging.ConsumerCallback;
+import net.fortytwo.rdfagents.messaging.query.QueryConsumer;
+import net.fortytwo.rdfagents.model.AgentId;
 import net.fortytwo.rdfagents.model.Dataset;
 import net.fortytwo.rdfagents.model.RDFAgent;
 import org.openrdf.model.Value;
 
 /**
  * User: josh
- * Date: 6/1/11
- * Time: 4:49 PM
+ * Date: 5/31/11
+ * Time: 9:36 AM
  */
-public class SubscriberImpl extends Subscriber<Value, Dataset> {
+public class QueryConsumerImpl extends QueryConsumer<Value, Dataset> {
 
-    public SubscriberImpl(final RDFAgent agent) {
+    public QueryConsumerImpl(final RDFAgent agent) {
         super(agent);
 
         if (!(agent instanceof RDFAgentImpl)) {
@@ -27,11 +27,11 @@ public class SubscriberImpl extends Subscriber<Value, Dataset> {
     }
 
     @Override
-    public String submit(final Value topic,
-                         final AgentReference publisher,
-                         final QueryCallback<Dataset> callback) throws LocalFailure {
+    public String submit(Value query,
+                         AgentId remoteParticipant,
+                         ConsumerCallback<Dataset> callback) throws LocalFailure {
         try {
-            RDFJadeAgent.Task t = ((RDFAgentImpl) agent).subscribe(topic, publisher, callback);
+            RDFJadeAgent.Task t = ((RDFAgentImpl) agent).submitQuery(query, remoteParticipant, callback);
             ((RDFAgentImpl) agent).putObject(t);
             return t.getConversationId();
         } catch (StaleProxyException e) {
@@ -41,10 +41,10 @@ public class SubscriberImpl extends Subscriber<Value, Dataset> {
 
     @Override
     public void cancel(final String conversationId,
-                       final AgentReference publisher,
+                       final AgentId remoteParticipant,
                        final CancellationCallback callback) throws LocalFailure {
         try {
-            RDFJadeAgent.Task t = ((RDFAgentImpl) agent).cancelSubscription(conversationId, publisher, callback);
+            RDFJadeAgent.Task t = ((RDFAgentImpl) agent).cancelQuery(conversationId, remoteParticipant, callback);
             ((RDFAgentImpl) agent).putObject(t);
         } catch (StaleProxyException e) {
             throw new LocalFailure(e);

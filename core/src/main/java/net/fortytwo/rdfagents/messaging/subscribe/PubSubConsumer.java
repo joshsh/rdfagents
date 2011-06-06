@@ -1,10 +1,10 @@
 package net.fortytwo.rdfagents.messaging.subscribe;
 
 import net.fortytwo.rdfagents.messaging.CancellationCallback;
+import net.fortytwo.rdfagents.messaging.ConsumerCallback;
 import net.fortytwo.rdfagents.messaging.LocalFailure;
-import net.fortytwo.rdfagents.messaging.QueryCallback;
 import net.fortytwo.rdfagents.messaging.Role;
-import net.fortytwo.rdfagents.model.AgentReference;
+import net.fortytwo.rdfagents.model.AgentId;
 import net.fortytwo.rdfagents.model.RDFAgent;
 
 /**
@@ -14,8 +14,8 @@ import net.fortytwo.rdfagents.model.RDFAgent;
  *
  * @author Joshua Shinavier (http://fortytwo.net).
  */
-public abstract class Subscriber<T, U> extends Role {
-    public Subscriber(final RDFAgent agent) {
+public abstract class PubsubConsumer<T, U> extends Role {
+    public PubsubConsumer(final RDFAgent agent) {
         super(agent);
     }
 
@@ -30,8 +30,8 @@ public abstract class Subscriber<T, U> extends Role {
      * @throws LocalFailure if the subscription request can't be submitted
      */
     public abstract String submit(T topic,
-                                  AgentReference remoteParticipant,
-                                  QueryCallback<U> callback) throws LocalFailure;
+                                  AgentId remoteParticipant,
+                                  ConsumerCallback<U> callback) throws LocalFailure;
 
     /**
      * Submits a cancellation request for a previously submitted subscription request.
@@ -44,7 +44,7 @@ public abstract class Subscriber<T, U> extends Role {
      * @throws LocalFailure if cancellation fails locally
      */
     public abstract void cancel(String conversationId,
-                                AgentReference remoteParticipant,
+                                AgentId remoteParticipant,
                                 CancellationCallback callback) throws LocalFailure;
 
 }

@@ -3,8 +3,12 @@ package net.fortytwo.rdfagents;
 import org.openrdf.model.impl.URIImpl;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 /**
@@ -24,7 +28,8 @@ public class RDFAgents {
             RDFAGENTS_ONTOLOGY_NAME = "rdfagents",
             RDFAGENTS_ACCEPT_PARAMETER = "X-rdfagents-accept";
 
-    public static final String NAME_PREFIX = "urn:agent:";
+    public static final String NAME_PREFIX = "urn:x-agent:";
+    public static final String XMPP_URI_PREFIX = "xmpp://";
 
     public enum Protocol {
         Query("fipa-query"), Subscribe("fipa-subscribe");
@@ -76,5 +81,19 @@ public class RDFAgents {
                 e.printStackTrace(System.err);
             }
         }
+    }
+
+    public static Properties loadProps(final String fileName) throws IOException {
+        Properties config = new Properties();
+
+        File f = new File(fileName);
+        InputStream in = new FileInputStream(f);
+        try {
+            config.load(in);
+        } finally {
+            in.close();
+        }
+
+        return config;
     }
 }

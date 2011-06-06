@@ -1,10 +1,8 @@
 package net.fortytwo.rdfagents.model;
 
-import net.fortytwo.rdfagents.messaging.query.QueryServer;
-import net.fortytwo.rdfagents.messaging.subscribe.Publisher;
-import org.openrdf.model.URI;
+import net.fortytwo.rdfagents.messaging.query.QueryProvider;
+import net.fortytwo.rdfagents.messaging.subscribe.PubsubProvider;
 import org.openrdf.model.Value;
-import org.openrdf.model.impl.URIImpl;
 
 /**
  * User: josh
@@ -12,45 +10,25 @@ import org.openrdf.model.impl.URIImpl;
  * Time: 1:59 AM
  */
 public abstract class RDFAgent {
-    protected final AgentReference identity;
+    protected final AgentId identity;
 
-    public RDFAgent(final String localName,
-                    final RDFAgentsPlatform platform,
-                    final String... addresses) throws RDFAgentException {
-        URI nameUri;
+    public RDFAgent(final RDFAgentsPlatform platform,
+                    final AgentId id) throws RDFAgentException {
 
-        try {
-            nameUri = uri(localName + "@" + platform.getName());
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("local name '" + localName + "' does not complete platform name '"
-                    + platform.getName() + "' to form a valid (absolute) URI: " + localName + "@" + platform.getName());
-        }
-
-        if (0 == addresses.length) {
+        if (0 == id.getTransportAddresses().length) {
             throw new IllegalArgumentException("at least one transport address must be specified");
         }
 
-        URI[] addressUris = new URI[addresses.length];
-
-        int i = 0;
-        for (String a : addresses) {
-            try {
-                addressUris[i++] = uri(a);
-            } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException("transport address is not a valid (absolute) URI: " + a);
-            }
-        }
-
-        identity = new AgentReference(nameUri, addressUris);
+        identity = id;
     }
 
-    public AgentReference getIdentity() {
+    public AgentId getIdentity() {
         return identity;
     }
 
-    public abstract void setQueryServer(QueryServer<Value, Dataset> queryServer);
+    public abstract void setQueryProvider(QueryProvider<Value, Dataset> queryProvider);
 
-    public abstract void setPublisher(Publisher<Value, Dataset> publisher);
+    public abstract void setPubsubProvider(PubsubProvider<Value, Dataset> pubsubProvider);
 
     public static class RDFAgentException extends Exception {
         public RDFAgentException(final Throwable cause) {
@@ -59,8 +37,4 @@ public abstract class RDFAgent {
     }
 
     // TODO: remove/shutdown method
-
-    private URI uri(final String s) {
-        return new URIImpl(s);
-    }
 }

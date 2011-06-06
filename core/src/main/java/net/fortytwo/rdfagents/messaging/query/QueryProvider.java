@@ -3,7 +3,7 @@ package net.fortytwo.rdfagents.messaging.query;
 import net.fortytwo.rdfagents.messaging.Commitment;
 import net.fortytwo.rdfagents.messaging.LocalFailure;
 import net.fortytwo.rdfagents.messaging.Role;
-import net.fortytwo.rdfagents.model.AgentReference;
+import net.fortytwo.rdfagents.model.AgentId;
 import net.fortytwo.rdfagents.model.RDFAgent;
 
 /**
@@ -15,9 +15,9 @@ import net.fortytwo.rdfagents.model.RDFAgent;
  * @param <A> a class of query answers
  * @author Joshua Shinavier (http://fortytwo.net).
  */
-public abstract class QueryServer<Q, A> extends Role {
+public abstract class QueryProvider<Q, A> extends Role {
 
-    public QueryServer(final RDFAgent agent) {
+    public QueryProvider(final RDFAgent agent) {
         super(agent);
     }
 
@@ -29,7 +29,7 @@ public abstract class QueryServer<Q, A> extends Role {
      */
     public abstract Commitment considerQueryRequest(String conversationId,
                                                     Q query,
-                                                    AgentReference initiator);
+                                                    AgentId initiator);
 
     /**
      * Evaluate a query to produce a result.

@@ -10,6 +10,7 @@ import jade.wrapper.AgentContainer;
 import net.fortytwo.rdfagents.data.DatasetFactory;
 import net.fortytwo.rdfagents.model.RDFAgentsPlatform;
 
+import java.io.IOException;
 import java.util.Properties;
 
 /**
@@ -31,7 +32,7 @@ public class RDFAgentsPlatformImpl extends RDFAgentsPlatform {
     public RDFAgentsPlatformImpl(final String name,
                                  final DatasetFactory datasetFactory,
                                  final int port,
-                                 final Properties config) throws Exception {
+                                 final Properties config) {
         super(name, datasetFactory);
 
         // Get a hold on JADE runtime
@@ -48,17 +49,20 @@ public class RDFAgentsPlatformImpl extends RDFAgentsPlatform {
         p.setParameter(XMPP_MTP_PASSWORD, config.getProperty(XMPP_MTP_PASSWORD));
         //   p.setParameter(MTPS, jade.mtp.xmpp.MessageTransportProtocol.class.getName());
 
-        //*
         List mtps = new LinkedList();
         Specifier xmpp = new Specifier();
-        //xmpp.setName("XMPP MTP [JJS was here]");
         xmpp.setClassName(jade.mtp.xmpp.MessageTransportProtocol.class.getName());
         mtps.add(xmpp);
         p.setSpecifiers(MTPS, mtps);
-        //*/
 
         System.out.println("Launching JADE container for RDFAgents: " + p);
         container = rt.createMainContainer(p);
+    }
+
+    public RDFAgentsPlatformImpl(final String name,
+                                 final int port,
+                                 final Properties config) throws IOException {
+        this(name, new DatasetFactory(), port, config);
     }
 
     public AgentContainer getContainer() {

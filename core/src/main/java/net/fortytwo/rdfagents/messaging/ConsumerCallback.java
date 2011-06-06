@@ -7,7 +7,7 @@ import net.fortytwo.rdfagents.model.ErrorExplanation;
  *
  * @param <A> a class of query answers
  */
-public interface QueryCallback<A> {
+public interface ConsumerCallback<A> {
     /**
      * Indicates success of the query request and provides the query answer.
      *

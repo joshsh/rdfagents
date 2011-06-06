@@ -1,20 +1,18 @@
 package net.fortytwo.rdfagents;
 
 import net.fortytwo.rdfagents.data.DatasetFactory;
-import net.fortytwo.rdfagents.jade.QueryClientImpl;
+import net.fortytwo.rdfagents.jade.QueryConsumerImpl;
 import net.fortytwo.rdfagents.jade.RDFAgentImpl;
 import net.fortytwo.rdfagents.jade.RDFAgentsPlatformImpl;
-import net.fortytwo.rdfagents.jade.SailBasedQueryServer;
-import net.fortytwo.rdfagents.linkeddata.LinkedDataAgent;
-import net.fortytwo.rdfagents.messaging.LocalFailure;
-import net.fortytwo.rdfagents.messaging.QueryCallback;
-import net.fortytwo.rdfagents.messaging.query.QueryClient;
+import net.fortytwo.rdfagents.jade.SailBasedQueryProvider;
+import net.fortytwo.rdfagents.jade.testing.EchoCallback;
+import net.fortytwo.rdfagents.messaging.ConsumerCallback;
+import net.fortytwo.rdfagents.messaging.query.QueryConsumer;
+import net.fortytwo.rdfagents.model.AgentId;
 import net.fortytwo.rdfagents.model.Dataset;
-import net.fortytwo.rdfagents.model.ErrorExplanation;
 import net.fortytwo.rdfagents.model.RDFAgent;
 import net.fortytwo.rdfagents.model.RDFAgentsPlatform;
 import net.fortytwo.rdfagents.model.RDFContentLanguage;
-import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.impl.URIImpl;
 import org.openrdf.model.impl.ValueFactoryImpl;
@@ -34,60 +32,35 @@ import java.util.Properties;
 public class Demo {
 
     private final Sail sail;
-    private final DatasetFactory datasetFactory;
 
     private void run(final Properties config) throws Exception {
 
-        RDFAgentsPlatform p = new RDFAgentsPlatformImpl("rdfagents.fortytwo.net", datasetFactory, 8888, config);
+        RDFAgentsPlatform p = new RDFAgentsPlatformImpl("fortytwo.net", 8888, config);
 
-        RDFAgent a1 = new RDFAgentImpl(RDFAgents.NAME_PREFIX + "agent1", p, "xmpp:patabot.1@fortytwo.net");
-        RDFAgent a2 = new RDFAgentImpl(RDFAgents.NAME_PREFIX + "agent2", p, "xmpp:patabot.1@fortytwo.net");
-        a2.setQueryServer(new SailBasedQueryServer(a2, sail));
+        RDFAgent a1 = new RDFAgentImpl(p,
+                new AgentId("urn:x-agent:consumer@fortytwo.net", "xmpp://patabot.1@jabber.org"));
+        RDFAgent a2 = new RDFAgentImpl(p,
+                new AgentId("urn:x-agent:provider@fortytwo.net", "xmpp://patabot.1@jabber.org"));
 
-        Sail mem = new MemoryStore();
-        mem.initialize();
-        RDFAgent aLinked = new LinkedDataAgent(mem, RDFAgents.NAME_PREFIX + "linked-data", p, "xmpp:patabot.1@fortytwo.net");
+        a2.setQueryProvider(new SailBasedQueryProvider(a2, sail));
 
-        QueryClient<Value, Dataset> client = new QueryClientImpl(a1);
+        Sail baseSail = new MemoryStore();
+        baseSail.initialize();
 
-        QueryCallback<Dataset> callback = new QueryCallback<Dataset>() {
-            public void success(final Dataset answer) {
-                System.out.println("query has been successfully answered.  Answer follows:");
-                try {
-                    datasetFactory.write(System.out, answer, RDFContentLanguage.RDF_TRIG);
-                } catch (LocalFailure e) {
-                    e.printStackTrace(System.err);
-                }
-            }
+        RDFAgent ld = new LinkedDataAgent(baseSail, p,
+                new AgentId("urn:x-agent:linked-data@fortytwo.net", "xmpp://patabot.1@jabber.org"));
 
-            public void agreed() {
-                System.out.println("agreed!");
-            }
+        QueryConsumer<Value, Dataset> qc = new QueryConsumerImpl(a1);
 
-            public void refused(final ErrorExplanation explanation) {
-                System.out.println("refused!");
-            }
+        ConsumerCallback<Dataset> callback = new EchoCallback(p.getDatasetFactory());
 
-            public void remoteFailure(final ErrorExplanation explanation) {
-                System.out.println("remote failure: " + explanation);
-            }
-
-            public void localFailure(final LocalFailure e) {
-                System.out.println("local failure: " + e + "\n" + RDFAgents.stackTraceToString(e));
-            }
-        };
-
-      //  client.submit(new URIImpl("http://example.org/ns#arthur"), a2.getIdentity(), callback);
-//        client.submit(new URIImpl("http://identi.ca/user/114"), aLinked.getIdentity(), callback);
-        client.submit(new URIImpl("http://xmlns.com/foaf/0.1/Person"), aLinked.getIdentity(), callback);
-    }
-
-    private URI uri(final String s) {
-        return new URIImpl(s);
+        qc.submit(new URIImpl("http://example.org/ns#arthur"), a2.getIdentity(), callback);
+//        qc.submit(new URIImpl("http://identi.ca/user/114"), aLinked.getIdentity(), callback);
+        //qc.submit(new URIImpl("http://xmlns.com/foaf/0.1/Person"), linkedDataId, callback);
     }
 
     private Demo() throws Exception {
-        datasetFactory = new DatasetFactory(new ValueFactoryImpl());
+        DatasetFactory datasetFactory = new DatasetFactory(new ValueFactoryImpl());
         for (RDFContentLanguage l : RDFContentLanguage.values()) {
             datasetFactory.addLanguage(l);
         }

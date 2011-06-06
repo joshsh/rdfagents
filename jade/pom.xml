@@ -44,7 +44,7 @@
         <dependency>
             <groupId>com.tilab.jade</groupId>
             <artifactId>xmpp-mtp</artifactId>
-            <version>jjs-1</version>
+            <version>jjs-2</version>
         </dependency>
         <dependency>
             <groupId>xerces</groupId>
