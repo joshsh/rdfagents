@@ -35,11 +35,11 @@ public class SemtechDemo {
         final RDFAgentsPlatform platform = new RDFAgentsPlatformImpl("fortytwo.net", 8889, config);
 
         AgentId consumer = new AgentId(
-                "urn:agent:consumer@fortytwo.net",
+                "urn:x-agent:consumer@fortytwo.net",
                 "xmpp://patabot.1@jabber.org");
         AgentId twitlogic = new AgentId(
-                "urn:agent:twitlogic@twitlogic.fortytwo.net",
-                "xmpp://patabot.2@jabber.org");
+                "urn:x-agent:twitlogic@twitlogic.fortytwo.net",
+                "xmpp://twitlogic@jabber.org/acc");
 
         RDFAgent agent = new RDFAgentImpl(platform, consumer);
 
@@ -85,10 +85,10 @@ public class SemtechDemo {
 
     private void tmp() throws IOException {
         /*
-        AgentId ld = new AgentId("urn:agent:linked-data@fortytwo.net", "xmpp://linked-data@jabber.org");
-        AgentId twitter = new AgentId("urn:agent:twitlogic@fortytwo.net", "xmpp://twitlogic@jabber.org");
-        AgentId synd = new AgentId("urn:agent:syndicator@fortytwo.net", "xmpp://patabot.1@jabber.org");
-        AgentId me = new AgentId("urn:agent:consumer@fortytwo.net", "xmpp://patabot.2@jabber.org");
+        AgentId ld = new AgentId("urn:x-agent:linked-data@fortytwo.net", "xmpp://linked-data@jabber.org");
+        AgentId twitter = new AgentId("urn:x-agent:twitlogic@fortytwo.net", "xmpp://twitlogic@jabber.org");
+        AgentId synd = new AgentId("urn:x-agent:syndicator@fortytwo.net", "xmpp://patabot.1@jabber.org");
+        AgentId me = new AgentId("urn:x-agent:consumer@fortytwo.net", "xmpp://patabot.2@jabber.org");
 
         RDFAgentsPlatform p = new RDFAgentsPlatformImpl("fortytwo.net", "rdfagents.config");
 

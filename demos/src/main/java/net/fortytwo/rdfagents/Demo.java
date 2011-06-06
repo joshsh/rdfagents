@@ -54,9 +54,9 @@ public class Demo {
 
         ConsumerCallback<Dataset> callback = new EchoCallback(p.getDatasetFactory());
 
-        qc.submit(new URIImpl("http://example.org/ns#arthur"), a2.getIdentity(), callback);
+        //qc.submit(new URIImpl("http://example.org/ns#arthur"), a2.getIdentity(), callback);
 //        qc.submit(new URIImpl("http://identi.ca/user/114"), aLinked.getIdentity(), callback);
-        //qc.submit(new URIImpl("http://xmlns.com/foaf/0.1/Person"), linkedDataId, callback);
+        qc.submit(new URIImpl("http://xmlns.com/foaf/0.1/Person"), ld.getIdentity(), callback);
     }
 
     private Demo() throws Exception {

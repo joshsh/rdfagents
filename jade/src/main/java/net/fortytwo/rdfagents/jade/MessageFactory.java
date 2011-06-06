@@ -557,8 +557,10 @@ public class MessageFactory {
                                      final AgentId intendedReceiver,
                                      final int performative) {
         ACLMessage message = new ACLMessage(performative);
+        // Note: for now, using the return AID provided in the original message.
         message.setSender(toAID(sender));
-        message.addReceiver(toAID(intendedReceiver));
+        //message.addReceiver(toAID(intendedReceiver));
+        message.addReceiver(replyTo.getSender());
         message.setProtocol(replyTo.getProtocol());
         message.setConversationId(replyTo.getConversationId());
         return message;

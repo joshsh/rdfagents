@@ -37,7 +37,7 @@ public class RDFAgentImpl extends RDFAgent {
         }
 
         String n = id.getName().toString();
-        String localName = n.substring(0, n.length() - platform.getName().length());
+        String localName = n.substring(0, n.length() - 1 - platform.getName().length());
 
         MessageFactory messageFactory = new MessageFactory(platform.getDatasetFactory());
         RDFJadeAgent.Wrapper w = new RDFJadeAgent.Wrapper(getIdentity(), messageFactory);

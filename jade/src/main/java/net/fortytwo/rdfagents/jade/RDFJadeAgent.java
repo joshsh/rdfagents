@@ -254,7 +254,7 @@ public class RDFJadeAgent extends Agent {
             }
         });
 
-        StringBuilder sb = new StringBuilder("initialized agent <").append(self.getName()).append("> with address(s) ");
+        StringBuilder sb = new StringBuilder("initialized agent <").append(self.getName()).append("> with address(es) ");
         boolean first = true;
         for (URI s : self.getTransportAddresses()) {
             if (first) {
@@ -699,11 +699,11 @@ public class RDFJadeAgent extends Agent {
         System.out.println("### Message sent ###############################################################\n"
                 + m + "\n################################################################################");
 
-        //*
+        /*
         if (m.getPerformative() != ACLMessage.INFORM) {
             ACLMessage reply = new ACLMessage(ACLMessage.INFORM);
             m.setSender(messageFactory.toAID(self));
-            m.addReceiver(m.getSender());
+            m.addReceiver(m.get);
             reply.setPerformative(ACLMessage.INFORM);
             reply.setContent("this, too");
             sendMessage(reply);
