@@ -42,13 +42,17 @@ public class Demo {
         RDFAgent a2 = new RDFAgentImpl(p,
                 new AgentId("urn:x-agent:provider@fortytwo.net", "xmpp://patabot.1@jabber.org"));
 
+        RDFAgent a3 = new RDFAgentImpl(p,
+                new AgentId("urn:x-agent:dbpedia@fortytwo.net", "xmpp://patabot.1@jabber.org"));
+
         a2.setQueryProvider(new SailBasedQueryProvider(a2, sail));
+        a3.setQueryProvider(new SparqlDescribeQueryProvider(a3, "http://dbpedia.org/sparql"));
 
         Sail baseSail = new MemoryStore();
         baseSail.initialize();
 
         RDFAgent ld = new LinkedDataAgent(baseSail, p,
-                new AgentId("urn:x-agent:linked-data@fortytwo.net", "xmpp://patabot.1@jabber.org"));
+                new AgentId("urn:x-agent:linked-data@fortytwo.net", "xmpp://linked-data@jabber.org"));
 
         QueryConsumer<Value, Dataset> qc = new QueryConsumerImpl(a1);
 
@@ -56,7 +60,8 @@ public class Demo {
 
         //qc.submit(new URIImpl("http://example.org/ns#arthur"), a2.getIdentity(), callback);
 //        qc.submit(new URIImpl("http://identi.ca/user/114"), aLinked.getIdentity(), callback);
-        qc.submit(new URIImpl("http://xmlns.com/foaf/0.1/Person"), ld.getIdentity(), callback);
+        //qc.submit(new URIImpl("http://xmlns.com/foaf/0.1/Person"), ld.getIdentity(), callback);
+        qc.submit(new URIImpl("http://dbpedia.org/resource/Beijing"), a3.getIdentity(), callback);
     }
 
     private Demo() throws Exception {

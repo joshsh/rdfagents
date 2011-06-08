@@ -2,12 +2,12 @@ package net.fortytwo.rdfagents.jade;
 
 import jade.core.AID;
 import jade.lang.acl.ACLMessage;
+import net.fortytwo.rdfagents.model.AgentId;
 import net.fortytwo.rdfagents.model.ErrorExplanation;
 import net.fortytwo.rdfagents.RDFAgents;
 import net.fortytwo.rdfagents.RDFAgentsTestCase;
 import net.fortytwo.rdfagents.model.RDFContentLanguage;
 import net.fortytwo.rdfagents.data.RecursiveDescribeQuery;
-import net.fortytwo.rdfagents.model.AgentId;
 import net.fortytwo.rdfagents.data.DatasetQuery;
 import org.openrdf.model.Literal;
 import org.openrdf.model.URI;
