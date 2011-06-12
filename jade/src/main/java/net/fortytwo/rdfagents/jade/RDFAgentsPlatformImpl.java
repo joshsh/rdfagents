@@ -27,6 +27,7 @@ public class RDFAgentsPlatformImpl extends RDFAgentsPlatform {
             XMPP_MTP_PASSWORD = "jade_mtp_xmpp_passwd";
 
     private final AgentContainer container;
+    private final Runtime runtime;
 
     // TODO: support attaching RDFAgents to an existing container
     public RDFAgentsPlatformImpl(final String name,
@@ -36,10 +37,10 @@ public class RDFAgentsPlatformImpl extends RDFAgentsPlatform {
         super(name, datasetFactory);
 
         // Get a hold on JADE runtime
-        jade.core.Runtime rt = Runtime.instance();
+        runtime = Runtime.instance();
 
         // Exit the JVM when there are no more containers around
-        rt.setCloseVM(true);
+        runtime.setCloseVM(true);
 
         // Launch a complete platform on the 8888 port
         // create a default Profile
@@ -56,8 +57,9 @@ public class RDFAgentsPlatformImpl extends RDFAgentsPlatform {
         p.setSpecifiers(MTPS, mtps);
 
         System.out.println("Launching JADE container for RDFAgents: " + p);
-        container = rt.createMainContainer(p);
+        container = runtime.createMainContainer(p);
     }
+
 
     public RDFAgentsPlatformImpl(final String name,
                                  final int port,
@@ -67,6 +69,11 @@ public class RDFAgentsPlatformImpl extends RDFAgentsPlatform {
 
     public AgentContainer getContainer() {
         return container;
+    }
+
+    @Override
+    public void shutDown() {
+        runtime.shutDown();
     }
 
     // Simple class behaving as a Condition Variable

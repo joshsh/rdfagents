@@ -4,6 +4,8 @@ import net.fortytwo.rdfagents.jade.PubsubConsumerImpl;
 import net.fortytwo.rdfagents.jade.QueryConsumerImpl;
 import net.fortytwo.rdfagents.jade.RDFAgentImpl;
 import net.fortytwo.rdfagents.jade.RDFAgentsPlatformImpl;
+import net.fortytwo.rdfagents.jade.testing.EchoCallback;
+import net.fortytwo.rdfagents.messaging.CancellationCallback;
 import net.fortytwo.rdfagents.messaging.ConsumerCallback;
 import net.fortytwo.rdfagents.messaging.LocalFailure;
 import net.fortytwo.rdfagents.messaging.query.QueryConsumer;
@@ -13,13 +15,11 @@ import net.fortytwo.rdfagents.model.Dataset;
 import net.fortytwo.rdfagents.model.ErrorExplanation;
 import net.fortytwo.rdfagents.model.RDFAgent;
 import net.fortytwo.rdfagents.model.RDFAgentsPlatform;
-import net.fortytwo.rdfagents.model.RDFContentLanguage;
 import org.openrdf.model.Value;
 import org.openrdf.model.impl.URIImpl;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -32,11 +32,11 @@ public class SemtechDemo {
 
     private void run(final Properties config) throws Exception {
 
-        final RDFAgentsPlatform platform = new RDFAgentsPlatformImpl("fortytwo.net", 8889, config);
+        final RDFAgentsPlatform platform = new RDFAgentsPlatformImpl("fortytwo.net", 8887, config);
 
         AgentId consumer = new AgentId(
                 "urn:x-agent:consumer@fortytwo.net",
-                "xmpp://patabot.1@jabber.org");
+                "xmpp://patabot.1@jabber.org/acc");
         AgentId twitlogic = new AgentId(
                 "urn:x-agent:twitlogic@twitlogic.fortytwo.net",
                 "xmpp://twitlogic@jabber.org/acc");
@@ -46,33 +46,7 @@ public class SemtechDemo {
         QueryConsumer<Value, Dataset> client = new QueryConsumerImpl(agent);
         PubsubConsumer<Value, Dataset> pubsubConsumer = new PubsubConsumerImpl(agent);
 
-        ConsumerCallback<Dataset> callback = new ConsumerCallback<Dataset>() {
-            public void success(final Dataset answer) {
-                System.out.println("query has been successfully answered.  Answer follows:");
-                try {
-                    platform.getDatasetFactory().write(System.out, answer, RDFContentLanguage.RDF_TRIG);
-                } catch (LocalFailure e) {
-                    e.printStackTrace(System.err);
-                }
-            }
-
-            public void agreed() {
-                System.out.println("agreed!");
-            }
-
-            public void refused(final ErrorExplanation explanation) {
-                System.out.println("refused!");
-            }
-
-            public void remoteFailure(final ErrorExplanation explanation) {
-                System.out.println("remote failure: " + explanation);
-            }
-
-            public void localFailure(final LocalFailure e) {
-                System.out.println("local failure: " + e + "\n" + RDFAgents.stackTraceToString(e));
-            }
-        };
-
+        ConsumerCallback<Dataset> callback = new EchoCallback(platform.getDatasetFactory());
         /*
         Object mutex = "";
         synchronized (mutex) {
@@ -80,21 +54,37 @@ public class SemtechDemo {
         }//*/
 
         //client.submit(new URIImpl("http://xmlns.com/foaf/0.1/Person"), twitlogic, callback);
-        pubsubConsumer.submit(new URIImpl("http://rdfs.org/sioc/types#MicroblogPost"), twitlogic, callback);
+        //pubsubConsumer.submit(new URIImpl("http://rdfs.org/sioc/types#MicroblogPost"), twitlogic, callback);
+
+        // TwitLogic query
+        client.submit(new URIImpl("http://twitlogic.fortytwo.net/hashtag/twitter"), twitlogic, callback);
+
+        // TwitLogic subscription
+        String conv = null;
+        try {
+            conv = pubsubConsumer.submit(new URIImpl("http://twitlogic.fortytwo.net/hashtag/twitter"), twitlogic, callback);
+        } finally {
+            if (conv != null) {
+                pubsubConsumer.cancel(conv, twitlogic, new CancellationCallback() {
+                    @Override
+                    public void success() {
+                        System.out.println("cancelled!");
+                    }
+
+                    @Override
+                    public void remoteFailure(ErrorExplanation explanation) {
+                        //To change body of implemented methods use File | Settings | File Templates.
+                    }
+
+                    @Override
+                    public void localFailure(LocalFailure e) {
+                        //To change body of implemented methods use File | Settings | File Templates.
+                    }
+                });
+            }
+        }
     }
 
-    private void tmp() throws IOException {
-        /*
-        AgentId ld = new AgentId("urn:x-agent:linked-data@fortytwo.net", "xmpp://linked-data@jabber.org");
-        AgentId twitter = new AgentId("urn:x-agent:twitlogic@fortytwo.net", "xmpp://twitlogic@jabber.org");
-        AgentId synd = new AgentId("urn:x-agent:syndicator@fortytwo.net", "xmpp://patabot.1@jabber.org");
-        AgentId me = new AgentId("urn:x-agent:consumer@fortytwo.net", "xmpp://patabot.2@jabber.org");
-
-        RDFAgentsPlatform p = new RDFAgentsPlatformImpl("fortytwo.net", "rdfagents.config");
-
-        RDFAgent agent = new Syndicator(synd, p, ld, twitter);
-        */
-    }
 
     public static void main(final String args[]) {
         try {

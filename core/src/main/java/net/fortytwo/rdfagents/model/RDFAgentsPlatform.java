@@ -24,4 +24,6 @@ public abstract class RDFAgentsPlatform {
     public DatasetFactory getDatasetFactory() {
         return datasetFactory;
     }
+
+    public abstract void shutDown();
 }

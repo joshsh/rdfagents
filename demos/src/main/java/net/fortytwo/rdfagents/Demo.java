@@ -52,16 +52,38 @@ public class Demo {
         baseSail.initialize();
 
         RDFAgent ld = new LinkedDataAgent(baseSail, p,
-                new AgentId("urn:x-agent:linked-data@fortytwo.net", "xmpp://linked-data@jabber.org"));
+                new AgentId("urn:x-agent:linked-data@fortytwo.net", "xmpp://patabot.1@jabber.org"));
 
         QueryConsumer<Value, Dataset> qc = new QueryConsumerImpl(a1);
 
         ConsumerCallback<Dataset> callback = new EchoCallback(p.getDatasetFactory());
 
+        // Local store
         //qc.submit(new URIImpl("http://example.org/ns#arthur"), a2.getIdentity(), callback);
-//        qc.submit(new URIImpl("http://identi.ca/user/114"), aLinked.getIdentity(), callback);
-        //qc.submit(new URIImpl("http://xmlns.com/foaf/0.1/Person"), ld.getIdentity(), callback);
-        qc.submit(new URIImpl("http://dbpedia.org/resource/Beijing"), a3.getIdentity(), callback);
+
+        // Linked Data
+        //qc.submit(new URIImpl("http://identi.ca/user/114"), ld.getIdentity(), callback);
+
+        // Linked Data
+        qc.submit(new URIImpl("http://xmlns.com/foaf/0.1/Person"), ld.getIdentity(), callback);
+
+        // SPARQL
+        //qc.submit(new URIImpl("http://dbpedia.org/resource/Beijing"), a3.getIdentity(), callback);
+
+        waitAWhile(10000);
+
+        p.shutDown();
+    }
+
+    private void waitAWhile(final long time) {
+        Object mutex = "";
+        synchronized (mutex) {
+            try {
+                mutex.wait(time);
+            } catch (InterruptedException e) {
+                e.printStackTrace(System.err);
+            }
+        }
     }
 
     private Demo() throws Exception {
