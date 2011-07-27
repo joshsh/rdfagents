@@ -16,8 +16,16 @@
         <module>jade</module>
         <module>sail</module>
         <module>demos</module>
-	<module>csparql</module>
+        <module>csparql</module>
     </modules>
+
+    <properties>
+        <rdfagents.version>0.2-SNAPSHOT</rdfagents.version>
+        <sesame.version>2.4.2</sesame.version>
+        <sesametools.version>1.4-SNAPSHOT</sesametools.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
 
     <build>
         <directory>${basedir}/target</directory>
@@ -46,5 +54,21 @@
             </plugin>
         </plugins>
     </reporting>
+
+    <repositories>
+        <repository>
+            <id>fortytwo</id>
+            <name>fortytwo.net Maven repository</name>
+            <url>http://fortytwo.net/maven2</url>
+        </repository>
+    </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>fortytwo</id>
+            <name>fortytwo.net Maven repository</name>
+            <url>file:///mnt/repository</url>
+        </repository>
+    </distributionManagement>
 
 </project>
