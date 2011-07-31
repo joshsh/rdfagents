@@ -12,11 +12,11 @@
     <description>Real-time messaging for the Semantic Web</description>
 
     <modules>
-        <module>core</module>
-        <module>csparql</module>
-        <module>demos</module>
-        <module>jade</module>
-        <module>sail</module>
+        <module>rdfagents-core</module>
+        <module>rdfagents-csparql</module>
+        <module>rdfagents-demos</module>
+        <module>rdfagents-jade</module>
+        <module>rdfagents-sail</module>
     </modules>
 
     <properties>
