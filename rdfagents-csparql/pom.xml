@@ -6,14 +6,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.fortytwo.rdfagents</groupId>
     <artifactId>rdfagents-csparql</artifactId>
-    <version>0.2-SNAPSHOT</version>
+    <version>0.2</version>
     <packaging>jar</packaging>
     <name>RDFAgents C-SPARQL</name>
 
     <parent>
         <groupId>net.fortytwo.rdfagents</groupId>
         <artifactId>rdfagents-all</artifactId>
-        <version>0.2-SNAPSHOT</version>
+        <version>0.2</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
