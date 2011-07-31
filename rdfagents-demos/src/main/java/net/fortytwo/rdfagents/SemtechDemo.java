@@ -9,7 +9,7 @@ import net.fortytwo.rdfagents.messaging.CancellationCallback;
 import net.fortytwo.rdfagents.messaging.ConsumerCallback;
 import net.fortytwo.rdfagents.messaging.LocalFailure;
 import net.fortytwo.rdfagents.messaging.query.QueryConsumer;
-import net.fortytwo.rdfagents.messaging.subscribe.PubsubConsumer;
+import net.fortytwo.rdfagents.messaging.subscribe.PubsubConsumerTmp;
 import net.fortytwo.rdfagents.model.AgentId;
 import net.fortytwo.rdfagents.model.Dataset;
 import net.fortytwo.rdfagents.model.ErrorExplanation;
@@ -42,7 +42,7 @@ public class SemtechDemo {
         RDFAgent agent = new RDFAgentImpl(platform, consumer);
 
         QueryConsumer<Value, Dataset> client = new QueryConsumerImpl(agent);
-        PubsubConsumer<Value, Dataset> pubsubConsumer = new PubsubConsumerImpl(agent);
+        PubsubConsumerTmp<Value, Dataset> pubsubConsumer = new PubsubConsumerImpl(agent);
 
         ConsumerCallback<Dataset> callback = new EchoCallback(platform.getDatasetFactory());
         /*

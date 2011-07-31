@@ -22,8 +22,8 @@ import java.util.logging.Logger;
  *
  * @author Joshua Shinavier (http://fortytwo.net)
  */
-public abstract class PubsubProvider<T, U> extends Role {
-    private static final Logger LOGGER = Logger.getLogger(PubsubProvider.class.getName());
+public abstract class PubsubProviderTmp<T, U> extends Role {
+    private static final Logger LOGGER = Logger.getLogger(PubsubProviderTmp.class.getName());
 
     private class Subscription {
         public final AgentId subscriber;
@@ -43,7 +43,7 @@ public abstract class PubsubProvider<T, U> extends Role {
     private final Map<String, Subscription> subscriptionsById;
     private final Object mutex = "";
 
-    public PubsubProvider(final RDFAgent agent) {
+    public PubsubProviderTmp(final RDFAgent agent) {
         super(agent);
         this.idsByTopic = new HashMap<T, Set<String>>();
         this.subscriptionsById = new HashMap<String, Subscription>();

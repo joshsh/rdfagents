@@ -9,7 +9,7 @@ import net.fortytwo.rdfagents.jade.RDFAgentImpl;
 import net.fortytwo.rdfagents.jade.RDFAgentsPlatformImpl;
 import net.fortytwo.rdfagents.jade.testing.EchoCallback;
 import net.fortytwo.rdfagents.messaging.ConsumerCallback;
-import net.fortytwo.rdfagents.messaging.subscribe.PubsubConsumer;
+import net.fortytwo.rdfagents.messaging.subscribe.PubsubConsumerTmp;
 import net.fortytwo.rdfagents.model.AgentId;
 import net.fortytwo.rdfagents.model.Dataset;
 import net.fortytwo.rdfagents.model.RDFAgent;
@@ -50,8 +50,8 @@ public class CSparqlDemo {
         csparqlAgent.setPubsubProvider(cSparqlPubsubProvider);
         
         
-        PubsubConsumer<Value, Dataset> endUserPubsubConsumer = new PubsubConsumerImpl(consumer);
-        PubsubConsumer<Value, Dataset> cSparqlPubsubConsumer = new PubsubConsumerImpl(csparqlAgent);
+        PubsubConsumerTmp<Value, Dataset> endUserPubsubConsumer = new PubsubConsumerImpl(consumer);
+        PubsubConsumerTmp<Value, Dataset> cSparqlPubsubConsumer = new PubsubConsumerImpl(csparqlAgent);
         
        
         ConsumerCallback<Dataset> callback = new EchoCallback(platform.getDatasetFactory());

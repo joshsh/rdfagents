@@ -5,7 +5,7 @@ import jade.wrapper.StaleProxyException;
 import net.fortytwo.rdfagents.messaging.CancellationCallback;
 import net.fortytwo.rdfagents.messaging.ConsumerCallback;
 import net.fortytwo.rdfagents.messaging.query.QueryProvider;
-import net.fortytwo.rdfagents.messaging.subscribe.PubsubProvider;
+import net.fortytwo.rdfagents.messaging.subscribe.PubsubProviderTmp;
 import net.fortytwo.rdfagents.model.AgentId;
 import net.fortytwo.rdfagents.model.Dataset;
 import net.fortytwo.rdfagents.model.RDFAgent;
@@ -65,7 +65,7 @@ public class RDFAgentImpl extends RDFAgent {
     }
 
     @Override
-    public void setPubsubProvider(PubsubProvider<Value, Dataset> pubsubProvider) {
+    public void setPubsubProvider(PubsubProviderTmp<Value, Dataset> pubsubProvider) {
         jadeAgent.setPubsubProvider(pubsubProvider);
     }
 

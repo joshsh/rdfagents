@@ -1,7 +1,7 @@
 package net.fortytwo.rdfagents.model;
 
 import net.fortytwo.rdfagents.messaging.query.QueryProvider;
-import net.fortytwo.rdfagents.messaging.subscribe.PubsubProvider;
+import net.fortytwo.rdfagents.messaging.subscribe.PubsubProviderTmp;
 import org.openrdf.model.Value;
 
 /**
@@ -26,7 +26,7 @@ public abstract class RDFAgent {
 
     public abstract void setQueryProvider(QueryProvider<Value, Dataset> queryProvider);
 
-    public abstract void setPubsubProvider(PubsubProvider<Value, Dataset> pubsubProvider);
+    public abstract void setPubsubProvider(PubsubProviderTmp<Value, Dataset> pubsubProvider);
 
     public static class RDFAgentException extends Exception {
         public RDFAgentException(final Throwable cause) {

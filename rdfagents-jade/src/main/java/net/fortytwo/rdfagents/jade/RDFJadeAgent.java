@@ -12,7 +12,7 @@ import net.fortytwo.rdfagents.messaging.LocalFailure;
 import net.fortytwo.rdfagents.messaging.MessageNotUnderstoodException;
 import net.fortytwo.rdfagents.messaging.MessageRejectedException;
 import net.fortytwo.rdfagents.messaging.query.QueryProvider;
-import net.fortytwo.rdfagents.messaging.subscribe.PubsubProvider;
+import net.fortytwo.rdfagents.messaging.subscribe.PubsubProviderTmp;
 import net.fortytwo.rdfagents.messaging.subscribe.UpdateHandler;
 import net.fortytwo.rdfagents.model.AgentId;
 import net.fortytwo.rdfagents.model.Dataset;
@@ -43,7 +43,7 @@ public class RDFJadeAgent extends Agent {
     private AgentId self;
     private MessageFactory messageFactory;
     private QueryProvider<Value, Dataset> queryProvider;
-    private PubsubProvider<Value, Dataset> pubsubProvider;
+    private PubsubProviderTmp<Value, Dataset> pubsubProvider;
 
     public abstract class Task {
         private String conversationId;
@@ -190,7 +190,7 @@ public class RDFJadeAgent extends Agent {
         this.queryProvider = queryProvider;
     }
 
-    public void setPubsubProvider(final PubsubProvider<Value, Dataset> pubsubProvider) {
+    public void setPubsubProvider(final PubsubProviderTmp<Value, Dataset> pubsubProvider) {
         this.pubsubProvider = pubsubProvider;
     }
 

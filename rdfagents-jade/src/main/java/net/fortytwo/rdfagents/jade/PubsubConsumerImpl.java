@@ -4,7 +4,7 @@ import jade.wrapper.StaleProxyException;
 import net.fortytwo.rdfagents.messaging.CancellationCallback;
 import net.fortytwo.rdfagents.messaging.LocalFailure;
 import net.fortytwo.rdfagents.messaging.ConsumerCallback;
-import net.fortytwo.rdfagents.messaging.subscribe.PubsubConsumer;
+import net.fortytwo.rdfagents.messaging.subscribe.PubsubConsumerTmp;
 import net.fortytwo.rdfagents.model.AgentId;
 import net.fortytwo.rdfagents.model.Dataset;
 import net.fortytwo.rdfagents.model.RDFAgent;
@@ -13,7 +13,7 @@ import org.openrdf.model.Value;
 /**
  * @author Joshua Shinavier (http://fortytwo.net)
  */
-public class PubsubConsumerImpl extends PubsubConsumer<Value, Dataset> {
+public class PubsubConsumerImpl extends PubsubConsumerTmp<Value, Dataset> {
 
     public PubsubConsumerImpl(final RDFAgent agent) {
         super(agent);

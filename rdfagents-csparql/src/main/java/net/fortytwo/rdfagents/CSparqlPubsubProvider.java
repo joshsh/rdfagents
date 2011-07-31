@@ -6,7 +6,7 @@ import eu.larkc.csparql.common.streams.format.GenericObservable;
 import eu.larkc.csparql.common.streams.format.GenericObserver;
 import net.fortytwo.rdfagents.messaging.Commitment;
 import net.fortytwo.rdfagents.messaging.LocalFailure;
-import net.fortytwo.rdfagents.messaging.subscribe.PubsubProvider;
+import net.fortytwo.rdfagents.messaging.subscribe.PubsubProviderTmp;
 import net.fortytwo.rdfagents.model.AgentId;
 import net.fortytwo.rdfagents.model.Dataset;
 import net.fortytwo.rdfagents.model.RDFAgent;
@@ -21,7 +21,7 @@ import java.util.ArrayList;
 /**
  * @author Joshua Shinavier (http://fortytwo.net)
  */
-public class CSparqlPubsubProvider extends PubsubProvider<Value, Dataset> implements GenericObserver<RDFTable> {
+public class CSparqlPubsubProvider extends PubsubProviderTmp<Value, Dataset> implements GenericObserver<RDFTable> {
 
 	Value topic;
 	
