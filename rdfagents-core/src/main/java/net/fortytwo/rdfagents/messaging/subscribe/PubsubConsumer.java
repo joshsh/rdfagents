@@ -14,8 +14,8 @@ import net.fortytwo.rdfagents.model.RDFAgent;
  *
  * @author Joshua Shinavier (http://fortytwo.net).
  */
-public abstract class PubsubConsumerTmp<T, U> extends Role {
-    public PubsubConsumerTmp(final RDFAgent agent) {
+public abstract class PubsubConsumer<T, U> extends Role {
+    public PubsubConsumer(final RDFAgent agent) {
         super(agent);
     }
 

@@ -4,8 +4,8 @@ import net.fortytwo.rdfagents.jade.PubsubConsumerImpl;
 import net.fortytwo.rdfagents.messaging.Commitment;
 import net.fortytwo.rdfagents.messaging.ConsumerCallback;
 import net.fortytwo.rdfagents.messaging.LocalFailure;
-import net.fortytwo.rdfagents.messaging.subscribe.PubsubConsumerTmp;
-import net.fortytwo.rdfagents.messaging.subscribe.PubsubProviderTmp;
+import net.fortytwo.rdfagents.messaging.subscribe.PubsubConsumer;
+import net.fortytwo.rdfagents.messaging.subscribe.PubsubProvider;
 import net.fortytwo.rdfagents.model.AgentId;
 import net.fortytwo.rdfagents.model.Dataset;
 import net.fortytwo.rdfagents.model.ErrorExplanation;
@@ -19,10 +19,10 @@ import java.util.logging.Logger;
  *
  * @author Joshua Shinavier (http://fortytwo.net)
  */
-class SyndicatingPubsubProvider extends PubsubProviderTmp<Value, Dataset> {
+class SyndicatingPubsubProvider extends PubsubProvider<Value, Dataset> {
     private static final Logger LOGGER = Logger.getLogger(SyndicatingPubsubProvider.class.getName());
 
-    private final PubsubConsumerTmp<Value, Dataset> consumer;
+    private final PubsubConsumer<Value, Dataset> consumer;
     private final AgentId[] others;
 
     public SyndicatingPubsubProvider(final RDFAgent agent,

@@ -7,8 +7,8 @@ import net.fortytwo.rdfagents.messaging.Commitment;
 import net.fortytwo.rdfagents.messaging.LocalFailure;
 import net.fortytwo.rdfagents.messaging.query.QueryConsumer;
 import net.fortytwo.rdfagents.messaging.query.QueryProvider;
-import net.fortytwo.rdfagents.messaging.subscribe.PubsubConsumerTmp;
-import net.fortytwo.rdfagents.messaging.subscribe.PubsubProviderTmp;
+import net.fortytwo.rdfagents.messaging.subscribe.PubsubConsumer;
+import net.fortytwo.rdfagents.messaging.subscribe.PubsubProvider;
 import net.fortytwo.rdfagents.model.AgentId;
 import net.fortytwo.rdfagents.model.Dataset;
 import net.fortytwo.rdfagents.model.RDFAgent;
@@ -21,7 +21,7 @@ import org.openrdf.model.Value;
 public class Syndicator extends RDFAgentImpl {
 
     private final QueryConsumer<Value, Dataset> queryConsumer;
-    private final PubsubConsumerTmp<Value, Dataset> pubsubConsumer;
+    private final PubsubConsumer<Value, Dataset> pubsubConsumer;
 
     public Syndicator(final AgentId id,
                       final RDFAgentsPlatform platform,
@@ -62,7 +62,7 @@ public class Syndicator extends RDFAgentImpl {
         }
     }
 
-    private class SyndicatorPubsubProvider extends PubsubProviderTmp<Value, Dataset> {
+    private class SyndicatorPubsubProvider extends PubsubProvider<Value, Dataset> {
 
         public SyndicatorPubsubProvider(final RDFAgent agent) {
             super(agent);
