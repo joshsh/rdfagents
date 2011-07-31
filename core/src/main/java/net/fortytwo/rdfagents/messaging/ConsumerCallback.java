@@ -6,6 +6,8 @@ import net.fortytwo.rdfagents.model.ErrorExplanation;
  * A handler for all possible outcomes of a query request.
  *
  * @param <A> a class of query answers
+ *
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public interface ConsumerCallback<A> {
     /**

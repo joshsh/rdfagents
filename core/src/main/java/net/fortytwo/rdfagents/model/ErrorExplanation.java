@@ -3,9 +3,8 @@ package net.fortytwo.rdfagents.model;
 /**
  * An error explanation to be used in a FIPA not-understood, failure, or refuse message.
  * See the <a href="http://fortytwo.net/2011/rdfagents/spec#errors">RDFAgents specification</a>.
- * User: josh
- * Date: 5/24/11
- * Time: 6:27 PM
+ *
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public class ErrorExplanation {
     private final Type type;

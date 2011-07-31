@@ -10,9 +10,7 @@ import org.openrdf.sail.Sail;
 import org.openrdf.sail.SailException;
 
 /**
- * User: josh
- * Date: 5/31/11
- * Time: 3:39 PM
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public class LinkedDataAgent extends RDFAgentImpl {
     private final Sail sail;

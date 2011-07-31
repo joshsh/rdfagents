@@ -4,6 +4,8 @@ import net.fortytwo.rdfagents.model.ErrorExplanation;
 
 /**
  * A handler for all possible outcomes of a query cancellation request.
+ *
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public interface CancellationCallback {
     /**

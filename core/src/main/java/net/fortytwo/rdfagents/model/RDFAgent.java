@@ -5,9 +5,7 @@ import net.fortytwo.rdfagents.messaging.subscribe.PubsubProvider;
 import org.openrdf.model.Value;
 
 /**
- * User: josh
- * Date: 6/1/11
- * Time: 1:59 AM
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public abstract class RDFAgent {
     protected final AgentId identity;

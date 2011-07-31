@@ -14,9 +14,7 @@ import org.openrdf.sail.SailConnection;
 import org.openrdf.sail.SailException;
 
 /**
- * User: josh
- * Date: 5/24/11
- * Time: 7:03 PM
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public class AgentSailConnection implements SailConnection {
     public boolean isOpen() throws SailException {

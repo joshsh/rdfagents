@@ -7,10 +7,8 @@ import java.util.Collection;
 /**
  * An RDF Dataset (as defined in the SPARQL specification) containing a set of zero or more named graphs
  * and exactly one unnamed graph, suitable for embedding in FIPA messages.
- * <p/>
- * User: josh
- * Date: 5/23/11
- * Time: 5:46 PM
+ *
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public class Dataset {
     private final Collection<Statement> statements;

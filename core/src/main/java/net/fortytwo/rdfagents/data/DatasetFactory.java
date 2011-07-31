@@ -39,9 +39,7 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * User: josh
- * Date: 5/23/11
- * Time: 5:55 PM
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public class DatasetFactory {
     private static final String

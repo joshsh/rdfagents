@@ -30,9 +30,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 /**
- * User: josh
- * Date: 6/7/11
- * Time: 4:26 PM
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public class SparqlDescribeQueryProvider extends QueryProvider<Value, Dataset> {
     private static final String BASE_URI = "http://example.org/baseURI#";

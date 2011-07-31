@@ -17,9 +17,7 @@ import java.util.logging.Logger;
 /**
  * TODO: not yet tested
  *
- * User: josh
- * Date: 6/8/11
- * Time: 2:43 PM
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 class SyndicatingPubsubProvider extends PubsubProvider<Value, Dataset> {
     private static final Logger LOGGER = Logger.getLogger(SyndicatingPubsubProvider.class.getName());

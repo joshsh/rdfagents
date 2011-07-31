@@ -11,9 +11,7 @@ import net.fortytwo.rdfagents.model.RDFAgent;
 import org.openrdf.model.Value;
 
 /**
- * User: josh
- * Date: 6/1/11
- * Time: 4:49 PM
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public class PubsubConsumerImpl extends PubsubConsumer<Value, Dataset> {
 

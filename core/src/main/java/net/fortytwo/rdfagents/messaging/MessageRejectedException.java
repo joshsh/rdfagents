@@ -3,9 +3,7 @@ package net.fortytwo.rdfagents.messaging;
 import net.fortytwo.rdfagents.model.ErrorExplanation;
 
 /**
- * User: josh
- * Date: 5/24/11
- * Time: 4:13 PM
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public class MessageRejectedException extends Exception {
     private final ErrorExplanation explanation;

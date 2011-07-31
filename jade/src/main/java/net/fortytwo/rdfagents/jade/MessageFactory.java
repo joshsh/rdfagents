@@ -39,9 +39,7 @@ import java.util.Random;
 import java.util.logging.Logger;
 
 /**
- * User: josh
- * Date: 5/24/11
- * Time: 3:36 PM
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public class MessageFactory {
     private static final Logger LOGGER = Logger.getLogger(MessageFactory.class.getName());

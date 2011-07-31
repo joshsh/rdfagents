@@ -13,6 +13,7 @@ import net.fortytwo.rdfagents.model.RDFAgent;
  *
  * @param <Q> a class of queries
  * @param <A> a class of query answers
+ *
  * @author Joshua Shinavier (http://fortytwo.net).
  */
 public abstract class QueryProvider<Q, A> extends Role {

@@ -1,9 +1,7 @@
 package net.fortytwo.rdfagents.messaging;
 
 /**
- * User: josh
- * Date: 6/1/11
- * Time: 4:16 AM
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public class MessageNotUnderstoodException extends Exception {
     public MessageNotUnderstoodException(final String message) {

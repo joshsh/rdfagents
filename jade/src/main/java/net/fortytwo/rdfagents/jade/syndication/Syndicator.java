@@ -16,9 +16,7 @@ import net.fortytwo.rdfagents.model.RDFAgentsPlatform;
 import org.openrdf.model.Value;
 
 /**
- * User: josh
- * Date: 6/5/11
- * Time: 4:14 PM
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public class Syndicator extends RDFAgentImpl {
 

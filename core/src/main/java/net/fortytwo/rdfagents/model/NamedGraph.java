@@ -7,10 +7,8 @@ import java.util.Collection;
 
 /**
  * A graph of RDF statements together with a URI serving as a graph name.
- * <p/>
- * User: josh
- * Date: 5/23/11
- * Time: 5:50 PM
+ *
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public class NamedGraph {
     private final URI name;

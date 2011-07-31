@@ -13,6 +13,8 @@ import java.util.logging.Logger;
 
 /**
  * A collection of global constants for the RDFAgents messaging API.
+ *
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public class RDFAgents {
     private static final Logger LOGGER = Logger.getLogger(RDFAgents.class.getName());

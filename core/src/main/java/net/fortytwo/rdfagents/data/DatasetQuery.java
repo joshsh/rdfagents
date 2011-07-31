@@ -5,9 +5,7 @@ import net.fortytwo.rdfagents.model.Dataset;
 /**
  * A query which, when evaluated, produces an RDF Dataset.
  *
- * User: josh
- * Date: 5/27/11
- * Time: 6:12 PM
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public interface DatasetQuery {
     /**

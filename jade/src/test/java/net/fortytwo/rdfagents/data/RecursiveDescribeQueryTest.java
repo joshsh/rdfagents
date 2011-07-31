@@ -4,9 +4,7 @@ import net.fortytwo.rdfagents.RDFAgentsTestCase;
 import net.fortytwo.rdfagents.model.Dataset;
 
 /**
- * User: josh
- * Date: 5/27/11
- * Time: 1:51 PM
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public class RecursiveDescribeQueryTest extends RDFAgentsTestCase {
 

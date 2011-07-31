@@ -26,9 +26,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 /**
- * User: josh
- * Date: 5/27/11
- * Time: 10:18 PM
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public class RDFJadeAgent extends Agent {
     private static final Logger LOGGER = Logger.getLogger(RDFJadeAgent.class.getName());

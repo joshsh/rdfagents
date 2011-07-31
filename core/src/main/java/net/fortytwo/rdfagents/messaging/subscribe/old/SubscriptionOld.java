@@ -15,13 +15,11 @@ import java.util.Date;
  * N: the class of notifications
  * <p/>
  * TODO: subscription (lease) renewal  -- see PubSubHubbub spec, section 6.1
- * <p/>
- * User: josh
- * Date: 2/22/11
- * Time: 5:16 PM
  *
  * @param <N> a class of notifications
  * @param <T> a class of topic descriptors
+ *
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public abstract class SubscriptionOld<N, T> {
     public enum Status {

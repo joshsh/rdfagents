@@ -19,7 +19,8 @@ import java.util.logging.Logger;
  *
  * @param <T> a class of topics
  * @param <U> a class of updates
- * @author Joshua Shinavier (http://fortytwo.net).
+ *
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public abstract class PubsubProvider<T, U> extends Role {
     private static final Logger LOGGER = Logger.getLogger(PubsubProvider.class.getName());

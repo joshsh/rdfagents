@@ -13,9 +13,7 @@ import net.fortytwo.rdfagents.jade.RDFAgentsOntology;
 import java.util.Random;
 
 /**
- * User: josh
- * Date: 4/22/11
- * Time: 11:47 PM
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public class ExampleMessages {
     private static final String

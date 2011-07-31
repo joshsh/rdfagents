@@ -1,25 +1,26 @@
 package net.fortytwo.rdfagents;
 
-import java.util.ArrayList;
-
+import eu.larkc.csparql.common.RDFTable;
+import eu.larkc.csparql.common.RDFTuple;
+import eu.larkc.csparql.common.streams.format.GenericObservable;
+import eu.larkc.csparql.common.streams.format.GenericObserver;
 import net.fortytwo.rdfagents.messaging.Commitment;
 import net.fortytwo.rdfagents.messaging.LocalFailure;
 import net.fortytwo.rdfagents.messaging.subscribe.PubsubProvider;
 import net.fortytwo.rdfagents.model.AgentId;
 import net.fortytwo.rdfagents.model.Dataset;
 import net.fortytwo.rdfagents.model.RDFAgent;
-
 import org.openrdf.model.Statement;
 import org.openrdf.model.Value;
 import org.openrdf.model.impl.LiteralImpl;
 import org.openrdf.model.impl.StatementImpl;
 import org.openrdf.model.impl.URIImpl;
 
-import eu.larkc.csparql.common.RDFTable;
-import eu.larkc.csparql.common.RDFTuple;
-import eu.larkc.csparql.common.streams.format.GenericObservable;
-import eu.larkc.csparql.common.streams.format.GenericObserver;
+import java.util.ArrayList;
 
+/**
+ * @author Joshua Shinavier (http://fortytwo.net)
+ */
 public class CSparqlPubsubProvider extends PubsubProvider<Value, Dataset> implements GenericObserver<RDFTable> {
 
 	Value topic;

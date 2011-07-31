@@ -10,6 +10,9 @@ import net.fortytwo.rdfagents.messaging.LocalFailure;
 import net.fortytwo.rdfagents.model.Dataset;
 import net.fortytwo.rdfagents.model.ErrorExplanation;
 
+/**
+ * @author Joshua Shinavier (http://fortytwo.net)
+ */
 public class CSPARQLConsumer extends RdfStream implements ConsumerCallback<Dataset> {
 
 	public CSPARQLConsumer(String iri) {

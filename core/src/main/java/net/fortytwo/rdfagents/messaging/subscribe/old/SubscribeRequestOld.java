@@ -3,9 +3,7 @@ package net.fortytwo.rdfagents.messaging.subscribe.old;
 import net.fortytwo.rdfagents.model.AgentId;
 
 /**
- * User: josh
- * Date: 2/25/11
- * Time: 5:59 PM
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public abstract class SubscribeRequestOld<Q> {
     private final Q topic;

@@ -22,10 +22,8 @@ import java.util.regex.Pattern;
  * For example "agent1.identity.xmpp.name" and "agent1.identity.xmpp.password" describe the XMPP credentials of the agent identified by "agent1".
  * <p/>
  * Note: internationalized country code TLDs are currently not included, but are not recommended as agent IDs.
- * <p/>
- * User: josh
- * Date: 2/23/11
- * Time: 5:35 PM
+ *
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public class Configuration {
     // These lists of TLDs were retrieved from Wikipedia on 2011-02-23.  See:

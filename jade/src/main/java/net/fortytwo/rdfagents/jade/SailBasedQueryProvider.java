@@ -12,9 +12,7 @@ import org.openrdf.model.Value;
 import org.openrdf.sail.Sail;
 
 /**
- * User: josh
- * Date: 5/31/11
- * Time: 10:55 AM
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public class SailBasedQueryProvider extends QueryProvider<Value, Dataset> {
     private final Sail sail;

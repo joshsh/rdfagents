@@ -9,7 +9,7 @@ import net.fortytwo.rdfagents.model.RDFAgent;
  * Subscriptions in RDFAgents follow FIPA's <a href="http://www.fipa.org/specs/fipa00035/SC00035H.html">Subscribe Interaction Protocol</a>.
  * For more details, see <a href="http://fortytwo.net/2011/rdfagents/spec#pubsub">the specification</a>.
  *
- * @author Joshua Shinavier (http://fortytwo.net).
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public abstract class SubscriberOld<Q, A> extends Role {
     public SubscriberOld(final RDFAgent client) {

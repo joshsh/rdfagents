@@ -14,9 +14,7 @@ import net.fortytwo.rdfagents.model.ErrorExplanation;
 import java.util.UUID;
 
 /**
- * User: josh
- * Date: 4/23/11
- * Time: 2:09 PM
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public class RDFAgentsOntology extends Ontology {
     private static final RDFAgentsOntology INSTANCE;

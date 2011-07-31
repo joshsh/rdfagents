@@ -8,6 +8,8 @@ import net.fortytwo.rdfagents.model.ErrorExplanation;
  * or at some later point in time (in which case an "agree" message is first sent to the initiator, to be followed by
  * another message with the query result).
  * Subscription requests must always be met with either an "agree" or a "refuse" message, before any updates are sent.
+ *
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public class Commitment {
 

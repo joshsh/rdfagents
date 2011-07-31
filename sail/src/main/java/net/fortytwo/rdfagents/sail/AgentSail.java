@@ -9,9 +9,7 @@ import org.openrdf.sail.StackableSail;
 import java.io.File;
 
 /**
- * User: josh
- * Date: 5/24/11
- * Time: 7:02 PM
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public class AgentSail implements StackableSail {
     private final Sail baseSail;

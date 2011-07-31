@@ -4,9 +4,7 @@ import net.fortytwo.sesametools.nquads.NQuadsFormat;
 import org.openrdf.rio.RDFFormat;
 
 /**
- * User: josh
- * Date: 5/24/11
- * Time: 3:56 PM
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public enum RDFContentLanguage {
     RDF_NTRIPLES("rdf-ntriples", RDFFormat.NTRIPLES),

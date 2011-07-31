@@ -3,9 +3,7 @@ package net.fortytwo.rdfagents.model;
 import net.fortytwo.rdfagents.data.DatasetFactory;
 
 /**
- * User: josh
- * Date: 6/1/11
- * Time: 1:59 AM
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public abstract class RDFAgentsPlatform {
     protected final DatasetFactory datasetFactory;

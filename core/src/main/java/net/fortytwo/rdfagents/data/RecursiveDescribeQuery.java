@@ -22,10 +22,8 @@ import java.util.Set;
  * <p/>
  * This implementation prevents duplicate statements
  * (i.e. two or more statements with the same subject, predicate, and object in the same graph)
- * <p/>
- * User: josh
- * Date: 5/27/11
- * Time: 12:30 PM
+ *
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public class RecursiveDescribeQuery implements DatasetQuery {
     private final Sail sail;

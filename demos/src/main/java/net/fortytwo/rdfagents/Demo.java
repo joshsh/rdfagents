@@ -25,9 +25,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 /**
- * User: josh
- * Date: 2/23/11
- * Time: 7:12 PM
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public class Demo {
 

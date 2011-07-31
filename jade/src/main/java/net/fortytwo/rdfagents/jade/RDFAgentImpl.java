@@ -13,9 +13,7 @@ import net.fortytwo.rdfagents.model.RDFAgentsPlatform;
 import org.openrdf.model.Value;
 
 /**
- * User: josh
- * Date: 5/31/11
- * Time: 3:40 PM
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public class RDFAgentImpl extends RDFAgent {
 

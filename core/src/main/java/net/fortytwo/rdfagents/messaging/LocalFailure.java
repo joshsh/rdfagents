@@ -1,9 +1,7 @@
 package net.fortytwo.rdfagents.messaging;
 
 /**
- * User: josh
- * Date: 6/1/11
- * Time: 3:38 AM
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public class LocalFailure extends Exception {
     public LocalFailure(final Throwable cause) {

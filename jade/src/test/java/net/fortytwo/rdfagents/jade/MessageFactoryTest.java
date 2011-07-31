@@ -18,9 +18,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * User: josh
- * Date: 5/24/11
- * Time: 7:13 PM
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public class MessageFactoryTest extends RDFAgentsTestCase {
 

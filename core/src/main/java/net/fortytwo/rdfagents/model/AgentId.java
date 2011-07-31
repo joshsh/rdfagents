@@ -4,9 +4,7 @@ import org.openrdf.model.URI;
 import org.openrdf.model.impl.URIImpl;
 
 /**
- * User: josh
- * Date: 2/24/11
- * Time: 7:32 PM
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public class AgentId {
     private final URI name;

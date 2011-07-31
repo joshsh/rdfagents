@@ -22,9 +22,7 @@ import org.openrdf.sail.memory.MemoryStore;
 import java.io.InputStream;
 
 /**
- * User: josh
- * Date: 5/27/11
- * Time: 3:41 PM
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public abstract class RDFAgentsTestCase extends TestCase {
     protected AgentId sender, receiver;

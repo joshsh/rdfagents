@@ -9,9 +9,7 @@ import net.fortytwo.rdfagents.model.ErrorExplanation;
 import net.fortytwo.rdfagents.model.RDFContentLanguage;
 
 /**
- * User: josh
- * Date: 6/5/11
- * Time: 6:06 PM
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public class EchoCallback implements ConsumerCallback<Dataset> {
     private final DatasetFactory datasetFactory;

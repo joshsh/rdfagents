@@ -14,9 +14,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 /**
- * User: josh
- * Date: 5/27/11
- * Time: 10:17 PM
+ * @author Joshua Shinavier (http://fortytwo.net)
  */
 public class RDFAgentsPlatformImpl extends RDFAgentsPlatform {
     private static final String MTPS = "mtps";
