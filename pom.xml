@@ -22,8 +22,8 @@
     <properties>
         <rdfagents.version>0.2</rdfagents.version>
         <ripple.version>0.7</ripple.version>
-        <sesame.version>2.4.2</sesame.version>
-        <sesametools.version>1.4</sesametools.version>
+        <sesame.version>2.6.3</sesame.version>
+        <sesametools.version>1.6</sesametools.version>
         <junit.version>4.5</junit.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
