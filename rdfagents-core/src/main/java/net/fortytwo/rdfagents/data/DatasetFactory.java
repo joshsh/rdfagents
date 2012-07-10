@@ -105,7 +105,7 @@ public class DatasetFactory {
         }
         //*/
 
-        URI formerDefaultGraph = createGraphURI();
+        URI formerDefaultGraph = randomURI();
         Collection<Statement> receiverStatements = new LinkedList<Statement>();
 
         for (Statement s : dataset.getStatements()) {
@@ -160,7 +160,7 @@ public class DatasetFactory {
         Map<Value, URI> newNames = new HashMap<Value, URI>();
 
         for (Resource g : graphs) {
-            newNames.put(g, createGraphURI());
+            newNames.put(g, randomURI());
         }
 
         Collection<Statement> coll = new LinkedList<Statement>();
@@ -285,7 +285,7 @@ public class DatasetFactory {
         return null == n ? original : n;
     }
 
-    private URI createGraphURI() {
+    public URI randomURI() {
         return valueFactory.createURI(UUID_URN_PREFIX + UUID.randomUUID());
     }
 

@@ -11,6 +11,8 @@ import java.util.Collection;
  * @author Joshua Shinavier (http://fortytwo.net)
  */
 public class Dataset {
+    public static final String UUID_URN_PREFIX = "urn:uuid:";
+
     private final Collection<Statement> statements;
 
     public Dataset(Collection<Statement> statements) {
