@@ -10,6 +10,7 @@ import org.openrdf.query.BindingSet;
 import org.openrdf.query.Dataset;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.algebra.TupleExpr;
+import org.openrdf.query.algebra.UpdateExpr;
 import org.openrdf.sail.SailConnection;
 import org.openrdf.sail.SailException;
 
@@ -27,6 +28,10 @@ public class AgentSailConnection implements SailConnection {
 
     public CloseableIteration<? extends BindingSet, QueryEvaluationException> evaluate(TupleExpr tupleExpr, Dataset dataset, BindingSet bindingSet, boolean b) throws SailException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void executeUpdate(UpdateExpr updateExpr, Dataset dataset, BindingSet bindings, boolean b) throws SailException {
+        throw new UnsupportedOperationException("SPARQL Update is not yet supported by this Sail implementation");
     }
 
     public CloseableIteration<? extends Resource, SailException> getContextIDs() throws SailException {
