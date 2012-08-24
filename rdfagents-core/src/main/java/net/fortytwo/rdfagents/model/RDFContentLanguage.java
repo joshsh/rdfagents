@@ -1,6 +1,5 @@
 package net.fortytwo.rdfagents.model;
 
-import net.fortytwo.sesametools.nquads.NQuadsFormat;
 import org.openrdf.rio.RDFFormat;
 
 /**
@@ -11,7 +10,7 @@ public enum RDFContentLanguage {
     RDF_TURTLE("rdf-turtle", RDFFormat.TURTLE),
     RDF_N3("rdf-n3", RDFFormat.N3),
     RDF_XML("rdf-xml", RDFFormat.RDFXML),
-    RDF_NQUADS("rdf-nquads", NQuadsFormat.NQUADS),
+    RDF_NQUADS("rdf-nquads", RDFFormat.NQUADS),
     RDF_TRIG("rdf-trig", RDFFormat.TRIG),
     RDF_TRIX("rdf-trix", RDFFormat.TRIX);
 

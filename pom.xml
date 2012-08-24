@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.fortytwo.rdfagents</groupId>
     <artifactId>rdfagents-all</artifactId>
-    <version>0.2</version>
+    <version>0.3-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>RDFAgents</name>
     <description>Real-time messaging for the Semantic Web</description>
@@ -20,10 +20,10 @@
     </modules>
 
     <properties>
-        <rdfagents.version>0.2</rdfagents.version>
-        <ripple.version>0.7</ripple.version>
-        <sesame.version>2.6.3</sesame.version>
-        <sesametools.version>1.6</sesametools.version>
+        <rdfagents.version>0.3-SNAPSHOT</rdfagents.version>
+        <ripple.version>0.8-SNAPSHOT</ripple.version>
+        <sesame.version>2.6.9</sesame.version>
+        <sesametools.version>1.7-SNAPSHOT</sesametools.version>
         <junit.version>4.5</junit.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
