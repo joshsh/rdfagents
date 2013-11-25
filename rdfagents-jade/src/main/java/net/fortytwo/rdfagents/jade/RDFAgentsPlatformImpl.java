@@ -43,15 +43,26 @@ public class RDFAgentsPlatformImpl extends RDFAgentsPlatform {
         // Launch a complete platform on the 8888 port
         // create a default Profile
         Profile p = new ProfileImpl(null, port, name);
-        p.setParameter(XMPP_MTP_SERVER, config.getProperty(XMPP_MTP_SERVER));
-        p.setParameter(XMPP_MTP_USERNAME, config.getProperty(XMPP_MTP_USERNAME));
-        p.setParameter(XMPP_MTP_PASSWORD, config.getProperty(XMPP_MTP_PASSWORD));
-        //   p.setParameter(MTPS, jade.mtp.xmpp.MessageTransportProtocol.class.getName());
-
         List mtps = new LinkedList();
-        Specifier xmpp = new Specifier();
-        xmpp.setClassName(jade.mtp.xmpp.MessageTransportProtocol.class.getName());
-        mtps.add(xmpp);
+
+        /*
+        // start an HTTP MTP by default
+        Specifier http = new Specifier();
+        http.setClassName(jade.mtp.http.MessageTransportProtocol.class.getName());
+        mtps.add(http);
+        */
+
+        // start an XMPP MTP if the configuration is provided
+        if (null != config.get(XMPP_MTP_SERVER)) {
+            p.setParameter(XMPP_MTP_SERVER, config.getProperty(XMPP_MTP_SERVER));
+            p.setParameter(XMPP_MTP_USERNAME, config.getProperty(XMPP_MTP_USERNAME));
+            p.setParameter(XMPP_MTP_PASSWORD, config.getProperty(XMPP_MTP_PASSWORD));
+            //   p.setParameter(MTPS, jade.mtp.xmpp.MessageTransportProtocol.class.getName());
+            Specifier xmpp = new Specifier();
+            xmpp.setClassName(jade.mtp.xmpp.MessageTransportProtocol.class.getName());
+            mtps.add(xmpp);
+        }
+
         p.setSpecifiers(MTPS, mtps);
 
         System.out.println("Launching JADE container for RDFAgents: " + p);
