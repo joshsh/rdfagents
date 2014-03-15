@@ -9,6 +9,7 @@ public enum RDFContentLanguage {
     RDF_NTRIPLES("rdf-ntriples", RDFFormat.NTRIPLES),
     RDF_TURTLE("rdf-turtle", RDFFormat.TURTLE),
     RDF_N3("rdf-n3", RDFFormat.N3),
+    RDF_JSON("rdf-json", RDFFormat.RDFJSON),
     RDF_XML("rdf-xml", RDFFormat.RDFXML),
     RDF_NQUADS("rdf-nquads", RDFFormat.NQUADS),
     RDF_TRIG("rdf-trig", RDFFormat.TRIG),

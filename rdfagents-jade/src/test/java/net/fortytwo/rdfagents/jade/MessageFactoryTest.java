@@ -351,7 +351,7 @@ public class MessageFactoryTest extends RDFAgentsTestCase {
 
     private void matchAID(final AgentId expected,
                           final AID actual) {
-        assertEquals(expected.getName().toString(), actual.getName());
+        assertEquals(expected.getName(), actual.getName());
 
         Set<String> expectedAddresses = new HashSet<String>();
         for (URI u : expected.getTransportAddresses()) {

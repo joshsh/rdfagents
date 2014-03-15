@@ -41,6 +41,13 @@
             <groupId>com.tilab.jade</groupId>
             <artifactId>jade</artifactId>
             <version>jjs-1</version>
+            <exclusions>
+                <!-- conflict with Sesame -->
+                <exclusion>
+                    <groupId>commons-codec</groupId>
+                    <artifactId>commons-codec</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.tilab.jade</groupId>

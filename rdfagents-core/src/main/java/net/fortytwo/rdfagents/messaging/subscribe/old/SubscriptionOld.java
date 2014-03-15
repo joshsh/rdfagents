@@ -7,13 +7,13 @@ import java.util.Date;
 /**
  * A relationship indicating a certain subscriber's interest in receiving notifications matching a given topic from a given publisher,
  * as well as the publisher's commitment to providing those notifications.
- * <p/>
+ *
  * ...topic-based (as opposed to content-based) filtering
  * ...similar to PubSubHubbub and XMPP Publish-Subscribe (XEP-0060)...
- * <p/>
+ *
  * T: the class of topics
  * N: the class of notifications
- * <p/>
+ *
  * TODO: subscription (lease) renewal  -- see PubSubHubbub spec, section 6.1
  *
  * @param <N> a class of notifications

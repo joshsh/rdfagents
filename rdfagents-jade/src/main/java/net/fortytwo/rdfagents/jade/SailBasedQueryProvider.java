@@ -35,7 +35,9 @@ public class SailBasedQueryProvider extends QueryProvider<Value, Dataset> {
     public Dataset answer(final Value query) throws LocalFailure {
         System.out.println("### got a query: " + query);
         try {
-            return new RecursiveDescribeQuery(query, sail).evaluate();
+            Dataset result = new RecursiveDescribeQuery(query, sail).evaluate();
+            System.out.println("###### " + result.getStatements().size() + " statements in result");
+            return result;
         } catch (DatasetQuery.DatasetQueryException e) {
             throw new LocalFailure(e);
         }

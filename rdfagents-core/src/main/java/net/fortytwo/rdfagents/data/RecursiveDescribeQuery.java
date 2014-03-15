@@ -19,7 +19,7 @@ import java.util.Set;
  * (containing forward or backward links to) the resource, as well as those describing
  * the graphs, and so on recursively.
  * The purpose of the recursion is to capture the provenance trail of the base description of the the resource.
- * <p/>
+ *
  * This implementation prevents duplicate statements
  * (i.e. two or more statements with the same subject, predicate, and object in the same graph)
  *
@@ -44,6 +44,8 @@ public class RecursiveDescribeQuery implements DatasetQuery {
         try {
             SailConnection sc = sail.getConnection();
             try {
+                sc.begin();
+
                 Collection<Statement> c0 = new LinkedList<Statement>();
                 Set<Value> alreadyDescribed = new HashSet<Value>();
 
@@ -51,6 +53,7 @@ public class RecursiveDescribeQuery implements DatasetQuery {
 
                 return deduplicateStatements(new Dataset(c0));
             } finally {
+                sc.rollback();
                 sc.close();
             }
         } catch (SailException e) {

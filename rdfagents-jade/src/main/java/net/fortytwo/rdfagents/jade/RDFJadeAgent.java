@@ -203,13 +203,14 @@ public class RDFJadeAgent extends Agent {
         // object-to-agent communication is enabled
         Object[] args = getArguments();
         if (args.length == 2) {
-            RDFAgentsPlatformImpl.CondVar latch = (RDFAgentsPlatformImpl.CondVar) args[0];
-            latch.signal();
-
             Wrapper w = (Wrapper) args[1];
             w.setJadeAgent(this);
             messageFactory = w.messageFactory;
             self = w.self;
+
+            // issue signal after setting self in wrapper (above)
+            RDFAgentsPlatformImpl.CondVar latch = (RDFAgentsPlatformImpl.CondVar) args[0];
+            latch.signal();
         } else {
             throw new IllegalStateException();
         }
@@ -252,7 +253,7 @@ public class RDFJadeAgent extends Agent {
             }
         });
 
-        StringBuilder sb = new StringBuilder("initialized agent <").append(self.getName()).append("> with address(es) ");
+        StringBuilder sb = new StringBuilder("initialized agent <").append(self.getUri()).append("> with address(es) ");
         boolean first = true;
         for (URI s : self.getTransportAddresses()) {
             if (first) {

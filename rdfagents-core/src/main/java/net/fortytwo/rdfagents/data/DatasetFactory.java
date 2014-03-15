@@ -5,8 +5,6 @@ import net.fortytwo.rdfagents.messaging.LocalFailure;
 import net.fortytwo.rdfagents.model.AgentId;
 import net.fortytwo.rdfagents.model.Dataset;
 import net.fortytwo.rdfagents.model.RDFContentLanguage;
-import net.fortytwo.sesametools.nquads.NQuadsParser;
-import net.fortytwo.sesametools.nquads.NQuadsWriter;
 import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
@@ -118,13 +116,13 @@ public class DatasetFactory {
         }
 
         // Metadata about the sender and informative act is added to the receiver's default graph.
-        receiverStatements.add(valueFactory.createStatement(sender.getName(), RDF.TYPE, FOAF_AGENT));
+        receiverStatements.add(valueFactory.createStatement(sender.getUri(), RDF.TYPE, FOAF_AGENT));
         for (URI address : sender.getTransportAddresses()) {
-            receiverStatements.add(valueFactory.createStatement(sender.getName(), FOAF_MBOX, address));
+            receiverStatements.add(valueFactory.createStatement(sender.getUri(), FOAF_MBOX, address));
         }
         receiverStatements.add(valueFactory.createStatement(formerDefaultGraph, RDF.TYPE, RDFG_GRAPH));
         receiverStatements.add(valueFactory.createStatement(formerDefaultGraph, SWP_ASSERTEDBY, formerDefaultGraph));
-        receiverStatements.add(valueFactory.createStatement(formerDefaultGraph, SWP_AUTHORITY, sender.getName()));
+        receiverStatements.add(valueFactory.createStatement(formerDefaultGraph, SWP_AUTHORITY, sender.getUri()));
 
         return renameGraphs(new Dataset(receiverStatements));
     }
@@ -133,11 +131,14 @@ public class DatasetFactory {
                           final Sail sail) throws SailException {
         SailConnection sc = sail.getConnection();
         try {
+            sc.begin();
+
             for (Statement s : dataset.getStatements()) {
                 sc.addStatement(s.getSubject(), s.getPredicate(), s.getObject(), s.getContext());
             }
             sc.commit();
         } finally {
+            sc.rollback();
             sc.close();
         }
     }
@@ -192,11 +193,12 @@ public class DatasetFactory {
             case RDF_N3:
                 p = Rio.createParser(language.getFormat());
                 break;
+
             case RDF_XML:
                 p = Rio.createParser(language.getFormat());
                 break;
             case RDF_NQUADS:
-                p = new NQuadsParser();
+                p = Rio.createParser(language.getFormat());
                 break;
             case RDF_TRIG:
                 p = Rio.createParser(language.getFormat());
@@ -246,11 +248,14 @@ public class DatasetFactory {
             case RDF_N3:
                 w = Rio.createWriter(language.getFormat(), out);
                 break;
+            case RDF_JSON:
+                w = Rio.createWriter(language.getFormat(), out);
+                break;
             case RDF_XML:
                 w = Rio.createWriter(language.getFormat(), out);
                 break;
             case RDF_NQUADS:
-                w = new NQuadsWriter(out);
+                w = Rio.createWriter(language.getFormat(), out);
                 break;
             case RDF_TRIG:
                 w = Rio.createWriter(language.getFormat(), out);

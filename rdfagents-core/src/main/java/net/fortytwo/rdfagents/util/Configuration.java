@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
  * For example, "org.example.myProperty" is the name of a global property, as it begins with the top-level DNS name "org".
  * Agent profiles, on the other hand, use property names which begin with an agent nickname (any alphanumeric sequence which is not a TLD).
  * For example "agent1.identity.xmpp.name" and "agent1.identity.xmpp.password" describe the XMPP credentials of the agent identified by "agent1".
- * <p/>
+ *
  * Note: internationalized country code TLDs are currently not included, but are not recommended as agent IDs.
  *
  * @author Joshua Shinavier (http://fortytwo.net)

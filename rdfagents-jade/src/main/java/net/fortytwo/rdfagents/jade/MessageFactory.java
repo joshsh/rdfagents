@@ -606,6 +606,7 @@ public class MessageFactory {
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         try {
+            // note: if the Dataset is empty, Jade will omit the content key/value pair from the message entirely
             datasetFactory.write(out, safe, language);
             //message.setByteSequenceContent(out.toByteArray());
             message.setContent(out.toString());
@@ -754,7 +755,7 @@ public class MessageFactory {
 
     public AID toAID(final AgentId ref) {
         AID a = new AID();
-        a.setName(ref.getName().toString());
+        a.setName(ref.getName());
         for (URI u : ref.getTransportAddresses()) {
             a.addAddresses(u.toString());
         }

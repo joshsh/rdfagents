@@ -30,12 +30,14 @@ public class RDFAgentImpl extends RDFAgent {
                     + ", found " + platform.getClass().getName());
         }
 
-        if (!id.getName().toString().endsWith("@" + platform.getName())) {
-            throw new IllegalArgumentException("agent name " + id.getName() + " must end with '@" + platform.getName() + "'");
-        }
+        // TODO: restore this check...
+        //if (!id.getName().toString().endsWith("@" + platform.getName())) {
+        //    throw new IllegalArgumentException("agent name " + id.getName() + " must end with '@" + platform.getName() + "'");
+        //}
 
-        String n = id.getName().toString();
-        String localName = n.substring(0, n.length() - 1 - platform.getName().length());
+        String n = id.getName();
+        int at = n.lastIndexOf("@");
+        String localName = at >= 0 ? n.substring(0, at) : n;
 
         MessageFactory messageFactory = new MessageFactory(platform.getDatasetFactory());
         RDFJadeAgent.Wrapper w = new RDFJadeAgent.Wrapper(getIdentity(), messageFactory);
@@ -55,6 +57,10 @@ public class RDFAgentImpl extends RDFAgent {
             throw new RDFAgent.RDFAgentException(e);
         } catch (InterruptedException e) {
             throw new RDFAgent.RDFAgentException(e);
+        }
+
+        if (null == w.getJadeAgent()) {
+            throw new IllegalStateException("RDFJadeAgent not set");
         }
 
         setJadeAgent(w.getJadeAgent());

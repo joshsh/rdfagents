@@ -19,7 +19,8 @@ import java.util.Properties;
 public class RDFAgentsPlatformImpl extends RDFAgentsPlatform {
     private static final String MTPS = "mtps";
 
-    private static final String
+    public static final String
+            HTTP_MTP_OUTPORT = "jade_http_mtp_outPort",
             XMPP_MTP_SERVER = "jade_mtp_xmpp_server",
             XMPP_MTP_USERNAME = "jade_mtp_xmpp_username",
             XMPP_MTP_PASSWORD = "jade_mtp_xmpp_passwd";
@@ -45,12 +46,14 @@ public class RDFAgentsPlatformImpl extends RDFAgentsPlatform {
         Profile p = new ProfileImpl(null, port, name);
         List mtps = new LinkedList();
 
-        /*
         // start an HTTP MTP by default
         Specifier http = new Specifier();
+        String httpPort = config.getProperty(HTTP_MTP_OUTPORT);
+        if (null != httpPort) {
+            p.setParameter(HTTP_MTP_OUTPORT, httpPort);
+        }
         http.setClassName(jade.mtp.http.MessageTransportProtocol.class.getName());
         mtps.add(http);
-        */
 
         // start an XMPP MTP if the configuration is provided
         if (null != config.get(XMPP_MTP_SERVER)) {
