@@ -11,7 +11,7 @@
 
     <groupId>net.fortytwo.rdfagents</groupId>
     <artifactId>rdfagents-all</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.1</version>
     <packaging>pom</packaging>
     <name>RDFAgents</name>
     <description>Real-time messaging for the Semantic Web</description>
@@ -46,7 +46,7 @@
 
     <properties>
         <junit.version>4.5</junit.version>
-        <rdfagents.version>1.1-SNAPSHOT</rdfagents.version>
+        <rdfagents.version>1.1</rdfagents.version>
         <ripple.version>1.1</ripple.version>
         <sesame.version>2.7.10</sesame.version>
         <sesametools.version>1.8</sesametools.version>

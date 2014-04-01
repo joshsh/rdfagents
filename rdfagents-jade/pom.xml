@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.fortytwo.rdfagents</groupId>
     <artifactId>rdfagents-jade</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.1</version>
     <packaging>jar</packaging>
     <name>RDFAgents JADE</name>
     <description>JADE (Java Agent Development Framework) implementation of RDFAgents</description>
@@ -14,7 +14,7 @@
     <parent>
         <groupId>net.fortytwo.rdfagents</groupId>
         <artifactId>rdfagents-all</artifactId>
-        <version>1.1-SNAPSHOT</version>
+        <version>1.1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
