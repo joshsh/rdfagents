@@ -28,7 +28,8 @@ public class MessageFactoryTest extends RDFAgentsTestCase {
 
         query = messageFactory.poseQuery(sender, receiver, resourceX);
         assertIsQuery(query);
-        assertEquals("((any ?dataset (describes ?dataset (resource :uri http://example.org/resourceX))))", query.getContent());
+        assertEquals("((any ?dataset (describes ?dataset (resource :uri http://example.org/resourceX))))",
+                query.getContent());
         subject = messageFactory.extractDescribeQuery(query);
         assertTrue(subject instanceof URI);
         assertEquals("http://example.org/resourceX", subject.stringValue());
@@ -36,7 +37,8 @@ public class MessageFactoryTest extends RDFAgentsTestCase {
 
         query = messageFactory.poseQuery(sender, receiver, plainLiteralX);
         assertIsQuery(query);
-        assertEquals("((any ?dataset (describes ?dataset (literal :label \"Don't panic.\"))))", query.getContent());
+        assertEquals("((any ?dataset (describes ?dataset (literal :label \"Don't panic.\"))))",
+                query.getContent());
         subject = messageFactory.extractDescribeQuery(query);
         assertTrue(subject instanceof Literal);
         assertEquals("Don't panic.", ((Literal) subject).getLabel());
@@ -46,7 +48,8 @@ public class MessageFactoryTest extends RDFAgentsTestCase {
 
         query = messageFactory.poseQuery(sender, receiver, typedLiteralX);
         assertIsQuery(query);
-        assertEquals("((any ?dataset (describes ?dataset (literal :label \"Don't panic.\" :datatype (resource :uri http://www.w3.org/2001/XMLSchema#string)))))", query.getContent());
+        assertEquals("((any ?dataset (describes ?dataset (literal :label \"Don't panic.\" :datatype " +
+                "(resource :uri http://www.w3.org/2001/XMLSchema#string)))))", query.getContent());
         subject = messageFactory.extractDescribeQuery(query);
         assertTrue(subject instanceof Literal);
         assertEquals("Don't panic.", ((Literal) subject).getLabel());
@@ -56,7 +59,8 @@ public class MessageFactoryTest extends RDFAgentsTestCase {
 
         query = messageFactory.poseQuery(sender, receiver, languageLiteralX);
         assertIsQuery(query);
-        assertEquals("((any ?dataset (describes ?dataset (literal :label \"Don't panic.\" :language en))))", query.getContent());
+        assertEquals("((any ?dataset (describes ?dataset (literal :label \"Don't panic.\" :language en))))",
+                query.getContent());
         subject = messageFactory.extractDescribeQuery(query);
         assertTrue(subject instanceof Literal);
         assertEquals("Don't panic.", ((Literal) subject).getLabel());
@@ -67,7 +71,8 @@ public class MessageFactoryTest extends RDFAgentsTestCase {
         query = messageFactory.poseQuery(sender, receiver, resourceX, RDFContentLanguage.RDF_NQUADS);
         assertEquals("rdf-nquads", query.getUserDefinedParameter(RDFAgents.RDFAGENTS_ACCEPT_PARAMETER));
 
-        query = messageFactory.poseQuery(sender, receiver, resourceX, RDFContentLanguage.RDF_NQUADS, RDFContentLanguage.RDF_TRIG);
+        query = messageFactory.poseQuery(
+                sender, receiver, resourceX, RDFContentLanguage.RDF_NQUADS, RDFContentLanguage.RDF_TRIG);
         assertEquals("rdf-nquads; rdf-trig", query.getUserDefinedParameter(RDFAgents.RDFAGENTS_ACCEPT_PARAMETER));
     }
 
@@ -100,7 +105,8 @@ public class MessageFactoryTest extends RDFAgentsTestCase {
         DatasetQuery q = new RecursiveDescribeQuery(ARTHUR, sail);
 
         query = messageFactory.poseQuery(sender, receiver, ARTHUR);
-        result = messageFactory.informOfQueryResult(receiver, sender, query, q.evaluate(), RDFContentLanguage.RDF_TRIG);
+        result = messageFactory.informOfQueryResult(
+                receiver, sender, query, q.evaluate(), RDFContentLanguage.RDF_TRIG);
         //System.out.println(result);
         assertIsReply(result, query);
         assertEquals(ACLMessage.INFORM_REF, result.getPerformative());
@@ -110,7 +116,8 @@ public class MessageFactoryTest extends RDFAgentsTestCase {
         assertEquals("rdf-trig", result.getLanguage());
 
         query = messageFactory.poseQuery(sender, receiver, ARTHUR, RDFContentLanguage.RDF_NQUADS);
-        result = messageFactory.informOfQueryResult(receiver, sender, query, q.evaluate(), RDFContentLanguage.RDF_TRIG);
+        result = messageFactory.informOfQueryResult(
+                receiver, sender, query, q.evaluate(), RDFContentLanguage.RDF_TRIG);
         //System.out.println(result);
         assertIsReply(result, query);
         assertEquals(ACLMessage.INFORM_REF, result.getPerformative());
@@ -122,7 +129,8 @@ public class MessageFactoryTest extends RDFAgentsTestCase {
 
     public void testFailToInformOfQueryResult() throws Exception {
         ACLMessage query = messageFactory.poseQuery(sender, receiver, ARTHUR, RDFContentLanguage.RDF_NQUADS);
-        ErrorExplanation ex = new ErrorExplanation(ErrorExplanation.Type.NotImplemented, "N-Quads format is not supported.");
+        ErrorExplanation ex = new ErrorExplanation(
+                ErrorExplanation.Type.NotImplemented, "N-Quads format is not supported.");
         ACLMessage fail = messageFactory.failToInformOfQueryResult(receiver, sender, query, ex);
 
         assertIsReply(fail, query);
@@ -172,7 +180,8 @@ public class MessageFactoryTest extends RDFAgentsTestCase {
 
         request = messageFactory.requestSubscription(sender, receiver, resourceX);
         assertIsSubscriptionRequest(request);
-        assertEquals("((any ?dataset (describes ?dataset (resource :uri http://example.org/resourceX))))", request.getContent());
+        assertEquals("((any ?dataset (describes ?dataset" +
+                " (resource :uri http://example.org/resourceX))))", request.getContent());
         Value subject = messageFactory.extractDescribeQuery(request);
         assertTrue(subject instanceof URI);
         assertEquals("http://example.org/resourceX", subject.stringValue());
@@ -184,14 +193,16 @@ public class MessageFactoryTest extends RDFAgentsTestCase {
         request = messageFactory.requestSubscription(sender, receiver, resourceX, RDFContentLanguage.RDF_NQUADS);
         assertEquals("rdf-nquads", request.getUserDefinedParameter(RDFAgents.RDFAGENTS_ACCEPT_PARAMETER));
 
-        request = messageFactory.requestSubscription(sender, receiver, resourceX, RDFContentLanguage.RDF_NQUADS, RDFContentLanguage.RDF_TRIG);
+        request = messageFactory.requestSubscription(
+                sender, receiver, resourceX, RDFContentLanguage.RDF_NQUADS, RDFContentLanguage.RDF_TRIG);
         assertEquals("rdf-nquads; rdf-trig", request.getUserDefinedParameter(RDFAgents.RDFAGENTS_ACCEPT_PARAMETER));
         //System.out.println(request);
     }
 
     public void testRefuseSubscriptionRequest() throws Exception {
         ACLMessage request = messageFactory.requestSubscription(sender, receiver, resourceX);
-        ErrorExplanation ex = new ErrorExplanation(ErrorExplanation.Type.NotImplemented, "Subscriptions are not supported.");
+        ErrorExplanation ex = new ErrorExplanation(
+                ErrorExplanation.Type.NotImplemented, "Subscriptions are not supported.");
         ACLMessage r = messageFactory.refuseSubscriptionRequest(receiver, sender, request, ex);
         System.out.println(r);
 
@@ -218,7 +229,8 @@ public class MessageFactoryTest extends RDFAgentsTestCase {
         DatasetQuery q = new RecursiveDescribeQuery(ARTHUR, sail);
 
         request = messageFactory.requestSubscription(sender, receiver, ARTHUR);
-        result = messageFactory.informOfSubscriptionUpdate(receiver, sender, request, q.evaluate(), RDFContentLanguage.RDF_TRIG);
+        result = messageFactory.informOfSubscriptionUpdate(
+                receiver, sender, request, q.evaluate(), RDFContentLanguage.RDF_TRIG);
         //System.out.println(result);
         assertIsReply(result, request);
         assertEquals(ACLMessage.INFORM_REF, result.getPerformative());
@@ -228,7 +240,8 @@ public class MessageFactoryTest extends RDFAgentsTestCase {
         assertEquals("rdf-trig", result.getLanguage());
 
         request = messageFactory.requestSubscription(sender, receiver, ARTHUR, RDFContentLanguage.RDF_NQUADS);
-        result = messageFactory.informOfSubscriptionUpdate(receiver, sender, request, q.evaluate(), RDFContentLanguage.RDF_TRIG);
+        result = messageFactory.informOfSubscriptionUpdate(
+                receiver, sender, request, q.evaluate(), RDFContentLanguage.RDF_TRIG);
         //System.out.println(result);
         assertIsReply(result, request);
         assertEquals(ACLMessage.INFORM_REF, result.getPerformative());
@@ -240,7 +253,8 @@ public class MessageFactoryTest extends RDFAgentsTestCase {
 
     public void testFailToInformOfSubscriptionUpdate() throws Exception {
         ACLMessage request = messageFactory.requestSubscription(sender, receiver, resourceX);
-        ErrorExplanation ex = new ErrorExplanation(ErrorExplanation.Type.NotImplemented, "N-Quads format is not supported.");
+        ErrorExplanation ex = new ErrorExplanation(
+                ErrorExplanation.Type.NotImplemented, "N-Quads format is not supported.");
         ACLMessage fail = messageFactory.failToInformOfSubscriptionUpdate(receiver, sender, request, ex);
 
         assertIsReply(fail, request);

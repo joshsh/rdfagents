@@ -46,14 +46,13 @@ public class CSparqlDemo {
         RDFAgent consumer = new RDFAgentImpl(platform, consumerID);
 
 //        PubsubConsumer<Value, Dataset> client = new PubsubConsumerImpl(csparqlAgent);
-        CSparqlPubsubProvider cSparqlPubsubProvider = new CSparqlPubsubProvider(csparqlAgent, new URIImpl("http://twitlogic.fortytwo.net/hashtag/twitter"));
+        CSparqlPubsubProvider cSparqlPubsubProvider = new CSparqlPubsubProvider(
+                csparqlAgent, new URIImpl("http://twitlogic.fortytwo.net/hashtag/twitter"));
         csparqlAgent.setPubsubProvider(cSparqlPubsubProvider);
-        
-        
+
         PubsubConsumer<Value, Dataset> endUserPubsubConsumer = new PubsubConsumerImpl(consumer);
         PubsubConsumer<Value, Dataset> cSparqlPubsubConsumer = new PubsubConsumerImpl(csparqlAgent);
-        
-       
+
         ConsumerCallback<Dataset> callback = new EchoCallback(platform.getDatasetFactory());
         /*
         Object mutex = "";
@@ -69,50 +68,51 @@ public class CSparqlDemo {
 
         // TwitLogic subscription
 //        pubsubConsumer.submit(new URIImpl("http://twitlogic.fortytwo.net/hashtag/twitter"), twitlogic, callback);
-         
+
         //TwitLogic with C-SPARQL
         RdfStream st = new CSPARQLConsumer("http://myexample.org/stream");
-        
+
         CsparqlEngine engine = new CsparqlEngineImpl();
-		engine.initialize();
-		engine.registerStream(st);
-        
-		
-		cSparqlPubsubConsumer.submit(new URIImpl("http://twitlogic.fortytwo.net/hashtag/twitter"), twitlogic, (ConsumerCallback<Dataset>) st);
-//		cSparqlPubsubConsumer.submit(new URIImpl("http://twitlogic.fortytwo.net/hashtag/twitter"), twitlogic, callback);
+        engine.initialize();
+        engine.registerStream(st);
 
-		endUserPubsubConsumer.submit(new URIImpl("http://twitlogic.fortytwo.net/hashtag/twitter"), csparqlagentID, callback);        
-        
+        cSparqlPubsubConsumer.submit(
+                new URIImpl("http://twitlogic.fortytwo.net/hashtag/twitter"),
+                twitlogic,
+                (ConsumerCallback<Dataset>) st);
+// cSparqlPubsubConsumer.submit(new URIImpl("http://twitlogic.fortytwo.net/hashtag/twitter"), twitlogic, callback);
 
+        endUserPubsubConsumer.submit(
+                new URIImpl("http://twitlogic.fortytwo.net/hashtag/twitter"),
+                csparqlagentID,
+                callback);
 
-		// Register an RDF Stream
+        // Register an RDF Stream
 
+        CsparqlQueryResultProxy c1 = null;
 
-		
-		CsparqlQueryResultProxy c1 = null;
-		
-		String query = "REGISTER QUERY HelloWorld AS " +
-		"SELECT ?s ?p ?o " +
-		"FROM STREAM <http://myexample.org/stream> [RANGE TRIPLES 10] " +
-		"WHERE { ?s ?p ?o }";
+        String query = "REGISTER QUERY HelloWorld AS " +
+                "SELECT ?s ?p ?o " +
+                "FROM STREAM <http://myexample.org/stream> [RANGE TRIPLES 10] " +
+                "WHERE { ?s ?p ?o }";
 
-		try {
-			c1 = engine.registerQuery(query);
-		} catch (final ParseException ex) {
-			System.out.println("errore di parsing: " + ex.getMessage());
-		}
-		
-		// Attach a Result Formatter to the query result proxy 
-		
-		if (c1 != null) {
-			c1.addObserver(cSparqlPubsubProvider);
-		}
-		
-//		engine.unregisterQuery(c1.getId()); 
-//	    engine.unregisterStream(st.getIRI()); 
-//	    //here nicely stop also RDF
-//	    System.exit(0);
-        
+        try {
+            c1 = engine.registerQuery(query);
+        } catch (final ParseException ex) {
+            System.out.println("errore di parsing: " + ex.getMessage());
+        }
+
+        // Attach a Result Formatter to the query result proxy
+
+        if (c1 != null) {
+            c1.addObserver(cSparqlPubsubProvider);
+        }
+
+// engine.unregisterQuery(c1.getId());
+// engine.unregisterStream(st.getIRI());
+// //here nicely stop also RDF
+// System.exit(0);
+
     }
 
     public static void main(final String args[]) {

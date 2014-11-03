@@ -32,7 +32,7 @@ public class RDFAgentsOntology extends Ontology {
             DESCRIBES = "describes",
             DESCRIBES_DATASET = "dataset",   // implicit (unnamed parameter)
             DESCRIBES_SUBJECT = "subject",   // implicit (unnamed parameter)
-            EXPLANATION = "explanation",     // implicit (abstract class) -- specific errors are in the ErrorExplanation enum
+            EXPLANATION = "explanation",     // implicit (abstract class) -- specific errors are in ErrorExplanation
             EXPLANATION_MESSAGE = "message",
             LITERAL = "literal",
             LITERAL_DATATYPE = "datatype",

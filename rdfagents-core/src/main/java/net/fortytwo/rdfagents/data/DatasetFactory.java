@@ -86,7 +86,8 @@ public class DatasetFactory {
     /**
      * Transforms the sender's dataset of an assertional message to a corresponding receiver's dataset.
      * See: http://fortytwo.net/2011/rdfagents/spec#asserting-graphs
-     * So as to avoid collision of graph names, each graph in the sender's dataset is given a new name in the receiver's dataset.
+     * So as to avoid collision of graph names,
+     * each graph in the sender's dataset is given a new name in the receiver's dataset.
      *
      * @param dataset the sender's dataset to transform
      * @param sender  the agent sending the message
@@ -99,7 +100,7 @@ public class DatasetFactory {
         try {
             write(System.out, dataset, RDFContentLanguage.RDF_TRIG);
         } catch (LocalFailure localFailure) {
-            localFailure.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            localFailure.printStackTrace();
         }
         //*/
 
@@ -109,7 +110,8 @@ public class DatasetFactory {
         for (Statement s : dataset.getStatements()) {
             // The default graph is renamed
             if (null == s.getContext()) {
-                receiverStatements.add(valueFactory.createStatement(s.getSubject(), s.getPredicate(), s.getObject(), formerDefaultGraph));
+                receiverStatements.add(valueFactory.createStatement(
+                        s.getSubject(), s.getPredicate(), s.getObject(), formerDefaultGraph));
             } else {
                 receiverStatements.add(s);
             }
@@ -146,8 +148,8 @@ public class DatasetFactory {
     /**
      * @param original an RDF Dataset to transform
      * @return a new RDF Dataset in which all named graphs in the original dataset have been renamed.
-     *         This involves changing the names of the graphs in the dataset,
-     *         as well as modifying all statements in the dataset which reference those graphs.
+     * This involves changing the names of the graphs in the dataset,
+     * as well as modifying all statements in the dataset which reference those graphs.
      */
     public Dataset renameGraphs(final Dataset original) {
         Set<Resource> graphs = new HashSet<Resource>();

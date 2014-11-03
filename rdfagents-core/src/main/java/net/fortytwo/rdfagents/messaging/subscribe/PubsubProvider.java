@@ -14,7 +14,8 @@ import java.util.logging.Logger;
 
 /**
  * The agent role of producing streams of updates based on topic-based subscriptions from other agents.
- * Subscriptions in RDFAgents follow FIPA's <a href="http://www.fipa.org/specs/fipa00035/SC00035H.html">Subscribe Interaction Protocol</a>.
+ * Subscriptions in RDFAgents follow FIPA's
+ * <a href="http://www.fipa.org/specs/fipa00035/SC00035H.html">Subscribe Interaction Protocol</a>.
  * For more details, see <a href="http://fortytwo.net/2011/rdfagents/spec#pubsub">the specification</a>.
  *
  * @param <T> a class of topics
@@ -23,7 +24,7 @@ import java.util.logging.Logger;
  * @author Joshua Shinavier (http://fortytwo.net)
  */
 public abstract class PubsubProvider<T, U> extends Role {
-    private static final Logger LOGGER = Logger.getLogger(PubsubProvider.class.getName());
+    private static final Logger logger = Logger.getLogger(PubsubProvider.class.getName());
 
     private class Subscription {
         public final AgentId subscriber;
@@ -110,7 +111,7 @@ public abstract class PubsubProvider<T, U> extends Role {
             Subscription s = subscriptionsById.get(conversationId);
 
             if (null == s) {
-                LOGGER.warning("attempted to cancel a Subscribe interaction which does not exist: " + conversationId);
+                logger.warning("attempted to cancel a Subscribe interaction which does not exist: " + conversationId);
             } else {
                 subscriptionsById.remove(conversationId);
                 Set<String> ids = idsByTopic.get(s.topic);

@@ -17,10 +17,13 @@ import java.util.regex.Pattern;
 /**
  * A key-value configuration which stores agent profiles and global configuration properties.
  * Global configuration properties are distinguished by their use of top-level domains.
- * For example, "org.example.myProperty" is the name of a global property, as it begins with the top-level DNS name "org".
- * Agent profiles, on the other hand, use property names which begin with an agent nickname (any alphanumeric sequence which is not a TLD).
- * For example "agent1.identity.xmpp.name" and "agent1.identity.xmpp.password" describe the XMPP credentials of the agent identified by "agent1".
- *
+ * For example, "org.example.myProperty" is the name of a global property,
+ * as it begins with the top-level DNS name "org".
+ * Agent profiles, on the other hand, use property names which begin with an agent nickname
+ * (any alphanumeric sequence which is not a TLD).
+ * For example "agent1.identity.xmpp.name" and "agent1.identity.xmpp.password" describe
+ * the XMPP credentials of the agent identified by "agent1".
+ * <p/>
  * Note: internationalized country code TLDs are currently not included, but are not recommended as agent IDs.
  *
  * @author Joshua Shinavier (http://fortytwo.net)
@@ -30,8 +33,25 @@ public class Configuration {
     //     http://en.wikipedia.org/wiki/List_of_Internet_top-level_domains
     // Copy the individual tables to a file named "tld", then:
     //     cat tld | sed 's/[.]//' | sed 's/[^a-zA-Z0-9].*//' | sed 's/^/"/' | sed 's/$/"/' | tr '\n' ','
-    public static final String[] GENERIC_TOP_LEVEL_DOMAINS = {"aero", "asia", "biz", "cat", "com", "coop", "edu", "gov", "info", "int", "jobs", "mil", "mobi", "museum", "name", "net", "org", "pro", "tel", "travel", "xxx"};
-    public static final String[] COUNTRYCODE_TOP_LEVEL_DOMAINS = {"ac", "ad", "ae", "af", "ag", "ai", "al", "am", "an", "ao", "aq", "ar", "as", "at", "au", "aw", "ax", "az", "ba", "bb", "bd", "be", "bf", "bg", "bh", "bi", "bj", "bm", "bn", "bo", "br", "bs", "bt", "bv", "bw", "by", "bz", "ca", "cc", "cd", "cf", "cg", "ch", "ci", "ck", "cl", "cm", "cn", "co", "cr", "cs", "cu", "cv", "cx", "cy", "cz", "de", "dj", "dk", "dm", "do", "dz", "ec", "ee", "eg", "er", "es", "et", "eu", "fi", "fj", "fk", "fm", "fo", "fr", "ga", "gb", "gd", "ge", "gf", "gg", "gh", "gi", "gl", "gm", "gn", "gp", "gq", "gr", "gs", "gt", "gu", "gw", "gy", "hk", "hm", "hn", "hr", "ht", "hu", "id", "ie", "", "il", "im", "in", "io", "iq", "ir", "is", "it", "je", "jm", "jo", "jp", "ke", "kg", "kh", "ki", "km", "kn", "kp", "kr", "kw", "ky", "kz", "la", "lb", "lc", "li", "lk", "lr", "ls", "lt", "lu", "lv", "ly", "ma", "mc", "md", "me", "mg", "mh", "mk", "ml", "mm", "mn", "mo", "mp", "mq", "mr", "ms", "mt", "mu", "mv", "mw", "mx", "my", "mz", "na", "nc", "ne", "nf", "ng", "ni", "nl", "no", "np", "nr", "nu", "nz", "om", "pa", "pe", "pf", "pg", "ph", "pk", "pl", "pm", "pn", "pr", "ps", "pt", "pw", "py", "qa", "re", "ro", "rs", "ru", "rw", "sa", "sb", "sc", "sd", "se", "sg", "sh", "si", "sj", "sk", "sl", "sm", "sn", "so", "sr", "st", "su", "sv", "sy", "sz", "tc", "td", "tf", "tg", "th", "tj", "tk", "tl", "tm", "tn", "to", "tp", "tr", "tt", "tv", "tw", "tz", "ua", "ug", "uk", "us", "uy", "uz", "va", "vc", "ve", "vg", "vi", "vn", "vu", "wf", "ws", "ye", "yt", "za", "zm", "zw"};
+    public static final String[] GENERIC_TOP_LEVEL_DOMAINS = {
+            "aero", "asia", "biz", "cat", "com", "coop", "edu", "gov", "info", "int", "jobs", "mil",
+            "mobi", "museum", "name", "net", "org", "pro", "tel", "travel", "xxx"};
+    public static final String[] COUNTRYCODE_TOP_LEVEL_DOMAINS = {
+            "ac", "ad", "ae", "af", "ag", "ai", "al", "am", "an", "ao", "aq", "ar", "as", "at", "au", "aw", "ax",
+            "az", "ba", "bb", "bd", "be", "bf", "bg", "bh", "bi", "bj", "bm", "bn", "bo", "br", "bs", "bt", "bv",
+            "bw", "by", "bz", "ca", "cc", "cd", "cf", "cg", "ch", "ci", "ck", "cl", "cm", "cn", "co", "cr", "cs",
+            "cu", "cv", "cx", "cy", "cz", "de", "dj", "dk", "dm", "do", "dz", "ec", "ee", "eg", "er", "es", "et",
+            "eu", "fi", "fj", "fk", "fm", "fo", "fr", "ga", "gb", "gd", "ge", "gf", "gg", "gh", "gi", "gl", "gm",
+            "gn", "gp", "gq", "gr", "gs", "gt", "gu", "gw", "gy", "hk", "hm", "hn", "hr", "ht", "hu", "id", "ie",
+            "il", "im", "in", "io", "iq", "ir", "is", "it", "je", "jm", "jo", "jp", "ke", "kg", "kh", "ki", "km",
+            "kn", "kp", "kr", "kw", "ky", "kz", "la", "lb", "lc", "li", "lk", "lr", "ls", "lt", "lu", "lv", "ly",
+            "ma", "mc", "md", "me", "mg", "mh", "mk", "ml", "mm", "mn", "mo", "mp", "mq", "mr", "ms", "mt", "mu",
+            "mv", "mw", "mx", "my", "mz", "na", "nc", "ne", "nf", "ng", "ni", "nl", "no", "np", "nr", "nu", "nz",
+            "om", "pa", "pe", "pf", "pg", "ph", "pk", "pl", "pm", "pn", "pr", "ps", "pt", "pw", "py", "qa", "re",
+            "ro", "rs", "ru", "rw", "sa", "sb", "sc", "sd", "se", "sg", "sh", "si", "sj", "sk", "sl", "sm", "sn",
+            "so", "sr", "st", "su", "sv", "sy", "sz", "tc", "td", "tf", "tg", "th", "tj", "tk", "tl", "tm", "tn",
+            "to", "tp", "tr", "tt", "tv", "tw", "tz", "ua", "ug", "uk", "us", "uy", "uz", "va", "vc", "ve", "vg",
+            "vi", "vn", "vu", "wf", "ws", "ye", "yt", "za", "zm", "zw"};
 
     private static final Pattern AGENT_NICKNAMES = Pattern.compile("[a-zA-Z0-9]+");
 
@@ -65,7 +85,8 @@ public class Configuration {
             if (i > 0) {
                 String prefix = key.substring(0, i);
 
-                // Names beginning with a TLD plus a period, or not beginning with an agent ID plus a period, are global.
+                // Names beginning with a TLD plus a period,
+                // or not beginning with an agent ID plus a period, are global.
                 if (!TOP_LEVEL_DOMAINS.contains(prefix)
                         && AGENT_NICKNAMES.matcher(prefix).matches()) {
                     AgentProfile p = agentProfiles.get(prefix);
@@ -89,7 +110,8 @@ public class Configuration {
     }
 
     /**
-     * @param properties a file containing a set of properties from which to extract agent profiles and global properties
+     * @param properties a file containing a set of properties from which to extract
+     *                   agent profiles and global properties
      * @throws java.io.IOException if properties cannot be loaded from the given file
      */
     public Configuration(final File properties) throws IOException {
@@ -97,7 +119,8 @@ public class Configuration {
     }
 
     /**
-     * @param properties an input stream containing a set of properties from which to extract agent profiles and global properties
+     * @param properties an input stream containing a set of properties from which to extract
+     *                   agent profiles and global properties
      * @throws java.io.IOException if properties cannot be loaded from the given input stream
      */
     public Configuration(final InputStream properties) throws IOException {
@@ -159,7 +182,7 @@ public class Configuration {
 
         /**
          * @return the unique nickname of the agent.
-         *         This id is used only for configuration and logging purposes, and is not visible agents on other platforms.
+         * This id is used only for configuration and logging purposes, and is not visible agents on other platforms.
          */
         public String getNickname() {
             return id;

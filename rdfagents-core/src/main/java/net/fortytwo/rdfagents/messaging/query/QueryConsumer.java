@@ -9,7 +9,8 @@ import net.fortytwo.rdfagents.model.RDFAgent;
 
 /**
  * An agent role for making query requests to other agents and handling responses.
- * Queries in RDFAgents follow FIPA's <a href="http://www.fipa.org/specs/fipa00027/index.html">Query Interaction Protocol</a>.
+ * Queries in RDFAgents follow FIPA's
+ * <a href="http://www.fipa.org/specs/fipa00027/index.html">Query Interaction Protocol</a>.
  * For more details, see <a href="http://fortytwo.net/2011/rdfagents/spec#query">the specification</a>.
  *
  * @author Joshua Shinavier (http://fortytwo.net).

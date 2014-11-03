@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  * @author Joshua Shinavier (http://fortytwo.net)
  */
 class SyndicatingPubsubProvider extends PubsubProvider<Value, Dataset> {
-    private static final Logger LOGGER = Logger.getLogger(SyndicatingPubsubProvider.class.getName());
+    private static final Logger logger = Logger.getLogger(SyndicatingPubsubProvider.class.getName());
 
     private final PubsubConsumer<Value, Dataset> consumer;
     private final AgentId[] others;
@@ -51,17 +51,17 @@ class SyndicatingPubsubProvider extends PubsubProvider<Value, Dataset> {
 
                 @Override
                 public void refused(ErrorExplanation explanation) {
-                    LOGGER.warning("subscription request refused: " + explanation);
+                    logger.warning("subscription request refused: " + explanation);
                 }
 
                 @Override
                 public void remoteFailure(ErrorExplanation explanation) {
-                    LOGGER.warning("remote failure: " + explanation);
+                    logger.warning("remote failure: " + explanation);
                 }
 
                 @Override
                 public void localFailure(LocalFailure e) {
-                    LOGGER.severe("local failure: " + e.getMessage() + "\n" + RDFAgents.stackTraceToString(e));
+                    logger.severe("local failure: " + e.getMessage() + "\n" + RDFAgents.stackTraceToString(e));
                 }
             };
 

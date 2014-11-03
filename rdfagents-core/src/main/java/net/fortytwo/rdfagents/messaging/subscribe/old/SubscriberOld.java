@@ -6,7 +6,8 @@ import net.fortytwo.rdfagents.model.RDFAgent;
 
 /**
  * An agent role for subscribing to streams of updates from other agents.
- * Subscriptions in RDFAgents follow FIPA's <a href="http://www.fipa.org/specs/fipa00035/SC00035H.html">Subscribe Interaction Protocol</a>.
+ * Subscriptions in RDFAgents follow FIPA's
+ * <a href="http://www.fipa.org/specs/fipa00035/SC00035H.html">Subscribe Interaction Protocol</a>.
  * For more details, see <a href="http://fortytwo.net/2011/rdfagents/spec#pubsub">the specification</a>.
  *
  * @author Joshua Shinavier (http://fortytwo.net)

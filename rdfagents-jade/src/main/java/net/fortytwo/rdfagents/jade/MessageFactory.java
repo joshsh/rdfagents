@@ -42,7 +42,7 @@ import java.util.logging.Logger;
  * @author Joshua Shinavier (http://fortytwo.net)
  */
 public class MessageFactory {
-    private static final Logger LOGGER = Logger.getLogger(MessageFactory.class.getName());
+    private static final Logger logger = Logger.getLogger(MessageFactory.class.getName());
 
     private final Random random = new Random();
 
@@ -68,12 +68,12 @@ public class MessageFactory {
         contentManager.registerOntology(rdfAgentsOntology, RDFAgents.RDFAGENTS_ONTOLOGY_NAME);
 
         /*
-        LOGGER.info("created new message factory");
+        logger.info("created new message factory");
         for (String s : contentManager.getLanguageNames()) {
-            LOGGER.info("\tlanguage: " + s);
+            logger.info("\tlanguage: " + s);
         }
         for (String s : contentManager.getOntologyNames()) {
-            LOGGER.info("\tontology: " + s);
+            logger.info("\tontology: " + s);
         }*/
     }
 
@@ -82,8 +82,8 @@ public class MessageFactory {
 
         // Note: this check is sufficient, as there is currently only one kind of IRE in RDFAgents
         if (!(el instanceof AbsIRE)) {
-            throw new MessageNotUnderstoodException("expected IdentifyingReferenceExpression was not found in content: "
-                    + message.getContent());
+            throw new MessageNotUnderstoodException(
+                    "expected IdentifyingReferenceExpression was not found in content: " + message.getContent());
         }
 
         try {
@@ -93,14 +93,16 @@ public class MessageFactory {
             AbsTerm d = pred.getAbsTerm(RDFAgentsOntology.DESCRIBES_DATASET);
             String name2 = ((AbsVariable) d).getName();
             if (!name1.equals(name2)) {
-                throw new MessageNotUnderstoodException("variable names do not match in query: " + message.getContent());
+                throw new MessageNotUnderstoodException(
+                        "variable names do not match in query: " + message.getContent());
             }
             AbsTerm s = pred.getAbsTerm(RDFAgentsOntology.DESCRIBES_SUBJECT);
             String typeName = s.getTypeName();
             if (typeName.equals(RDFAgentsOntology.RESOURCE)) {
                 String uri = s.getAbsObject(RDFAgentsOntology.RESOURCE_URI).toString();
                 if (!isValidURI(uri)) {
-                    throw new MessageNotUnderstoodException("invalid URI reference '" + uri + "' in query: " + message.getContent());
+                    throw new MessageNotUnderstoodException(
+                            "invalid URI reference '" + uri + "' in query: " + message.getContent());
                 }
 
                 try {
@@ -114,7 +116,8 @@ public class MessageFactory {
                 AbsObject datatypeObj = s.getAbsObject(RDFAgentsOntology.LITERAL_DATATYPE);
                 if (null != languageObj) {
                     if (null != datatypeObj) {
-                        throw new MessageNotUnderstoodException("illegal literal value in query (both language and datatype are specified): "
+                        throw new MessageNotUnderstoodException(
+                                "illegal literal value in query (both language and datatype are specified): "
                                 + message.getContent());
                     }
 
@@ -122,36 +125,45 @@ public class MessageFactory {
                     try {
                         return valueFactory.createLiteral(label, lang);
                     } catch (IllegalArgumentException e) {
-                        throw new MessageNotUnderstoodException("illegal literal value in query: " + message.getContent());
+                        throw new MessageNotUnderstoodException(
+                                "illegal literal value in query: " + message.getContent());
                     }
                 } else if (null != datatypeObj) {
                     String uri = datatypeObj.getAbsObject(RDFAgentsOntology.RESOURCE_URI).toString();
                     if (!isValidURI(uri)) {
-                        throw new MessageNotUnderstoodException("invalid datatype URI '" + uri + "' in query: " + message.getContent());
+                        throw new MessageNotUnderstoodException(
+                                "invalid datatype URI '" + uri + "' in query: " + message.getContent());
                     }
                     try {
                         return valueFactory.createLiteral(label, valueFactory.createURI(uri));
                     } catch (IllegalArgumentException e) {
-                        throw new MessageNotUnderstoodException("illegal literal value in query: " + message.getContent());
+                        throw new MessageNotUnderstoodException(
+                                "illegal literal value in query: " + message.getContent());
                     }
                 } else {
                     try {
                         return valueFactory.createLiteral(label);
                     } catch (IllegalArgumentException e) {
-                        throw new MessageNotUnderstoodException("illegal literal value in query: " + message.getContent());
+                        throw new MessageNotUnderstoodException(
+                                "illegal literal value in query: " + message.getContent());
                     }
                 }
             } else {
-                throw new MessageNotUnderstoodException("resource of unexpected type in query: " + message.getContent());
+                throw new MessageNotUnderstoodException(
+                        "resource of unexpected type in query: " + message.getContent());
             }
         } catch (NullPointerException e) {
-            throw new MessageNotUnderstoodException("invalid content for this type of message: " + message.getContent());
+            throw new MessageNotUnderstoodException(
+                    "invalid content for this type of message: " + message.getContent());
         } catch (ClassCastException e) {
-            throw new MessageNotUnderstoodException("invalid content for this type of message: " + message.getContent());
+            throw new MessageNotUnderstoodException(
+                    "invalid content for this type of message: " + message.getContent());
         }
     }
 
-    public ErrorExplanation extractErrorExplanation(final ACLMessage message) throws MessageNotUnderstoodException, LocalFailure {
+    public ErrorExplanation extractErrorExplanation(final ACLMessage message)
+            throws MessageNotUnderstoodException, LocalFailure {
+
         AbsContentElement el = extractAbsContent(message);
 
         if (!(el instanceof AbsPredicate)) {
@@ -170,9 +182,11 @@ public class MessageFactory {
             String msg = exp.getAbsTerm(RDFAgentsOntology.EXPLANATION_MESSAGE).toString();
             return new ErrorExplanation(type, msg);
         } catch (NullPointerException e) {
-            throw new MessageNotUnderstoodException("invalid content for this type of message: " + message.getContent());
+            throw new MessageNotUnderstoodException(
+                    "invalid content for this type of message: " + message.getContent());
         } catch (ClassCastException e) {
-            throw new MessageNotUnderstoodException("invalid content for this type of message: " + message.getContent());
+            throw new MessageNotUnderstoodException(
+                    "invalid content for this type of message: " + message.getContent());
         }
     }
 
@@ -190,7 +204,7 @@ public class MessageFactory {
             try {
                 datasetFactory.write(System.out, sendersDataset, RDFContentLanguage.RDF_TRIG);
             } catch (LocalFailure localFailure) {
-                localFailure.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                localFailure.printStackTrace();
             } //*/
 
             return datasetFactory.receiveDataset(sendersDataset, fromAID(message.getSender()));
@@ -214,7 +228,7 @@ public class MessageFactory {
         try {
             addExplanation(message, explanation);
         } catch (LocalFailure e) {
-            LOGGER.severe("failed to generate not-understood message: " + e);
+            logger.severe("failed to generate not-understood message: " + e);
         }
 
         return message;
@@ -230,7 +244,7 @@ public class MessageFactory {
         try {
             addExplanation(message, explanation);
         } catch (LocalFailure e) {
-            LOGGER.severe("failed to generate failure message: " + e);
+            logger.severe("failed to generate failure message: " + e);
         }
 
         return message;
@@ -252,7 +266,9 @@ public class MessageFactory {
     public ACLMessage refuseToAnswerQuery(final AgentId sender,
                                           final AgentId intendedReceiver,
                                           final ACLMessage replyTo,
-                                          final ErrorExplanation explanation) throws MessageNotUnderstoodException, LocalFailure {
+                                          final ErrorExplanation explanation)
+            throws MessageNotUnderstoodException, LocalFailure {
+
         validateMessage(replyTo, FIPANames.InteractionProtocol.FIPA_QUERY, ACLMessage.QUERY_REF);
 
         ACLMessage message = createReplyTo(replyTo, sender, intendedReceiver, ACLMessage.REFUSE);
@@ -276,7 +292,9 @@ public class MessageFactory {
                                           final AgentId intendedReceiver,
                                           final ACLMessage replyTo,
                                           final Dataset dataset,
-                                          final RDFContentLanguage defaultLanguage) throws MessageNotUnderstoodException, LocalFailure, MessageRejectedException {
+                                          final RDFContentLanguage defaultLanguage)
+            throws MessageNotUnderstoodException, LocalFailure, MessageRejectedException {
+
         validateMessage(replyTo, FIPANames.InteractionProtocol.FIPA_QUERY, ACLMessage.QUERY_REF);
 
         return createAssertionalMessage(sender, intendedReceiver, dataset, defaultLanguage, replyTo);
@@ -285,7 +303,9 @@ public class MessageFactory {
     public ACLMessage failToInformOfQueryResult(final AgentId sender,
                                                 final AgentId intendedReceiver,
                                                 final ACLMessage request,
-                                                final ErrorExplanation explanation) throws MessageNotUnderstoodException {
+                                                final ErrorExplanation explanation)
+            throws MessageNotUnderstoodException {
+
         validateMessage(request, FIPANames.InteractionProtocol.FIPA_QUERY, ACLMessage.QUERY_REF);
 
         ACLMessage message = createReplyTo(request, sender, intendedReceiver, ACLMessage.FAILURE);
@@ -293,7 +313,7 @@ public class MessageFactory {
         try {
             addExplanation(message, explanation);
         } catch (LocalFailure e) {
-            LOGGER.severe("failed to generate failure message: " + e);
+            logger.severe("failed to generate failure message: " + e);
         }
 
         return message;
@@ -315,7 +335,9 @@ public class MessageFactory {
 
     public ACLMessage confirmQueryCancellation(final AgentId sender,
                                                final AgentId intendedReceiver,
-                                               final ACLMessage request) throws MessageRejectedException, MessageNotUnderstoodException {
+                                               final ACLMessage request)
+            throws MessageRejectedException, MessageNotUnderstoodException {
+
         validateMessage(request, FIPANames.InteractionProtocol.FIPA_QUERY, ACLMessage.CANCEL);
 
         return createReplyTo(request, sender, intendedReceiver, ACLMessage.CONFIRM);
@@ -332,7 +354,7 @@ public class MessageFactory {
         try {
             addExplanation(message, explanation);
         } catch (LocalFailure e) {
-            LOGGER.severe("failed to generate failure message: " + e);
+            logger.severe("failed to generate failure message: " + e);
         }
 
         return message;
@@ -354,7 +376,9 @@ public class MessageFactory {
     public ACLMessage refuseSubscriptionRequest(final AgentId sender,
                                                 final AgentId intendedReceiver,
                                                 final ACLMessage replyTo,
-                                                final ErrorExplanation explanation) throws MessageNotUnderstoodException, LocalFailure {
+                                                final ErrorExplanation explanation)
+            throws MessageNotUnderstoodException, LocalFailure {
+
         validateMessage(replyTo, FIPANames.InteractionProtocol.FIPA_SUBSCRIBE, ACLMessage.SUBSCRIBE);
 
         ACLMessage message = createReplyTo(replyTo, sender, intendedReceiver, ACLMessage.REFUSE);
@@ -366,7 +390,9 @@ public class MessageFactory {
 
     public ACLMessage agreeToSubcriptionRequest(final AgentId sender,
                                                 final AgentId intendedReceiver,
-                                                final ACLMessage replyTo) throws MessageRejectedException, MessageNotUnderstoodException {
+                                                final ACLMessage replyTo)
+            throws MessageRejectedException, MessageNotUnderstoodException {
+
         validateMessage(replyTo, FIPANames.InteractionProtocol.FIPA_SUBSCRIBE, ACLMessage.SUBSCRIBE);
 
         // TODO: add content describing the "subscribe" action to which this agent is agreeing
@@ -378,7 +404,9 @@ public class MessageFactory {
                                                  final AgentId intendedReceiver,
                                                  final ACLMessage replyTo,
                                                  final Dataset dataset,
-                                                 final RDFContentLanguage defaultLanguage) throws MessageRejectedException, MessageNotUnderstoodException, LocalFailure {
+                                                 final RDFContentLanguage defaultLanguage)
+            throws MessageRejectedException, MessageNotUnderstoodException, LocalFailure {
+
         validateMessage(replyTo, FIPANames.InteractionProtocol.FIPA_SUBSCRIBE, ACLMessage.SUBSCRIBE);
 
         return createAssertionalMessage(sender, intendedReceiver, dataset, defaultLanguage, replyTo);
@@ -387,7 +415,9 @@ public class MessageFactory {
     public ACLMessage failToInformOfSubscriptionUpdate(final AgentId sender,
                                                        final AgentId intendedReceiver,
                                                        final ACLMessage request,
-                                                       final ErrorExplanation explanation) throws MessageNotUnderstoodException {
+                                                       final ErrorExplanation explanation)
+            throws MessageNotUnderstoodException {
+
         validateMessage(request, FIPANames.InteractionProtocol.FIPA_SUBSCRIBE, ACLMessage.SUBSCRIBE);
 
         ACLMessage message = createReplyTo(request, sender, intendedReceiver, ACLMessage.FAILURE);
@@ -395,7 +425,7 @@ public class MessageFactory {
         try {
             addExplanation(message, explanation);
         } catch (LocalFailure e) {
-            LOGGER.severe("failed to generate failure message: " + e);
+            logger.severe("failed to generate failure message: " + e);
         }
 
         return message;
@@ -417,7 +447,9 @@ public class MessageFactory {
 
     public ACLMessage confirmSubscriptionCancellation(final AgentId sender,
                                                       final AgentId intendedReceiver,
-                                                      final ACLMessage request) throws MessageRejectedException, MessageNotUnderstoodException {
+                                                      final ACLMessage request)
+            throws MessageRejectedException, MessageNotUnderstoodException {
+
         validateMessage(request, FIPANames.InteractionProtocol.FIPA_SUBSCRIBE, ACLMessage.CANCEL);
 
         return createReplyTo(request, sender, intendedReceiver, ACLMessage.CONFIRM);
@@ -426,7 +458,9 @@ public class MessageFactory {
     public ACLMessage failToCancelSubscription(final AgentId sender,
                                                final AgentId intendedReceiver,
                                                final ACLMessage request,
-                                               final ErrorExplanation explanation) throws MessageNotUnderstoodException {
+                                               final ErrorExplanation explanation)
+            throws MessageNotUnderstoodException {
+
         validateMessage(request, FIPANames.InteractionProtocol.FIPA_SUBSCRIBE, ACLMessage.CANCEL);
 
         ACLMessage message = createReplyTo(request, sender, intendedReceiver, ACLMessage.FAILURE);
@@ -434,13 +468,15 @@ public class MessageFactory {
         try {
             addExplanation(message, explanation);
         } catch (LocalFailure e) {
-            LOGGER.severe("failed to generate failure message: " + e);
+            logger.severe("failed to generate failure message: " + e);
         }
 
         return message;
     }
 
-    private AbsContentElement extractAbsContent(final ACLMessage message) throws MessageNotUnderstoodException, LocalFailure {
+    private AbsContentElement extractAbsContent(final ACLMessage message)
+            throws MessageNotUnderstoodException, LocalFailure {
+
         assertSLContent(message);
         assertRDFAgentsProtocolWithConvoId(message);
 
@@ -477,7 +513,8 @@ public class MessageFactory {
         }
 
         if (message.getPerformative() != ACLMessage.INFORM_REF) {
-            throw new MessageNotUnderstoodException("unexpected performative (expected " + ACLMessage.INFORM_REF + ")");
+            throw new MessageNotUnderstoodException(
+                    "unexpected performative (expected " + ACLMessage.INFORM_REF + ")");
         }
 
         return language;
@@ -588,7 +625,9 @@ public class MessageFactory {
                                                 final AgentId intendedReceiver,
                                                 final Dataset dataset,
                                                 final RDFContentLanguage defaultLanguage,
-                                                final ACLMessage replyTo) throws MessageNotUnderstoodException, LocalFailure, MessageRejectedException {
+                                                final ACLMessage replyTo)
+            throws MessageNotUnderstoodException, LocalFailure, MessageRejectedException {
+
         ACLMessage message = createReplyTo(replyTo, sender, intendedReceiver, ACLMessage.INFORM_REF);
 
         RDFContentLanguage language = chooseRDFContentLanguage(replyTo, defaultLanguage);
@@ -599,7 +638,7 @@ public class MessageFactory {
         try {
             datasetFactory.write(System.out, dataset, RDFContentLanguage.RDF_TRIG);
         } catch (LocalFailure localFailure) {
-            localFailure.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            localFailure.printStackTrace();
         }  //*/
 
         Dataset safe = datasetFactory.renameGraphs(dataset);
@@ -622,7 +661,9 @@ public class MessageFactory {
     }
 
     private RDFContentLanguage chooseRDFContentLanguage(final ACLMessage request,
-                                                        final RDFContentLanguage defaultLanguage) throws MessageNotUnderstoodException, MessageRejectedException {
+                                                        final RDFContentLanguage defaultLanguage)
+            throws MessageNotUnderstoodException, MessageRejectedException {
+
         String langs = request.getUserDefinedParameter(RDFAgents.RDFAGENTS_ACCEPT_PARAMETER);
         if (null == langs) {
             return defaultLanguage;
@@ -630,11 +671,13 @@ public class MessageFactory {
             for (String l : langs.split("[;]")) {
                 l = l.trim();
                 if (0 == l.length()) {
-                    throw new MessageNotUnderstoodException("invalid '" + RDFAgents.RDFAGENTS_ACCEPT_PARAMETER + "' value: " + langs);
+                    throw new MessageNotUnderstoodException(
+                            "invalid '" + RDFAgents.RDFAGENTS_ACCEPT_PARAMETER + "' value: " + langs);
                 }
 
                 RDFContentLanguage g = RDFContentLanguage.getByName(l);
-                // TODO: allow the implementation to support arbitrary content languages (i.e. make the enum into a class with a registry)
+                // TODO: allow the implementation to support arbitrary content languages
+                // (i.e. make the enum into a class with a registry)
                 if (null == g) {
                     throw new MessageNotUnderstoodException("unknown RDF content language: " + l);
                 }
@@ -781,7 +824,7 @@ public class MessageFactory {
             }
 
             if (!RDFAgents.isValidURI(address)) {
-                LOGGER.info("sender's address could not be converted to a URI: " + address);
+                logger.info("sender's address could not be converted to a URI: " + address);
             } else {
                 addresses.add(valueFactory.createURI(address));
             }

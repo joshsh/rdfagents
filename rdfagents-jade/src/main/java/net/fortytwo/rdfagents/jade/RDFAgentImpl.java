@@ -32,7 +32,8 @@ public class RDFAgentImpl extends RDFAgent {
 
         // TODO: restore this check...
         //if (!id.getName().toString().endsWith("@" + platform.getName())) {
-        //    throw new IllegalArgumentException("agent name " + id.getName() + " must end with '@" + platform.getName() + "'");
+        //    throw new IllegalArgumentException(
+        //        "agent name " + id.getName() + " must end with '@" + platform.getName() + "'");
         //}
 
         String n = id.getName();
@@ -45,8 +46,8 @@ public class RDFAgentImpl extends RDFAgent {
         try {
             RDFAgentsPlatformImpl.CondVar startUpLatch = new RDFAgentsPlatformImpl.CondVar();
 
-            AgentController c = ((RDFAgentsPlatformImpl) platform).getContainer().createNewAgent(localName, RDFJadeAgent.class.getName(),
-                    new Object[]{startUpLatch, w});
+            AgentController c = ((RDFAgentsPlatformImpl) platform).getContainer()
+                    .createNewAgent(localName, RDFJadeAgent.class.getName(), new Object[]{startUpLatch, w});
             c.start();
 
             // Wait until the agent starts up and notifies the Object

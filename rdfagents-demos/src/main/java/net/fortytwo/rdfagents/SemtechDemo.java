@@ -60,7 +60,8 @@ public class SemtechDemo {
         // TwitLogic subscription
         String conv = null;
         try {
-            conv = pubsubConsumer.submit(new URIImpl("http://twitlogic.fortytwo.net/hashtag/twitter"), twitlogic, callback);
+            conv = pubsubConsumer.submit(new URIImpl(
+                    "http://twitlogic.fortytwo.net/hashtag/twitter"), twitlogic, callback);
         } finally {
             if (conv != null) {
                 pubsubConsumer.cancel(conv, twitlogic, new CancellationCallback() {

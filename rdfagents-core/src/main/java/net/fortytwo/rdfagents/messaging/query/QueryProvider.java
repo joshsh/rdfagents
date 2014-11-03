@@ -8,7 +8,8 @@ import net.fortytwo.rdfagents.model.RDFAgent;
 
 /**
  * The agent role of answering queries posed by other agents.
- * Query answering in RDFAgents follows FIPA's <a href="http://www.fipa.org/specs/fipa00027/index.html">Query Interaction Protocol</a>.
+ * Query answering in RDFAgents follows FIPA's
+ * <a href="http://www.fipa.org/specs/fipa00027/index.html">Query Interaction Protocol</a>.
  * For more details, see <a href="http://fortytwo.net/2011/rdfagents/spec#query">the specification</a>.
  *
  * @param <Q> a class of queries

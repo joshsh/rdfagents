@@ -5,7 +5,8 @@ import net.fortytwo.rdfagents.model.RDFAgent;
 import java.util.Date;
 
 /**
- * A relationship indicating a certain subscriber's interest in receiving notifications matching a given topic from a given publisher,
+ * A relationship indicating a certain subscriber's interest in receiving notifications
+ * matching a given topic from a given publisher,
  * as well as the publisher's commitment to providing those notifications.
  *
  * ...topic-based (as opposed to content-based) filtering
@@ -40,10 +41,12 @@ public abstract class SubscriptionOld<N, T> {
 
     /**
      * Constructs a new subscription.
-     * After construction, the activate() method must be called in order to establish a connection with the publisher and begin receiving notifications.
+     * After construction, the activate() method must be called in order to establish a connection
+     * with the publisher and begin receiving notifications.
      *
      * @param publisher   the agent from which the client would like to receive notifications
-     * @param topic       a topic descriptor for the subscription, defining the notifications in which the client is interested
+     * @param topic       a topic descriptor for the subscription,
+     *                    defining the notifications in which the client is interested
      * @param noteHandler a callback to handle notifications received from the publisher matching the given topic
      */
     public SubscriptionOld(final RDFAgent publisher,
@@ -57,10 +60,12 @@ public abstract class SubscriptionOld<N, T> {
 
     /**
      * Constructs a new subscription.
-     * After construction, the activate() method must be called in order to establish a connection with the publisher and begin receiving notifications.
+     * After construction, the activate() method must be called in order to establish a connection
+     * with the publisher and begin receiving notifications.
      *
      * @param publisher   the agent from which the client would like to receive notifications
-     * @param topic       a topic descriptor for the subscription, defining the notifications in which the client is interested
+     * @param topic       a topic descriptor for the subscription,
+     *                    defining the notifications in which the client is interested
      * @param noteHandler a callback to handle notifications received from the publisher matching the given topic
      */
     public SubscriptionOld(final RDFAgent publisher,
@@ -125,7 +130,8 @@ public abstract class SubscriptionOld<N, T> {
     /**
      * Submits a subscription request to the publisher.
      * Upon invocation, this subscription's status advances to PENDING.
-     * When a response from the publisher is received, this subscription either becomes ACTIVE or reverts to an INACTIVE state.
+     * When a response from the publisher is received,
+     * this subscription either becomes ACTIVE or reverts to an INACTIVE state.
      *
      * @param handler a callback to handle the publisher's response to the subscription request
      */
@@ -172,7 +178,8 @@ public abstract class SubscriptionOld<N, T> {
      */
     public interface SubscriptionCallback {
         /**
-         * Indicates that the publisher has accepted the subscription request and will send notifications matching the given topic.
+         * Indicates that the publisher has accepted the subscription request
+         * and will send notifications matching the given topic.
          */
         void accepted();
 
@@ -193,7 +200,8 @@ public abstract class SubscriptionOld<N, T> {
      */
     public interface CancellationCallback {
         /**
-         * Indicates that the publisher has acknowledged the cancellation request and will stop sending notifications matching the given topic.
+         * Indicates that the publisher has acknowledged the cancellation request
+         * and will stop sending notifications matching the given topic.
          */
         void acknowledged();
 

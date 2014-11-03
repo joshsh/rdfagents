@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  * @author Joshua Shinavier (http://fortytwo.net)
  */
 public class RDFAgents {
-    private static final Logger LOGGER = Logger.getLogger(RDFAgents.class.getName());
+    private static final Logger logger = Logger.getLogger(RDFAgents.class.getName());
 
     // Agent profile properties
     public static final String
@@ -79,7 +79,7 @@ public class RDFAgents {
             try {
                 out.close();
             } catch (IOException e) {
-                LOGGER.severe("failed to serialize stack trace.  Secondary error is: " + e);
+                logger.severe("failed to serialize stack trace.  Secondary error is: " + e);
                 e.printStackTrace(System.err);
             }
         }

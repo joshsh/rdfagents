@@ -40,8 +40,6 @@ public class TypedProperties extends Properties {
         return s;
     }
 
-    // String values ///////////////////////////////////////////////////////////
-
     public String getString(final String name) throws PropertyException {
         return getProperty(name, true);
     }
@@ -64,8 +62,6 @@ public class TypedProperties extends Properties {
         }
     }
 
-    // boolean values //////////////////////////////////////////////////////////
-
     public boolean getBoolean(final String name) throws PropertyException {
         String value = getProperty(name, true);
 
@@ -85,8 +81,6 @@ public class TypedProperties extends Properties {
                            final boolean value) {
         setProperty(name, "" + value);
     }
-
-    // double values ///////////////////////////////////////////////////////////
 
     public double getDouble(final String name) throws PropertyException {
         String value = getProperty(name, true);
@@ -119,8 +113,6 @@ public class TypedProperties extends Properties {
         setProperty(name, "" + value);
     }
 
-    // float values ////////////////////////////////////////////////////////////
-
     public float getFloat(final String name) throws PropertyException {
         String value = getProperty(name, true);
 
@@ -150,8 +142,6 @@ public class TypedProperties extends Properties {
     public void setFloat(final String name, final float value) {
         setProperty(name, "" + value);
     }
-
-    // int values //////////////////////////////////////////////////////////////
 
     public int getInt(final String name) throws PropertyException {
         String value = getProperty(name, true);
@@ -183,8 +173,6 @@ public class TypedProperties extends Properties {
         setProperty(name, "" + value);
     }
 
-    // long values /////////////////////////////////////////////////////////////
-
     public long getLong(final String name) throws PropertyException {
         String value = getProperty(name, true);
 
@@ -214,8 +202,6 @@ public class TypedProperties extends Properties {
     public void setLong(final String name, final long value) {
         setProperty(name, "" + value);
     }
-
-    // URI values //////////////////////////////////////////////////////////////
 
     public URI getURI(final String name) throws PropertyException {
         String value = getProperty(name, true);
@@ -251,8 +237,6 @@ public class TypedProperties extends Properties {
         }
     }
 
-    // URL values //////////////////////////////////////////////////////////////
-
     public URL getURL(final String name) throws PropertyException {
         String value = getProperty(name, true);
 
@@ -287,8 +271,6 @@ public class TypedProperties extends Properties {
         }
     }
 
-    // File values ///////////////////////////////////////////////////////////////
-
     public File getFile(final String name) throws PropertyException {
         String value = getProperty(name, true);
 
@@ -310,8 +292,6 @@ public class TypedProperties extends Properties {
             setProperty(name, "" + value.getAbsolutePath());
         }
     }
-
-    // Date values ///////////////////////////////////////////////////////////////
 
     public Date getDate(final String name) throws PropertyException {
         String value = getProperty(name, true);
