@@ -2,15 +2,14 @@ package net.fortytwo.rdfagents;
 
 import junit.framework.TestCase;
 import net.fortytwo.rdfagents.data.DatasetFactory;
-import net.fortytwo.rdfagents.model.AgentId;
-import net.fortytwo.rdfagents.model.RDFContentLanguage;
 import net.fortytwo.rdfagents.jade.MessageFactory;
+import net.fortytwo.rdfagents.model.AgentId;
 import net.fortytwo.rdfagents.model.Dataset;
+import net.fortytwo.rdfagents.model.RDFContentLanguage;
+import org.openrdf.model.IRI;
 import org.openrdf.model.Literal;
 import org.openrdf.model.Statement;
-import org.openrdf.model.URI;
 import org.openrdf.model.impl.LiteralImpl;
-import org.openrdf.model.impl.URIImpl;
 import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.model.vocabulary.XMLSchema;
 import org.openrdf.rio.RDFFormat;
@@ -26,14 +25,14 @@ import java.io.InputStream;
  */
 public abstract class RDFAgentsTestCase extends TestCase {
     protected AgentId sender, receiver;
-    protected URI resourceX = new URIImpl("http://example.org/resourceX");
+    protected IRI resourceX = RDFAgents.createIRI("http://example.org/resourceX");
     protected Literal plainLiteralX = new LiteralImpl("Don't panic.");
     protected Literal typedLiteralX = new LiteralImpl("Don't panic.", XMLSchema.STRING);
     protected Literal languageLiteralX = new LiteralImpl("Don't panic.", "en");
 
     protected static final String NS = "http://example.org/ns#";
-    protected static final URI
-            ARTHUR = new URIImpl(NS + "arthur");
+    protected static final IRI
+            ARTHUR = RDFAgents.createIRI(NS + "arthur");
 
     protected Sail sail;
     protected DatasetFactory datasetFactory;
@@ -41,28 +40,25 @@ public abstract class RDFAgentsTestCase extends TestCase {
 
     @Override
     public void setUp() throws Exception {
-        URI senderName = new URIImpl("http://example.org/agentA");
-        URI[] senderAddresses = new URI[]{
-                new URIImpl("mailto:agentA@example.org"),
-                new URIImpl("xmpp:agentA@example.org")};
+        IRI senderName = RDFAgents.createIRI("http://example.org/agentA");
+        IRI[] senderAddresses = new IRI[]{
+                RDFAgents.createIRI("mailto:agentA@example.org"),
+                RDFAgents.createIRI("xmpp:agentA@example.org")};
         sender = new AgentId(senderName, senderAddresses);
 
-        URI receiverName = new URIImpl("http://example.org/agentB");
-        URI[] receiverAddresses = new URI[]{
-                new URIImpl("mailto:agentB@example.org"),
-                new URIImpl("xmpp:agentB@example.org")};
+        IRI receiverName = RDFAgents.createIRI("http://example.org/agentB");
+        IRI[] receiverAddresses = new IRI[]{
+                RDFAgents.createIRI("mailto:agentB@example.org"),
+                RDFAgents.createIRI("xmpp:agentB@example.org")};
         receiver = new AgentId(receiverName, receiverAddresses);
 
         datasetFactory = new DatasetFactory(new ValueFactoryImpl());
         for (RDFContentLanguage l : RDFContentLanguage.values()) {
             datasetFactory.addLanguage(l);
         }
-        InputStream in = RDFAgents.class.getResourceAsStream("dummyData.trig");
         Dataset d;
-        try {
+        try (InputStream in = RDFAgents.class.getResourceAsStream("dummyData.trig")) {
             d = datasetFactory.parse(in, RDFContentLanguage.RDF_TRIG);
-        } finally {
-            in.close();
         }
 
         sail = new MemoryStore();
@@ -80,9 +76,7 @@ public abstract class RDFAgentsTestCase extends TestCase {
     protected void showDataset(final Dataset d) throws Exception {
         RDFWriter w = Rio.createWriter(RDFFormat.TRIG, System.out);
         w.startRDF();
-        for (Statement s : d.getStatements()) {
-            w.handleStatement(s);
-        }
+        d.getStatements().forEach(w::handleStatement);
         w.endRDF();
     }
 }

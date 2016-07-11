@@ -14,8 +14,9 @@ import net.fortytwo.rdfagents.model.AgentId;
 import net.fortytwo.rdfagents.model.Dataset;
 import net.fortytwo.rdfagents.model.RDFAgent;
 import net.fortytwo.rdfagents.model.RDFAgentsPlatform;
+import org.openrdf.model.IRI;
 import org.openrdf.model.Value;
-import org.openrdf.model.impl.URIImpl;
+import org.openrdf.model.impl.SimpleValueFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -47,7 +48,7 @@ public class CSparqlDemo {
 
 //        PubsubConsumer<Value, Dataset> client = new PubsubConsumerImpl(csparqlAgent);
         CSparqlPubsubProvider cSparqlPubsubProvider = new CSparqlPubsubProvider(
-                csparqlAgent, new URIImpl("http://twitlogic.fortytwo.net/hashtag/twitter"));
+                csparqlAgent, createIRI("http://twitlogic.fortytwo.net/hashtag/twitter"));
         csparqlAgent.setPubsubProvider(cSparqlPubsubProvider);
 
         PubsubConsumer<Value, Dataset> endUserPubsubConsumer = new PubsubConsumerImpl(consumer);
@@ -60,14 +61,14 @@ public class CSparqlDemo {
             mutex.wait(10000);
         }//*/
 
-        //client.submit(new URIImpl("http://xmlns.com/foaf/0.1/Person"), twitlogic, callback);
-        //pubsubConsumer.submit(new URIImpl("http://rdfs.org/sioc/types#MicroblogPost"), twitlogic, callback);
+        //client.submit(createIRI("http://xmlns.com/foaf/0.1/Person"), twitlogic, callback);
+        //pubsubConsumer.submit(createIRI("http://rdfs.org/sioc/types#MicroblogPost"), twitlogic, callback);
 
         // TwitLogic query
-        //client.submit(new URIImpl("http://twitlogic.fortytwo.net/hashtag/twitter"), twitlogic, callback);
+        //client.submit(createIRI("http://twitlogic.fortytwo.net/hashtag/twitter"), twitlogic, callback);
 
         // TwitLogic subscription
-//        pubsubConsumer.submit(new URIImpl("http://twitlogic.fortytwo.net/hashtag/twitter"), twitlogic, callback);
+//        pubsubConsumer.submit(createIRI("http://twitlogic.fortytwo.net/hashtag/twitter"), twitlogic, callback);
 
         //TwitLogic with C-SPARQL
         RdfStream st = new CSPARQLConsumer("http://myexample.org/stream");
@@ -77,13 +78,12 @@ public class CSparqlDemo {
         engine.registerStream(st);
 
         cSparqlPubsubConsumer.submit(
-                new URIImpl("http://twitlogic.fortytwo.net/hashtag/twitter"),
+                createIRI("http://twitlogic.fortytwo.net/hashtag/twitter"),
                 twitlogic,
                 (ConsumerCallback<Dataset>) st);
-// cSparqlPubsubConsumer.submit(new URIImpl("http://twitlogic.fortytwo.net/hashtag/twitter"), twitlogic, callback);
 
         endUserPubsubConsumer.submit(
-                new URIImpl("http://twitlogic.fortytwo.net/hashtag/twitter"),
+                createIRI("http://twitlogic.fortytwo.net/hashtag/twitter"),
                 csparqlagentID,
                 callback);
 
@@ -107,12 +107,6 @@ public class CSparqlDemo {
         if (c1 != null) {
             c1.addObserver(cSparqlPubsubProvider);
         }
-
-// engine.unregisterQuery(c1.getId());
-// engine.unregisterStream(st.getIRI());
-// //here nicely stop also RDF
-// System.exit(0);
-
     }
 
     public static void main(final String args[]) {
@@ -127,11 +121,8 @@ public class CSparqlDemo {
             }
 
             Properties config = new Properties();
-            InputStream in = new FileInputStream(props);
-            try {
+            try (InputStream in = new FileInputStream(props)) {
                 config.load(in);
-            } finally {
-                in.close();
             }
 
             new CSparqlDemo().run(config);
@@ -145,5 +136,9 @@ public class CSparqlDemo {
         System.out.println("Usage:  demo [configuration file]");
         System.out.println("For more information, please see:\n"
                 + "  <URL:https://github.com/joshsh/rdfagents/wiki>.");
+    }
+    
+    protected static IRI createIRI(String iri) {
+        return SimpleValueFactory.getInstance().createIRI(iri);
     }
 }

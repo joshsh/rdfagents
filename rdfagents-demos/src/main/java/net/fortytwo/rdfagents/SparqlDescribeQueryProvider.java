@@ -81,8 +81,7 @@ public class SparqlDescribeQueryProvider extends QueryProvider<Value, Dataset> {
         String query = "DESCRIBE <" + v + ">";
         Collection<Statement> buffer = new LinkedList<Statement>();
         try {
-            RepositoryConnection rc = repo.getConnection();
-            try {
+            try (RepositoryConnection rc = repo.getConnection()) {
                 rc.begin();
 
                 GraphQuery q = rc.prepareGraphQuery(QueryLanguage.SPARQL, query);
@@ -90,7 +89,6 @@ public class SparqlDescribeQueryProvider extends QueryProvider<Value, Dataset> {
 
                 try {
                     while (r.hasNext()) {
-                        //System.out.println("... " + r.next());
                         buffer.add(r.next());
                     }
                 } finally {
@@ -98,12 +96,8 @@ public class SparqlDescribeQueryProvider extends QueryProvider<Value, Dataset> {
                 }
             } catch (MalformedQueryException e) {
                 throw new LocalFailure(e);
-            } finally {
-                rc.close();
             }
-        } catch (RepositoryException e) {
-            throw new LocalFailure(e);
-        } catch (QueryEvaluationException e) {
+        } catch (RepositoryException | QueryEvaluationException e) {
             throw new LocalFailure(e);
         }
 

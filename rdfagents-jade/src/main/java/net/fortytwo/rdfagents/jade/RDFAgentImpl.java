@@ -54,9 +54,7 @@ public class RDFAgentImpl extends RDFAgent {
             startUpLatch.waitOn();
 
             setController(c);
-        } catch (StaleProxyException e) {
-            throw new RDFAgent.RDFAgentException(e);
-        } catch (InterruptedException e) {
+        } catch (StaleProxyException | InterruptedException e) {
             throw new RDFAgent.RDFAgentException(e);
         }
 

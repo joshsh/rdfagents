@@ -5,13 +5,12 @@ import net.fortytwo.rdfagents.messaging.LocalFailure;
 import net.fortytwo.rdfagents.model.AgentId;
 import net.fortytwo.rdfagents.model.Dataset;
 import net.fortytwo.rdfagents.model.RDFContentLanguage;
+import org.openrdf.model.IRI;
 import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
-import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
-import org.openrdf.model.impl.URIImpl;
-import org.openrdf.model.impl.ValueFactoryImpl;
+import org.openrdf.model.impl.SimpleValueFactory;
 import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.rio.RDFHandler;
 import org.openrdf.rio.RDFHandlerException;
@@ -45,12 +44,12 @@ public class DatasetFactory {
             RDFG_NS = "http://www.w3.org/2004/03/trix/rdfg-1/",
             SWP_NS = "http://www.w3.org/2004/03/trix/swp-2/";
 
-    private static final URI
-            FOAF_AGENT = new URIImpl(FOAF_NS + "Agent"),
-            FOAF_MBOX = new URIImpl(FOAF_NS + "mbox"),
-            RDFG_GRAPH = new URIImpl(RDFG_NS + "Graph"),
-            SWP_ASSERTEDBY = new URIImpl(SWP_NS + "assertedBy"),
-            SWP_AUTHORITY = new URIImpl(SWP_NS + "authority");
+    private static final IRI
+            FOAF_AGENT = RDFAgents.createIRI(FOAF_NS + "Agent"),
+            FOAF_MBOX = RDFAgents.createIRI(FOAF_NS + "mbox"),
+            RDFG_GRAPH = RDFAgents.createIRI(RDFG_NS + "Graph"),
+            SWP_ASSERTEDBY = RDFAgents.createIRI(SWP_NS + "assertedBy"),
+            SWP_AUTHORITY = RDFAgents.createIRI(SWP_NS + "authority");
 
     private static final String UUID_URN_PREFIX = "urn:uuid:";
 
@@ -60,11 +59,11 @@ public class DatasetFactory {
 
     public DatasetFactory(final ValueFactory valueFactory) {
         this.valueFactory = valueFactory;
-        supportedLanguages = new HashSet<RDFContentLanguage>();
+        supportedLanguages = new HashSet<>();
     }
 
     public DatasetFactory() {
-        this(new ValueFactoryImpl());
+        this(SimpleValueFactory.getInstance());
 
         for (RDFContentLanguage l : RDFContentLanguage.values()) {
             addLanguage(l);
@@ -104,8 +103,8 @@ public class DatasetFactory {
         }
         //*/
 
-        URI formerDefaultGraph = randomURI();
-        Collection<Statement> receiverStatements = new LinkedList<Statement>();
+        IRI formerDefaultGraph = randomIRI();
+        Collection<Statement> receiverStatements = new LinkedList<>();
 
         for (Statement s : dataset.getStatements()) {
             // The default graph is renamed
@@ -118,13 +117,13 @@ public class DatasetFactory {
         }
 
         // Metadata about the sender and informative act is added to the receiver's default graph.
-        receiverStatements.add(valueFactory.createStatement(sender.getUri(), RDF.TYPE, FOAF_AGENT));
-        for (URI address : sender.getTransportAddresses()) {
-            receiverStatements.add(valueFactory.createStatement(sender.getUri(), FOAF_MBOX, address));
+        receiverStatements.add(valueFactory.createStatement(sender.getIri(), RDF.TYPE, FOAF_AGENT));
+        for (IRI address : sender.getTransportAddresses()) {
+            receiverStatements.add(valueFactory.createStatement(sender.getIri(), FOAF_MBOX, address));
         }
         receiverStatements.add(valueFactory.createStatement(formerDefaultGraph, RDF.TYPE, RDFG_GRAPH));
         receiverStatements.add(valueFactory.createStatement(formerDefaultGraph, SWP_ASSERTEDBY, formerDefaultGraph));
-        receiverStatements.add(valueFactory.createStatement(formerDefaultGraph, SWP_AUTHORITY, sender.getUri()));
+        receiverStatements.add(valueFactory.createStatement(formerDefaultGraph, SWP_AUTHORITY, sender.getIri()));
 
         return renameGraphs(new Dataset(receiverStatements));
     }
@@ -152,7 +151,7 @@ public class DatasetFactory {
      * as well as modifying all statements in the dataset which reference those graphs.
      */
     public Dataset renameGraphs(final Dataset original) {
-        Set<Resource> graphs = new HashSet<Resource>();
+        Set<Resource> graphs = new HashSet<>();
         for (Statement s : original.getStatements()) {
             Resource g = s.getContext();
             if (null != g) {
@@ -160,16 +159,16 @@ public class DatasetFactory {
             }
         }
 
-        Map<Value, URI> newNames = new HashMap<Value, URI>();
+        Map<Value, IRI> newNames = new HashMap<>();
 
         for (Resource g : graphs) {
-            newNames.put(g, randomURI());
+            newNames.put(g, randomIRI());
         }
 
-        Collection<Statement> coll = new LinkedList<Statement>();
+        Collection<Statement> coll = new LinkedList<>();
         for (Statement s : original.getStatements()) {
             Statement n = valueFactory.createStatement((Resource) rename(s.getSubject(), newNames),
-                    (URI) rename(s.getPredicate(), newNames),
+                    (IRI) rename(s.getPredicate(), newNames),
                     rename(s.getObject(), newNames),
                     (Resource) rename(s.getContext(), newNames));
             coll.add(n);
@@ -215,12 +214,10 @@ public class DatasetFactory {
         DatasetCreator d = new DatasetCreator();
         p.setRDFHandler(d);
         try {
-            p.parse(in, RDFAgents.BASE_URI);
+            p.parse(in, RDFAgents.BASE_IRI);
         } catch (IOException e) {
             throw new LocalFailure(e);
-        } catch (RDFParseException e) {
-            throw new InvalidRDFContentException(e);
-        } catch (RDFHandlerException e) {
+        } catch (RDFParseException | RDFHandlerException e) {
             throw new InvalidRDFContentException(e);
         }
 
@@ -272,9 +269,7 @@ public class DatasetFactory {
         try {
             w.startRDF();
 
-            for (Statement s : dataset.getStatements()) {
-                w.handleStatement(s);
-            }
+            dataset.getStatements().forEach(w::handleStatement);
 
             w.endRDF();
         } catch (RDFHandlerException e) {
@@ -283,17 +278,17 @@ public class DatasetFactory {
     }
 
     private Value rename(final Value original,
-                         final Map<Value, URI> newNames) {
+                         final Map<Value, IRI> newNames) {
         if (null == original) {
             return null;
         }
 
-        URI n = newNames.get(original);
+        IRI n = newNames.get(original);
         return null == n ? original : n;
     }
 
-    public URI randomURI() {
-        return valueFactory.createURI(UUID_URN_PREFIX + UUID.randomUUID());
+    public IRI randomIRI() {
+        return valueFactory.createIRI(UUID_URN_PREFIX + UUID.randomUUID());
     }
 
     private class DatasetCreator implements RDFHandler {
@@ -301,7 +296,7 @@ public class DatasetFactory {
         private final Collection<Statement> statements;
 
         public DatasetCreator() {
-            statements = new LinkedList<Statement>();
+            statements = new LinkedList<>();
             dataset = new Dataset(statements);
         }
 

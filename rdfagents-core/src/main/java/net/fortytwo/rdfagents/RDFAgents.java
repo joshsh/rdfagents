@@ -1,14 +1,12 @@
 package net.fortytwo.rdfagents;
 
-import org.openrdf.model.impl.URIImpl;
+import org.openrdf.model.IRI;
+import org.openrdf.model.Literal;
+import org.openrdf.model.Resource;
+import org.openrdf.model.Statement;
+import org.openrdf.model.Value;
+import org.openrdf.model.impl.SimpleValueFactory;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintStream;
-import java.util.Properties;
 import java.util.logging.Logger;
 
 /**
@@ -26,7 +24,7 @@ public class RDFAgents {
 
     public static final String
             // TODO
-            BASE_URI = "http://example.org/",
+            BASE_IRI = "http://example.org/",
             RDFAGENTS_ONTOLOGY_NAME = "rdfagents",
             RDFAGENTS_ACCEPT_PARAMETER = "X-rdfagents-accept";
 
@@ -60,42 +58,25 @@ public class RDFAgents {
     private RDFAgents() {
     }
 
-    public static boolean isValidURI(final String uri) {
-        // TODO: make this more efficient, and base it on the URI spec
+    public static boolean isValidIRI(final String iri) {
+        // TODO: make this more efficient, and base it on the IRI spec
         try {
-            new URIImpl(uri);
+            createIRI(iri);
             return true;
-        } catch (Throwable t) {
+        } catch (Exception t) {
             return false;
         }
     }
 
-    public static String stackTraceToString(final Throwable t) {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        try {
-            t.printStackTrace(new PrintStream(out));
-            return out.toString();
-        } finally {
-            try {
-                out.close();
-            } catch (IOException e) {
-                logger.severe("failed to serialize stack trace.  Secondary error is: " + e);
-                e.printStackTrace(System.err);
-            }
-        }
+    public static IRI createIRI(String iri) {
+        return SimpleValueFactory.getInstance().createIRI(iri);
     }
 
-    public static Properties loadProps(final String fileName) throws IOException {
-        Properties config = new Properties();
+    public static Literal createLiteral(String iri) {
+        return SimpleValueFactory.getInstance().createLiteral(iri);
+    }
 
-        File f = new File(fileName);
-        InputStream in = new FileInputStream(f);
-        try {
-            config.load(in);
-        } finally {
-            in.close();
-        }
-
-        return config;
+    public static Statement createStatement(Resource subject, IRI predicate, Value object) {
+        return SimpleValueFactory.getInstance().createStatement(subject, predicate, object);
     }
 }

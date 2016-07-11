@@ -1,7 +1,5 @@
 package net.fortytwo.rdfagents.util;
 
-import net.fortytwo.rdfagents.util.properties.TypedProperties;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -23,7 +21,6 @@ import java.util.regex.Pattern;
  * (any alphanumeric sequence which is not a TLD).
  * For example "agent1.identity.xmpp.name" and "agent1.identity.xmpp.password" describe
  * the XMPP credentials of the agent identified by "agent1".
- * <p/>
  * Note: internationalized country code TLDs are currently not included, but are not recommended as agent IDs.
  *
  * @author Joshua Shinavier (http://fortytwo.net)
@@ -33,10 +30,10 @@ public class Configuration {
     //     http://en.wikipedia.org/wiki/List_of_Internet_top-level_domains
     // Copy the individual tables to a file named "tld", then:
     //     cat tld | sed 's/[.]//' | sed 's/[^a-zA-Z0-9].*//' | sed 's/^/"/' | sed 's/$/"/' | tr '\n' ','
-    public static final String[] GENERIC_TOP_LEVEL_DOMAINS = {
+    private static final String[] GENERIC_TOP_LEVEL_DOMAINS = {
             "aero", "asia", "biz", "cat", "com", "coop", "edu", "gov", "info", "int", "jobs", "mil",
             "mobi", "museum", "name", "net", "org", "pro", "tel", "travel", "xxx"};
-    public static final String[] COUNTRYCODE_TOP_LEVEL_DOMAINS = {
+    private static final String[] COUNTRYCODE_TOP_LEVEL_DOMAINS = {
             "ac", "ad", "ae", "af", "ag", "ai", "al", "am", "an", "ao", "aq", "ar", "as", "at", "au", "aw", "ax",
             "az", "ba", "bb", "bd", "be", "bf", "bg", "bh", "bi", "bj", "bm", "bn", "bo", "br", "bs", "bt", "bv",
             "bw", "by", "bz", "ca", "cc", "cd", "cf", "cg", "ch", "ci", "ck", "cl", "cm", "cn", "co", "cr", "cs",
@@ -58,7 +55,7 @@ public class Configuration {
     private static final Set<String> TOP_LEVEL_DOMAINS;
 
     static {
-        TOP_LEVEL_DOMAINS = new HashSet<String>();
+        TOP_LEVEL_DOMAINS = new HashSet<>();
         TOP_LEVEL_DOMAINS.addAll(Arrays.asList(GENERIC_TOP_LEVEL_DOMAINS));
         TOP_LEVEL_DOMAINS.addAll(Arrays.asList(COUNTRYCODE_TOP_LEVEL_DOMAINS));
     }
@@ -69,14 +66,14 @@ public class Configuration {
     /**
      * @param properties a set of properties from which to extract agent profiles and global properties
      */
-    public Configuration(final Properties properties) {
+    private Configuration(final Properties properties) {
         this.globalProperties = new Properties();
 
         if (null == properties) {
             throw new IllegalArgumentException();
         }
 
-        agentProfiles = new HashMap<String, AgentProfile>();
+        agentProfiles = new HashMap<>();
         for (String key : properties.stringPropertyNames()) {
             int i = key.indexOf(".");
             String value = properties.getProperty(key);
@@ -144,11 +141,8 @@ public class Configuration {
 
         Properties p = new Properties();
 
-        InputStream is = new FileInputStream(file);
-        try {
+        try (InputStream is = new FileInputStream(file)) {
             p.load(is);
-        } finally {
-            is.close();
         }
 
         return p;
@@ -173,11 +167,11 @@ public class Configuration {
      */
     public class AgentProfile {
         private final String id;
-        private final TypedProperties parameters;
+        private final Properties parameters;
 
         private AgentProfile(final String id) {
             this.id = id;
-            this.parameters = new TypedProperties();
+            this.parameters = new Properties();
         }
 
         /**
@@ -191,7 +185,7 @@ public class Configuration {
         /**
          * @return the agent's configuration parameters
          */
-        public TypedProperties getParameters() {
+        public Properties getParameters() {
             return parameters;
         }
     }

@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * A simple "describes" query engine which produces a RDF Dataset of graphs describing
@@ -46,8 +47,8 @@ public class RecursiveDescribeQuery implements DatasetQuery {
             try {
                 sc.begin();
 
-                Collection<Statement> c0 = new LinkedList<Statement>();
-                Set<Value> alreadyDescribed = new HashSet<Value>();
+                Collection<Statement> c0 = new LinkedList<>();
+                Set<Value> alreadyDescribed = new HashSet<>();
 
                 addDescriptionTo(c0, resource, sc, alreadyDescribed);
 
@@ -67,7 +68,7 @@ public class RecursiveDescribeQuery implements DatasetQuery {
                                   final Set<Value> alreadyDescribed) throws SailException {
         alreadyDescribed.add(value);
 
-        Set<Value> toDescribe = new HashSet<Value>();
+        Set<Value> toDescribe = new HashSet<>();
 
         // Forward links
         if (value instanceof Resource) {
@@ -102,13 +103,9 @@ public class RecursiveDescribeQuery implements DatasetQuery {
     }
 
     private Dataset deduplicateStatements(final Dataset original) {
-        Set<StatementWrapper> statements = new HashSet<StatementWrapper>();
-        Collection<Statement> coll = new LinkedList<Statement>();
-        for (Statement s : original.getStatements()) {
-            if (statements.add(new StatementWrapper(s))) {
-                coll.add(s);
-            }
-        }
+        Set<StatementWrapper> statements = new HashSet<>();
+        Collection<Statement> coll = original.getStatements().stream().filter(s ->
+                statements.add(new StatementWrapper(s))).collect(Collectors.toCollection(LinkedList::new));
         return new Dataset(coll);
     }
 

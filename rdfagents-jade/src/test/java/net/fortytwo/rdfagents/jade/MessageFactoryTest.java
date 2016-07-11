@@ -2,15 +2,15 @@ package net.fortytwo.rdfagents.jade;
 
 import jade.core.AID;
 import jade.lang.acl.ACLMessage;
-import net.fortytwo.rdfagents.model.AgentId;
-import net.fortytwo.rdfagents.model.ErrorExplanation;
 import net.fortytwo.rdfagents.RDFAgents;
 import net.fortytwo.rdfagents.RDFAgentsTestCase;
-import net.fortytwo.rdfagents.model.RDFContentLanguage;
-import net.fortytwo.rdfagents.data.RecursiveDescribeQuery;
 import net.fortytwo.rdfagents.data.DatasetQuery;
+import net.fortytwo.rdfagents.data.RecursiveDescribeQuery;
+import net.fortytwo.rdfagents.model.AgentId;
+import net.fortytwo.rdfagents.model.ErrorExplanation;
+import net.fortytwo.rdfagents.model.RDFContentLanguage;
+import org.openrdf.model.IRI;
 import org.openrdf.model.Literal;
-import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.vocabulary.XMLSchema;
 
@@ -22,50 +22,52 @@ import java.util.Set;
  */
 public class MessageFactoryTest extends RDFAgentsTestCase {
 
+    private static final String LANG_STRING = "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString";
+
     public void testPoseQuery() throws Exception {
         ACLMessage query;
         Value subject;
 
         query = messageFactory.poseQuery(sender, receiver, resourceX);
         assertIsQuery(query);
-        assertEquals("((any ?dataset (describes ?dataset (resource :uri http://example.org/resourceX))))",
+        assertEquals("((any ?dataset (describes ?dataset (resource :iri http://example.org/resourceX))))",
                 query.getContent());
         subject = messageFactory.extractDescribeQuery(query);
-        assertTrue(subject instanceof URI);
+        assertTrue(subject instanceof IRI);
         assertEquals("http://example.org/resourceX", subject.stringValue());
         assertNull(query.getUserDefinedParameter(RDFAgents.RDFAGENTS_ACCEPT_PARAMETER));
 
         query = messageFactory.poseQuery(sender, receiver, plainLiteralX);
         assertIsQuery(query);
-        assertEquals("((any ?dataset (describes ?dataset (literal :label \"Don't panic.\"))))",
+        assertEquals("((any ?dataset (describes ?dataset (literal :label \"Don't panic.\" :datatype (resource :iri http://www.w3.org/2001/XMLSchema#string)))))",
                 query.getContent());
         subject = messageFactory.extractDescribeQuery(query);
         assertTrue(subject instanceof Literal);
         assertEquals("Don't panic.", ((Literal) subject).getLabel());
-        assertNull(((Literal) subject).getLanguage());
-        assertNull(((Literal) subject).getDatatype());
-        assertNull(query.getUserDefinedParameter(RDFAgents.RDFAGENTS_ACCEPT_PARAMETER));
+        assertFalse(((Literal) subject).getLanguage().isPresent());
+        assertEquals(XMLSchema.STRING, ((Literal) subject).getDatatype());
+                assertNull(query.getUserDefinedParameter(RDFAgents.RDFAGENTS_ACCEPT_PARAMETER));
 
         query = messageFactory.poseQuery(sender, receiver, typedLiteralX);
         assertIsQuery(query);
         assertEquals("((any ?dataset (describes ?dataset (literal :label \"Don't panic.\" :datatype " +
-                "(resource :uri http://www.w3.org/2001/XMLSchema#string)))))", query.getContent());
+                "(resource :iri http://www.w3.org/2001/XMLSchema#string)))))", query.getContent());
         subject = messageFactory.extractDescribeQuery(query);
         assertTrue(subject instanceof Literal);
         assertEquals("Don't panic.", ((Literal) subject).getLabel());
-        assertNull(((Literal) subject).getLanguage());
+        assertFalse(((Literal) subject).getLanguage().isPresent());
         assertEquals(XMLSchema.STRING, ((Literal) subject).getDatatype());
         assertNull(query.getUserDefinedParameter(RDFAgents.RDFAGENTS_ACCEPT_PARAMETER));
 
         query = messageFactory.poseQuery(sender, receiver, languageLiteralX);
         assertIsQuery(query);
-        assertEquals("((any ?dataset (describes ?dataset (literal :label \"Don't panic.\" :language en))))",
+        assertEquals("((any ?dataset (describes ?dataset (literal :label \"Don't panic.\" :datatype (resource :iri http://www.w3.org/1999/02/22-rdf-syntax-ns#langString) :language en))))",
                 query.getContent());
         subject = messageFactory.extractDescribeQuery(query);
         assertTrue(subject instanceof Literal);
         assertEquals("Don't panic.", ((Literal) subject).getLabel());
-        assertEquals("en", ((Literal) subject).getLanguage());
-        assertNull(((Literal) subject).getDatatype());
+        assertEquals("en", ((Literal) subject).getLanguage().get());
+        assertEquals(LANG_STRING, ((Literal) subject).getDatatype().stringValue());
         assertNull(query.getUserDefinedParameter(RDFAgents.RDFAGENTS_ACCEPT_PARAMETER));
 
         query = messageFactory.poseQuery(sender, receiver, resourceX, RDFContentLanguage.RDF_NQUADS);
@@ -181,9 +183,9 @@ public class MessageFactoryTest extends RDFAgentsTestCase {
         request = messageFactory.requestSubscription(sender, receiver, resourceX);
         assertIsSubscriptionRequest(request);
         assertEquals("((any ?dataset (describes ?dataset" +
-                " (resource :uri http://example.org/resourceX))))", request.getContent());
+                " (resource :iri http://example.org/resourceX))))", request.getContent());
         Value subject = messageFactory.extractDescribeQuery(request);
-        assertTrue(subject instanceof URI);
+        assertTrue(subject instanceof IRI);
         assertEquals("http://example.org/resourceX", subject.stringValue());
         assertNull(request.getUserDefinedParameter(RDFAgents.RDFAGENTS_ACCEPT_PARAMETER));
 
@@ -367,8 +369,8 @@ public class MessageFactoryTest extends RDFAgentsTestCase {
                           final AID actual) {
         assertEquals(expected.getName(), actual.getName());
 
-        Set<String> expectedAddresses = new HashSet<String>();
-        for (URI u : expected.getTransportAddresses()) {
+        Set<String> expectedAddresses = new HashSet<>();
+        for (IRI u : expected.getTransportAddresses()) {
             expectedAddresses.add(u.toString());
         }
 

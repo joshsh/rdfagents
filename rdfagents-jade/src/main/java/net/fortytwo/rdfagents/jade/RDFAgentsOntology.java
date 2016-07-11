@@ -11,8 +11,6 @@ import jade.content.schema.PrimitiveSchema;
 import net.fortytwo.rdfagents.RDFAgents;
 import net.fortytwo.rdfagents.model.ErrorExplanation;
 
-import java.util.UUID;
-
 /**
  * @author Joshua Shinavier (http://fortytwo.net)
  */
@@ -40,7 +38,7 @@ public class RDFAgentsOntology extends Ontology {
             LITERAL_LABEL = "label",
             VALUE = "value",                 // implicit (abstract class)
             RESOURCE = "resource",
-            RESOURCE_URI = "uri";
+            RESOURCE_IRI = "iri";
 
     private RDFAgentsOntology() throws OntologyException {
         super(RDFAgents.RDFAGENTS_ONTOLOGY_NAME, SLOntology.getInstance());
@@ -59,15 +57,13 @@ public class RDFAgentsOntology extends Ontology {
 
         ConceptSchema dataset = (ConceptSchema) getSchema(DATASET);
         ConceptSchema resource = (ConceptSchema) getSchema(VALUE);
-        ConceptSchema uri = (ConceptSchema) getSchema(RESOURCE);
+        ConceptSchema iri = (ConceptSchema) getSchema(RESOURCE);
         ConceptSchema literal = (ConceptSchema) getSchema(LITERAL);
-        uri.addSuperSchema(resource);
-        //uri.setEncodingByOrder(true);
-        uri.add(RESOURCE_URI, (PrimitiveSchema) getSchema(BasicOntology.STRING));
+        iri.addSuperSchema(resource);
+        iri.add(RESOURCE_IRI, (PrimitiveSchema) getSchema(BasicOntology.STRING));
         literal.addSuperSchema(resource);
-        //literal.setEncodingByOrder(true);
         literal.add(LITERAL_LABEL, (PrimitiveSchema) getSchema(BasicOntology.STRING));
-        literal.add(LITERAL_DATATYPE, uri, ObjectSchema.OPTIONAL);
+        literal.add(LITERAL_DATATYPE, iri, ObjectSchema.OPTIONAL);
         literal.add(LITERAL_LANGUAGE, (PrimitiveSchema) getSchema(BasicOntology.STRING), ObjectSchema.OPTIONAL);
 
         PredicateSchema describes = (PredicateSchema) getSchema(DESCRIBES);
@@ -86,48 +82,4 @@ public class RDFAgentsOntology extends Ontology {
     public static RDFAgentsOntology getInstance() {
         return INSTANCE;
     }
-
-    public static void main(final String[] args) throws Exception {
-
-        System.out.println("" + UUID.nameUUIDFromBytes("foo".getBytes()));
-        System.out.println("" + UUID.nameUUIDFromBytes("bar".getBytes()));
-        System.out.println("" + UUID.nameUUIDFromBytes("foo".getBytes()));
-
-        //  "((any ?dataset (describes ?dataset (uri http://example.org))))"
-
-        // not legal
-        //   "((all (describe (uri http://example.org))))"
-
-        //    (literal "one two three")
-        //    (literal :label "one two three")
-        //    (literal :label "one two three" :language "en")
-        //
-        //    (uri "http://example.org")
-        //    (uri :ref "http://example.org")
-
-        //  (( any ?dataset (describes ?dataset (uri http://example.org))))
-        //  (( any ?dataset (describes ?dataset (resource :uri http://example.org))))
-
-        //  ( any ?dataset (describes ?dataset (literal :label "forty-two"))))
-        //  ( any ?dataset (describes ?dataset (literal "forty-two" en))))
-        //  ( any ?dataset (describes ?dataset (literal "forty-two" (uri http://xmlschema.org/types#string)))))
-
-
-        //AbsConcept absCd = new AbsConcept(CD);
-        //absCd.set(CD_NAME, "Synchronicity");
-
-
-
-        //  (resource :uri http://example.org)
-
-        // (resource :ref http://example.org)
-
-        // (uri :ref http://example.org)
-
-
-        //  (resource :literal "one two three" :language en)
-
-        // (literal :value "one two three")
-    }
-
 }
