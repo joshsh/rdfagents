@@ -11,7 +11,7 @@
 
     <groupId>net.fortytwo.rdfagents</groupId>
     <artifactId>rdfagents-all</artifactId>
-    <version>1.3</version>
+    <version>1.4-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>RDFAgents</name>
     <description>Real-time messaging for the Semantic Web</description>
