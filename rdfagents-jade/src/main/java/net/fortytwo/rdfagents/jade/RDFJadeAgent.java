@@ -4,7 +4,6 @@ import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
-import net.fortytwo.rdfagents.RDFAgents;
 import net.fortytwo.rdfagents.messaging.CancellationCallback;
 import net.fortytwo.rdfagents.messaging.Commitment;
 import net.fortytwo.rdfagents.messaging.ConsumerCallback;
@@ -23,6 +22,7 @@ import org.openrdf.model.Value;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -32,13 +32,13 @@ public class RDFJadeAgent extends Agent {
     private static final Logger logger = Logger.getLogger(RDFJadeAgent.class.getName());
 
     private final Map<String, ConsumerCallback<Dataset>> queryCallbacks
-            = new HashMap<String, ConsumerCallback<Dataset>>();
+            = new HashMap<>();
     private final Map<String, CancellationCallback> queryCancellationCallbacks
-            = new HashMap<String, CancellationCallback>();
+            = new HashMap<>();
     private final Map<String, ConsumerCallback<Dataset>> subscriptionCallbacks
-            = new HashMap<String, ConsumerCallback<Dataset>>();
+            = new HashMap<>();
     private final Map<String, CancellationCallback> subscriptionCancellationCallbacks
-            = new HashMap<String, CancellationCallback>();
+            = new HashMap<>();
 
     private AgentId self;
     private MessageFactory messageFactory;
@@ -78,7 +78,6 @@ public class RDFJadeAgent extends Agent {
                     setConversationId(conversationId);
 
                     System.out.println("issuing a query for " + resource);
-                    //System.out.println("--> " + m);
 
                     queryCallbacks.put(conversationId, callback);
 
@@ -225,9 +224,9 @@ public class RDFJadeAgent extends Agent {
 
                     try {
                         handleMessage(m);
-                    } catch (Throwable t) {
+                    } catch (Exception e) {
                         forgetConversation(m.getConversationId());
-                        logger.severe("error while sending message: " + t + "\n" + RDFAgents.stackTraceToString(t));
+                        logger.log(Level.SEVERE, "error while sending message", e);
                     }
                 } else {
                     block();
@@ -254,7 +253,7 @@ public class RDFJadeAgent extends Agent {
         });
 
         StringBuilder sb = new StringBuilder(
-                "initialized agent <").append(self.getUri()).append("> with address(es) ");
+                "initialized agent <").append(self.getIri()).append("> with address(es) ");
         boolean first = true;
         for (URI s : self.getTransportAddresses()) {
             if (first) {
@@ -305,8 +304,7 @@ public class RDFJadeAgent extends Agent {
                     pubsubProvider.cancel(id);
                 }
             } catch (LocalFailure e) {
-                logger.severe("failed to cancel expired conversations (stack trace follows)\n"
-                                + RDFAgents.stackTraceToString(e));
+                logger.log(Level.SEVERE, "failed to cancel expired conversations", e);
             }
         }
     }
@@ -367,54 +365,57 @@ public class RDFJadeAgent extends Agent {
                     throw new MessageNotUnderstoodException("missing protocol");
                 }
 
-                if (protocol.equals(FIPANames.InteractionProtocol.FIPA_QUERY)) {
-                    switch (performative) {
-                        case ACLMessage.QUERY_REF:
-                            handleQueryRequest(m, sender);
-                            break;
-                        case ACLMessage.INFORM_REF:
-                            handleQueryResult(m);
-                            break;
-                        case ACLMessage.REFUSE:
-                            handleQueryRefused(m);
-                            break;
-                        case ACLMessage.AGREE:
-                            handleQueryAccepted(m);
-                            break;
-                        case ACLMessage.CANCEL:
-                            handleCancelQuery(m, sender);
-                            break;
-                        case ACLMessage.CONFIRM:
-                            handleQueryCancellationConfirmed(m);
-                            break;
-                        default:
-                            throw new MessageNotUnderstoodException("unexpected performative (code): " + performative);
-                    }
-                } else if (protocol.equals(FIPANames.InteractionProtocol.FIPA_SUBSCRIBE)) {
-                    switch (performative) {
-                        case ACLMessage.SUBSCRIBE:
-                            handleSubscriptionRequest(m, sender);
-                            break;
-                        case ACLMessage.INFORM_REF:
-                            handleUpdate(m);
-                            break;
-                        case ACLMessage.REFUSE:
-                            handleSubscriptionRefused(m);
-                            break;
-                        case ACLMessage.AGREE:
-                            handleSubscriptionAccepted(m);
-                            break;
-                        case ACLMessage.CANCEL:
-                            handleCancelSubscription(m, sender);
-                            break;
-                        case ACLMessage.CONFIRM:
-                            handleSubscriptionCancellationConfirmed(m);
-                            break;
-                        default:
-                            throw new MessageNotUnderstoodException("unexpected performative (code): " + performative);
-                    }
-                } else {
-                    throw new MessageNotUnderstoodException("unexpected protocol: " + protocol);
+                switch (protocol) {
+                    case FIPANames.InteractionProtocol.FIPA_QUERY:
+                        switch (performative) {
+                            case ACLMessage.QUERY_REF:
+                                handleQueryRequest(m, sender);
+                                break;
+                            case ACLMessage.INFORM_REF:
+                                handleQueryResult(m);
+                                break;
+                            case ACLMessage.REFUSE:
+                                handleQueryRefused(m);
+                                break;
+                            case ACLMessage.AGREE:
+                                handleQueryAccepted(m);
+                                break;
+                            case ACLMessage.CANCEL:
+                                handleCancelQuery(m, sender);
+                                break;
+                            case ACLMessage.CONFIRM:
+                                handleQueryCancellationConfirmed(m);
+                                break;
+                            default:
+                                throw new MessageNotUnderstoodException("unexpected performative (code): " + performative);
+                        }
+                        break;
+                    case FIPANames.InteractionProtocol.FIPA_SUBSCRIBE:
+                        switch (performative) {
+                            case ACLMessage.SUBSCRIBE:
+                                handleSubscriptionRequest(m, sender);
+                                break;
+                            case ACLMessage.INFORM_REF:
+                                handleUpdate(m);
+                                break;
+                            case ACLMessage.REFUSE:
+                                handleSubscriptionRefused(m);
+                                break;
+                            case ACLMessage.AGREE:
+                                handleSubscriptionAccepted(m);
+                                break;
+                            case ACLMessage.CANCEL:
+                                handleCancelSubscription(m, sender);
+                                break;
+                            case ACLMessage.CONFIRM:
+                                handleSubscriptionCancellationConfirmed(m);
+                                break;
+                            default:
+                                throw new MessageNotUnderstoodException("unexpected performative (code): " + performative);
+                        }
+                        break;
+                    default:
+                        throw new MessageNotUnderstoodException("unexpected protocol: " + protocol);
                 }
             } catch (MessageNotUnderstoodException e) {
                 ErrorExplanation exp = new ErrorExplanation(ErrorExplanation.Type.ExternalError, e.getMessage());
@@ -616,22 +617,19 @@ public class RDFJadeAgent extends Agent {
 
         Value v = messageFactory.extractDescribeQuery(m);
 
-        UpdateHandler<Dataset> handler = new UpdateHandler<Dataset>() {
-            @Override
-            public void handle(final Dataset result) throws LocalFailure {
+        UpdateHandler<Dataset> handler = result -> {
 
-                try {
-                    sendMessage(messageFactory.informOfSubscriptionUpdate(
-                            self, sender, m, result, RDFContentLanguage.RDF_NQUADS));
-                } catch (MessageRejectedException e) {
-                    logger.severe("message rejected after update already produced (this shouldn't happen)");
-                    forgetConversation(m.getConversationId());
-                    pubsubProvider.cancel(m.getConversationId());
-                } catch (MessageNotUnderstoodException e) {
-                    logger.severe("message not understood after update already produced (this shouldn't happen)");
-                    forgetConversation(m.getConversationId());
-                    pubsubProvider.cancel(m.getConversationId());
-                }
+            try {
+                sendMessage(messageFactory.informOfSubscriptionUpdate(
+                        self, sender, m, result, RDFContentLanguage.RDF_NQUADS));
+            } catch (MessageRejectedException e) {
+                logger.severe("message rejected after update already produced (this shouldn't happen)");
+                forgetConversation(m.getConversationId());
+                pubsubProvider.cancel(m.getConversationId());
+            } catch (MessageNotUnderstoodException e) {
+                logger.severe("message not understood after update already produced (this shouldn't happen)");
+                forgetConversation(m.getConversationId());
+                pubsubProvider.cancel(m.getConversationId());
             }
         };
         Commitment c = pubsubProvider.considerSubscriptionRequest(m.getConversationId(), v, sender, handler);

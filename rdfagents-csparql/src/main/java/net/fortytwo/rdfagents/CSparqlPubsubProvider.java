@@ -10,11 +10,9 @@ import net.fortytwo.rdfagents.messaging.subscribe.PubsubProvider;
 import net.fortytwo.rdfagents.model.AgentId;
 import net.fortytwo.rdfagents.model.Dataset;
 import net.fortytwo.rdfagents.model.RDFAgent;
+import org.openrdf.model.Literal;
 import org.openrdf.model.Statement;
 import org.openrdf.model.Value;
-import org.openrdf.model.impl.LiteralImpl;
-import org.openrdf.model.impl.StatementImpl;
-import org.openrdf.model.impl.URIImpl;
 
 import java.util.ArrayList;
 
@@ -23,7 +21,7 @@ import java.util.ArrayList;
  */
 public class CSparqlPubsubProvider extends PubsubProvider<Value, Dataset> implements GenericObserver<RDFTable> {
 
-    Value topic;
+    private Value topic;
 
     public CSparqlPubsubProvider(RDFAgent agent, Value topic) {
         super(agent);
@@ -43,29 +41,22 @@ public class CSparqlPubsubProvider extends PubsubProvider<Value, Dataset> implem
         System.out.println("************==============***********");
 
 
-        ArrayList<Statement> statements = new ArrayList<Statement>();
+        ArrayList<Statement> statements = new ArrayList<>();
 
         for (RDFTuple t : q) {
             String subject = t.get(0);
             String property = t.get(1);
             String object = t.get(2);
-// String[] objectParts = object.split("\\^\\^");
-// if (objectParts.length>1) {
-//     LiteralImpl l = new LiteralImpl(objectParts[0].replaceAll("\"", ""), new URIImpl(objectParts[1]));
-//     statements.add(new StatementImpl(new URIImpl(subject),
-//         new URIImpl(property), l ));
-// } else {
+
             if (object.contains("\"")) {
-                LiteralImpl l = new LiteralImpl(object.replaceAll("\"", ""));
-                statements.add(new StatementImpl(new URIImpl(subject),
-                        new URIImpl(property), l));
+                Literal l = RDFAgents.createLiteral(object.replaceAll("\"", ""));
+                statements.add(RDFAgents.createStatement(RDFAgents.createIRI(subject),
+                        RDFAgents.createIRI(property), l));
             } else {
 
-                statements.add(new StatementImpl(new URIImpl(subject),
-                        new URIImpl(property), new URIImpl(object)));
+                statements.add(RDFAgents.createStatement(RDFAgents.createIRI(subject),
+                        RDFAgents.createIRI(property), RDFAgents.createIRI(object)));
             }
-// }
-
         }
 
         try {
@@ -77,8 +68,5 @@ public class CSparqlPubsubProvider extends PubsubProvider<Value, Dataset> implem
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
     }
-
-
 }

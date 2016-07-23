@@ -14,8 +14,7 @@ import net.fortytwo.rdfagents.model.RDFAgent;
 import net.fortytwo.rdfagents.model.RDFAgentsPlatform;
 import net.fortytwo.rdfagents.model.RDFContentLanguage;
 import org.openrdf.model.Value;
-import org.openrdf.model.impl.URIImpl;
-import org.openrdf.model.impl.ValueFactoryImpl;
+import org.openrdf.model.impl.SimpleValueFactory;
 import org.openrdf.sail.Sail;
 import org.openrdf.sail.memory.MemoryStore;
 
@@ -57,16 +56,16 @@ public class Demo {
         ConsumerCallback<Dataset> callback = new EchoCallback(p.getDatasetFactory());
 
         // Local store
-        //qc.submit(new URIImpl("http://example.org/ns#arthur"), a2.getIdentity(), callback);
+        //qc.submit(RDFAgents.createIRI("http://example.org/ns#arthur"), a2.getIdentity(), callback);
 
         // Linked Data
-        //qc.submit(new URIImpl("http://identi.ca/user/114"), ld.getIdentity(), callback);
+        //qc.submit(RDFAgents.createIRI("http://identi.ca/user/114"), ld.getIdentity(), callback);
 
         // Linked Data
-        qc.submit(new URIImpl("http://xmlns.com/foaf/0.1/Person"), ld.getIdentity(), callback);
+        qc.submit(RDFAgents.createIRI("http://xmlns.com/foaf/0.1/Person"), ld.getIdentity(), callback);
 
         // SPARQL
-        //qc.submit(new URIImpl("http://dbpedia.org/resource/Beijing"), a3.getIdentity(), callback);
+        //qc.submit(RDFAgents.createIRI("http://dbpedia.org/resource/Beijing"), a3.getIdentity(), callback);
 
         waitAWhile(10000);
 
@@ -85,16 +84,13 @@ public class Demo {
     }
 
     private Demo() throws Exception {
-        DatasetFactory datasetFactory = new DatasetFactory(new ValueFactoryImpl());
+        DatasetFactory datasetFactory = new DatasetFactory(SimpleValueFactory.getInstance());
         for (RDFContentLanguage l : RDFContentLanguage.values()) {
             datasetFactory.addLanguage(l);
         }
-        InputStream in = RDFAgents.class.getResourceAsStream("dummyData.trig");
         Dataset d;
-        try {
+        try (InputStream in = RDFAgents.class.getResourceAsStream("dummyData.trig")) {
             d = datasetFactory.parse(in, RDFContentLanguage.RDF_TRIG);
-        } finally {
-            in.close();
         }
 
         sail = new MemoryStore();
@@ -114,11 +110,8 @@ public class Demo {
             }
 
             Properties config = new Properties();
-            InputStream in = new FileInputStream(props);
-            try {
+            try (InputStream in = new FileInputStream(props)) {
                 config.load(in);
-            } finally {
-                in.close();
             }
 
             new Demo().run(config);

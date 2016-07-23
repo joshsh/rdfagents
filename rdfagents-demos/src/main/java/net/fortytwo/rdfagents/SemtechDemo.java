@@ -16,7 +16,7 @@ import net.fortytwo.rdfagents.model.ErrorExplanation;
 import net.fortytwo.rdfagents.model.RDFAgent;
 import net.fortytwo.rdfagents.model.RDFAgentsPlatform;
 import org.openrdf.model.Value;
-import org.openrdf.model.impl.URIImpl;
+import org.openrdf.model.impl.SimpleValueFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -45,22 +45,15 @@ public class SemtechDemo {
         PubsubConsumer<Value, Dataset> pubsubConsumer = new PubsubConsumerImpl(agent);
 
         ConsumerCallback<Dataset> callback = new EchoCallback(platform.getDatasetFactory());
-        /*
-        Object mutex = "";
-        synchronized (mutex) {
-            mutex.wait(10000);
-        }//*/
-
-        //client.submit(new URIImpl("http://xmlns.com/foaf/0.1/Person"), twitlogic, callback);
-        //pubsubConsumer.submit(new URIImpl("http://rdfs.org/sioc/types#MicroblogPost"), twitlogic, callback);
 
         // TwitLogic query
-        client.submit(new URIImpl("http://twitlogic.fortytwo.net/hashtag/twitter"), twitlogic, callback);
+        client.submit(SimpleValueFactory.getInstance().createIRI(
+                "http://twitlogic.fortytwo.net/hashtag/twitter"), twitlogic, callback);
 
         // TwitLogic subscription
         String conv = null;
         try {
-            conv = pubsubConsumer.submit(new URIImpl(
+            conv = pubsubConsumer.submit(SimpleValueFactory.getInstance().createIRI(
                     "http://twitlogic.fortytwo.net/hashtag/twitter"), twitlogic, callback);
         } finally {
             if (conv != null) {
@@ -92,16 +85,11 @@ public class SemtechDemo {
                 props = new File(args[0]);
             } else {
                 props = new File("rdfagents.props");
-                //printUsage();
-                //System.exit(1);
             }
 
             Properties config = new Properties();
-            InputStream in = new FileInputStream(props);
-            try {
+            try (InputStream in = new FileInputStream(props)) {
                 config.load(in);
-            } finally {
-                in.close();
             }
 
             new SemtechDemo().run(config);

@@ -46,8 +46,8 @@ public abstract class PubsubProvider<T, U> extends Role {
 
     public PubsubProvider(final RDFAgent agent) {
         super(agent);
-        this.idsByTopic = new HashMap<T, Set<String>>();
-        this.subscriptionsById = new HashMap<String, Subscription>();
+        this.idsByTopic = new HashMap<>();
+        this.subscriptionsById = new HashMap<>();
     }
 
     /**
@@ -71,7 +71,7 @@ public abstract class PubsubProvider<T, U> extends Role {
                 synchronized (mutex) {
                     Set<String> ids = idsByTopic.get(topic);
                     if (null == ids) {
-                        ids = new HashSet<String>();
+                        ids = new HashSet<>();
                         idsByTopic.put(topic, ids);
                     }
                     ids.add(conversationId);

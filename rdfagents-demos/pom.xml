@@ -7,7 +7,7 @@
     <parent>
         <groupId>net.fortytwo.rdfagents</groupId>
         <artifactId>rdfagents-all</artifactId>
-        <version>1.2</version>
+        <version>1.3</version>
     </parent>
     <artifactId>rdfagents-demos</artifactId>
     <name>RDFAgents Demos</name>
@@ -46,7 +46,6 @@
 
     <build>
         <sourceDirectory>src/main/java</sourceDirectory>
-        <testSourceDirectory>src/test/java</testSourceDirectory>
         <directory>target</directory>
         <finalName>${project.artifactId}-${project.version}</finalName>
         <resources>

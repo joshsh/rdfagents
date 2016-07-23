@@ -25,8 +25,9 @@ import net.fortytwo.rdfagents.model.AgentId;
 import net.fortytwo.rdfagents.model.Dataset;
 import net.fortytwo.rdfagents.model.ErrorExplanation;
 import net.fortytwo.rdfagents.model.RDFContentLanguage;
+import org.openrdf.model.IRI;
 import org.openrdf.model.Literal;
-import org.openrdf.model.URI;
+import org.openrdf.model.Resource;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
 
@@ -66,15 +67,6 @@ public class MessageFactory {
         contentManager.registerLanguage(sl2Codec);
         rdfAgentsOntology = RDFAgentsOntology.getInstance();
         contentManager.registerOntology(rdfAgentsOntology, RDFAgents.RDFAGENTS_ONTOLOGY_NAME);
-
-        /*
-        logger.info("created new message factory");
-        for (String s : contentManager.getLanguageNames()) {
-            logger.info("\tlanguage: " + s);
-        }
-        for (String s : contentManager.getOntologyNames()) {
-            logger.info("\tontology: " + s);
-        }*/
     }
 
     public Value extractDescribeQuery(final ACLMessage message) throws MessageNotUnderstoodException, LocalFailure {
@@ -96,66 +88,18 @@ public class MessageFactory {
                 throw new MessageNotUnderstoodException(
                         "variable names do not match in query: " + message.getContent());
             }
-            AbsTerm s = pred.getAbsTerm(RDFAgentsOntology.DESCRIBES_SUBJECT);
-            String typeName = s.getTypeName();
-            if (typeName.equals(RDFAgentsOntology.RESOURCE)) {
-                String uri = s.getAbsObject(RDFAgentsOntology.RESOURCE_URI).toString();
-                if (!isValidURI(uri)) {
+            AbsTerm term = pred.getAbsTerm(RDFAgentsOntology.DESCRIBES_SUBJECT);
+            String typeName = term.getTypeName();
+            switch (typeName) {
+                case RDFAgentsOntology.RESOURCE:
+                    return toResource(term, message);
+                case RDFAgentsOntology.LITERAL:
+                    return toLiteral(term, message);
+                default:
                     throw new MessageNotUnderstoodException(
-                            "invalid URI reference '" + uri + "' in query: " + message.getContent());
-                }
-
-                try {
-                    return valueFactory.createURI(uri);
-                } catch (IllegalArgumentException e) {
-                    throw new MessageNotUnderstoodException("illegal URI in query: " + message.getContent());
-                }
-            } else if (typeName.equals(RDFAgentsOntology.LITERAL)) {
-                String label = s.getAbsObject(RDFAgentsOntology.LITERAL_LABEL).toString();
-                AbsObject languageObj = s.getAbsObject(RDFAgentsOntology.LITERAL_LANGUAGE);
-                AbsObject datatypeObj = s.getAbsObject(RDFAgentsOntology.LITERAL_DATATYPE);
-                if (null != languageObj) {
-                    if (null != datatypeObj) {
-                        throw new MessageNotUnderstoodException(
-                                "illegal literal value in query (both language and datatype are specified): "
-                                + message.getContent());
-                    }
-
-                    String lang = languageObj.toString();
-                    try {
-                        return valueFactory.createLiteral(label, lang);
-                    } catch (IllegalArgumentException e) {
-                        throw new MessageNotUnderstoodException(
-                                "illegal literal value in query: " + message.getContent());
-                    }
-                } else if (null != datatypeObj) {
-                    String uri = datatypeObj.getAbsObject(RDFAgentsOntology.RESOURCE_URI).toString();
-                    if (!isValidURI(uri)) {
-                        throw new MessageNotUnderstoodException(
-                                "invalid datatype URI '" + uri + "' in query: " + message.getContent());
-                    }
-                    try {
-                        return valueFactory.createLiteral(label, valueFactory.createURI(uri));
-                    } catch (IllegalArgumentException e) {
-                        throw new MessageNotUnderstoodException(
-                                "illegal literal value in query: " + message.getContent());
-                    }
-                } else {
-                    try {
-                        return valueFactory.createLiteral(label);
-                    } catch (IllegalArgumentException e) {
-                        throw new MessageNotUnderstoodException(
-                                "illegal literal value in query: " + message.getContent());
-                    }
-                }
-            } else {
-                throw new MessageNotUnderstoodException(
-                        "resource of unexpected type in query: " + message.getContent());
+                            "resource of unexpected type in query: " + message.getContent());
             }
-        } catch (NullPointerException e) {
-            throw new MessageNotUnderstoodException(
-                    "invalid content for this type of message: " + message.getContent());
-        } catch (ClassCastException e) {
+        } catch (NullPointerException | ClassCastException e) {
             throw new MessageNotUnderstoodException(
                     "invalid content for this type of message: " + message.getContent());
         }
@@ -181,10 +125,7 @@ public class MessageFactory {
         try {
             String msg = exp.getAbsTerm(RDFAgentsOntology.EXPLANATION_MESSAGE).toString();
             return new ErrorExplanation(type, msg);
-        } catch (NullPointerException e) {
-            throw new MessageNotUnderstoodException(
-                    "invalid content for this type of message: " + message.getContent());
-        } catch (ClassCastException e) {
+        } catch (NullPointerException | ClassCastException e) {
             throw new MessageNotUnderstoodException(
                     "invalid content for this type of message: " + message.getContent());
         }
@@ -198,14 +139,6 @@ public class MessageFactory {
         ByteArrayInputStream in = new ByteArrayInputStream(content.getBytes());
         try {
             Dataset sendersDataset = datasetFactory.parse(in, language);
-
-            /*
-            System.out.println("sender's dataset:");
-            try {
-                datasetFactory.write(System.out, sendersDataset, RDFContentLanguage.RDF_TRIG);
-            } catch (LocalFailure localFailure) {
-                localFailure.printStackTrace();
-            } //*/
 
             return datasetFactory.receiveDataset(sendersDataset, fromAID(message.getSender()));
         } catch (DatasetFactory.InvalidRDFContentException e) {
@@ -474,6 +407,48 @@ public class MessageFactory {
         return message;
     }
 
+
+    private Resource toResource(AbsTerm term, ACLMessage message) throws MessageNotUnderstoodException {
+        String iri = term.getAbsObject(RDFAgentsOntology.RESOURCE_IRI).toString();
+        if (!isValidIRI(iri)) {
+            throw new MessageNotUnderstoodException(
+                    "invalid IRI reference '" + iri + "' in query: " + message.getContent());
+        }
+
+        try {
+            return valueFactory.createIRI(iri);
+        } catch (IllegalArgumentException e) {
+            throw new MessageNotUnderstoodException("illegal IRI in query: " + message.getContent());
+        }
+    }
+
+    private Literal toLiteral(AbsTerm term, ACLMessage message) throws MessageNotUnderstoodException {
+        String label = term.getAbsObject(RDFAgentsOntology.LITERAL_LABEL).toString();
+        AbsObject languageObj = term.getAbsObject(RDFAgentsOntology.LITERAL_LANGUAGE);
+        AbsObject datatypeObj = term.getAbsObject(RDFAgentsOntology.LITERAL_DATATYPE);
+
+        try {
+            if (null != languageObj) {
+                String lang = languageObj.toString();
+                return valueFactory.createLiteral(label, lang);
+            }
+
+            if (null != datatypeObj) {
+                String iri = datatypeObj.getAbsObject(RDFAgentsOntology.RESOURCE_IRI).toString();
+                if (!isValidIRI(iri)) {
+                    throw new MessageNotUnderstoodException(
+                            "invalid datatype IRI '" + iri + "' in query: " + message.getContent());
+                }
+                return valueFactory.createLiteral(label, valueFactory.createIRI(iri));
+            }
+
+            return valueFactory.createLiteral(label);
+        } catch (IllegalArgumentException e) {
+            throw new MessageNotUnderstoodException(
+                    "illegal literal value in query: " + message.getContent());
+        }
+    }
+
     private AbsContentElement extractAbsContent(final ACLMessage message)
             throws MessageNotUnderstoodException, LocalFailure {
 
@@ -570,17 +545,15 @@ public class MessageFactory {
             exp.set(RDFAgentsOntology.EXPLANATION_MESSAGE, ex.getMessage());
 
             contentManager.fillContent(message, exp);
-        } catch (Codec.CodecException e) {
-            throw new LocalFailure(e);
-        } catch (OntologyException e) {
+        } catch (Codec.CodecException | OntologyException e) {
             throw new LocalFailure(e);
         }
     }
 
-    private boolean isValidURI(final String uri) {
+    private boolean isValidIRI(final String iri) {
         try {
-            // TODO: replace this with a more formal criterion based on the URI spec
-            valueFactory.createURI(uri);
+            // TODO: replace this with a more formal criterion based on the IRI spec
+            valueFactory.createIRI(iri);
             return true;
         } catch (IllegalArgumentException e) {
             return false;
@@ -694,34 +667,34 @@ public class MessageFactory {
         }
     }
 
-    private AbsConcept valueToConcept(final Value v) {
-        if (v instanceof URI) {
-            return uriToConcept((URI) v);
-        } else if (v instanceof Literal) {
-            return literalToConcept((Literal) v);
+    private AbsConcept valueToConcept(final Value value) {
+        if (value instanceof IRI) {
+            return iriToConcept((IRI) value);
+        } else if (value instanceof Literal) {
+            return literalToConcept((Literal) value);
         } else {
-            throw new IllegalArgumentException("resource is of an unexpected class: " + v);
+            throw new IllegalArgumentException("resource is of an unexpected class: " + value);
         }
     }
 
-    private AbsConcept uriToConcept(final URI v) {
+    private AbsConcept iriToConcept(final IRI value) {
         AbsConcept c = new AbsConcept(RDFAgentsOntology.RESOURCE);
-        c.set(RDFAgentsOntology.RESOURCE_URI, v.stringValue());
+        c.set(RDFAgentsOntology.RESOURCE_IRI, value.stringValue());
 
         return c;
     }
 
-    private AbsConcept literalToConcept(final Literal l) {
+    private AbsConcept literalToConcept(final Literal value) {
         AbsConcept c = new AbsConcept(RDFAgentsOntology.LITERAL);
 
-        c.set(RDFAgentsOntology.LITERAL_LABEL, l.getLabel());
+        c.set(RDFAgentsOntology.LITERAL_LABEL, value.getLabel());
 
-        if (null != l.getLanguage()) {
-            c.set(RDFAgentsOntology.LITERAL_LANGUAGE, l.getLanguage());
+        if (value.getLanguage().isPresent()) {
+            c.set(RDFAgentsOntology.LITERAL_LANGUAGE, value.getLanguage().get());
         }
 
-        if (null != l.getDatatype()) {
-            c.set(RDFAgentsOntology.LITERAL_DATATYPE, uriToConcept(l.getDatatype()));
+        if (null != value.getDatatype()) {
+            c.set(RDFAgentsOntology.LITERAL_DATATYPE, iriToConcept(value.getDatatype()));
         }
 
         return c;
@@ -770,14 +743,7 @@ public class MessageFactory {
             any.setProposition(describes);
 
             contentManager.fillContent(message, any);
-
-            // TODO: remove me.  This is just a sanity check.
-            AbsContentElement el = contentManager.extractAbsContent(message);
-            //System.out.println("el: " + el);
-            //System.out.println("el.getClass() = " + el.getClass());
-        } catch (Codec.CodecException e) {
-            throw new LocalFailure(e);
-        } catch (OntologyException e) {
+        } catch (Codec.CodecException | OntologyException e) {
             throw new LocalFailure(e);
         }
 
@@ -799,7 +765,7 @@ public class MessageFactory {
     public AID toAID(final AgentId ref) {
         AID a = new AID();
         a.setName(ref.getName());
-        for (URI u : ref.getTransportAddresses()) {
+        for (IRI u : ref.getTransportAddresses()) {
             a.addAddresses(u.toString());
         }
 
@@ -811,30 +777,30 @@ public class MessageFactory {
             throw new MessageNotUnderstoodException("missing agent name in message");
         }
 
-        if (!RDFAgents.isValidURI(s.getName())) {
-            throw new MessageNotUnderstoodException("agent name is not a legal URI: " + s.getName());
+        if (!RDFAgents.isValidIRI(s.getName())) {
+            throw new MessageNotUnderstoodException("agent name is not a legal IRI: " + s.getName());
         }
 
-        URI name = valueFactory.createURI(s.getName());
+        IRI name = valueFactory.createIRI(s.getName());
 
-        Collection<URI> addresses = new LinkedList<URI>();
+        Collection<IRI> addresses = new LinkedList<>();
         for (String address : s.getAddressesArray()) {
             if (null == address) {
                 throw new MessageNotUnderstoodException("null sender's transport address in message");
             }
 
-            if (!RDFAgents.isValidURI(address)) {
-                logger.info("sender's address could not be converted to a URI: " + address);
+            if (!RDFAgents.isValidIRI(address)) {
+                logger.info("sender's address could not be converted to an IRI: " + address);
             } else {
-                addresses.add(valueFactory.createURI(address));
+                addresses.add(valueFactory.createIRI(address));
             }
         }
 
-        URI[] uris = new URI[addresses.size()];
+        IRI[] iris = new IRI[addresses.size()];
         int i = 0;
-        for (URI u : addresses) {
-            uris[i++] = u;
+        for (IRI u : addresses) {
+            iris[i++] = u;
         }
-        return new AgentId(name, uris);
+        return new AgentId(name, iris);
     }
 }

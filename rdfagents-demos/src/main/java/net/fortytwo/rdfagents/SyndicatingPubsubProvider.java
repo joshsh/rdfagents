@@ -12,6 +12,7 @@ import net.fortytwo.rdfagents.model.ErrorExplanation;
 import net.fortytwo.rdfagents.model.RDFAgent;
 import org.openrdf.model.Value;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -61,7 +62,7 @@ class SyndicatingPubsubProvider extends PubsubProvider<Value, Dataset> {
 
                 @Override
                 public void localFailure(LocalFailure e) {
-                    logger.severe("local failure: " + e.getMessage() + "\n" + RDFAgents.stackTraceToString(e));
+                    logger.log(Level.SEVERE, "local failure: " + e.getMessage(), e);
                 }
             };
 

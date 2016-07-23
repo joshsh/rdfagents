@@ -5,7 +5,6 @@ import net.fortytwo.rdfagents.jade.RDFAgentImpl;
 import net.fortytwo.rdfagents.jade.SailBasedQueryProvider;
 import net.fortytwo.rdfagents.model.AgentId;
 import net.fortytwo.rdfagents.model.RDFAgentsPlatform;
-import net.fortytwo.ripple.RippleException;
 import org.openrdf.sail.Sail;
 import org.openrdf.sail.SailException;
 
@@ -23,8 +22,6 @@ public class LinkedDataAgent extends RDFAgentImpl {
         try {
             sail = new LinkedDataSail(baseSail);
             sail.initialize();
-        } catch (RippleException e) {
-            throw new RDFAgentException(e);
         } catch (SailException e) {
             throw new RDFAgentException(e);
         }
